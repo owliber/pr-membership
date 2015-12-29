@@ -9,9 +9,6 @@
 
 class PR_Verify_Email { 
 
-	// public $key;
-	// public $email;
-	// public $user_id;
 
 	function __construct() {
 

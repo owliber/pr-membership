@@ -46,9 +46,6 @@ if ( ! class_exists( 'PR_Membership' )) :
 
 		// Folder Name
 		const PLUGIN_FOLDER = 'pr-membership';
-		
-		// DB Version
-	    const DB_VERSION = '1.0';
 
 	    function __construct() {
 

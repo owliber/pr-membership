@@ -10,26 +10,27 @@
     </div>
     
     <div class="twelve wide left aligned column">
-      <?php if ( count( $attributes['errors'] ) > 0 ) : ?>
-        <?php foreach ( $attributes['errors'] as $error ) : ?>
-            <div class="ui error red inverted strong message">
-                <?php echo $error; ?>
-            </div>
-        <?php endforeach; ?>
-      <?php endif; ?>
+      
+        <?php if ( isset( $result['errors'] ) && count( $result['errors'] ) > 0 ) : ?>
+          <?php foreach ( $result['errors'] as $error ) : ?>
+              <div class="ui error fade message ">
+                  <?php echo $error; ?>
+              </div>
+          <?php endforeach; ?>
+        <?php endif; ?>
 
-      <?php if ( $attributes['success'] ) : ?>
-         <div class="ui success green inverted message">
-            <p class="lead">
-            <?php if ( $attributes['success'] == 1 ) {
-                    echo 'Boss, ayos secure na yan!.';
-                  } else {
-                    echo 'We sent you an email for verification, please check your email.';
-                  }?>
-            </p>
-        </div>
-     <?php endif; ?>
-
+        <?php if ( isset( $result['success'] ) && $result['success'] ) : ?>
+           <div class="ui success fade message">
+              <p class="lead">
+              <?php if ( $result['success'] == 1 ) {
+                      echo 'Your account was successfully updated.';
+                    } else {
+                      echo 'We sent you an email for verification, please check your email.';
+                    }?>
+              </p>
+          </div>
+       <?php endif; ?>
+    
       <form class="ui large equal width form" method="post" action="">
         <h2 class="ui left aligned header">
           <i class="lock icon"></i>
@@ -62,11 +63,10 @@
       <div class="ui hidden divider"></div>
         <?php if ( !$this->is_verified ) : ?>
         <div class="ui warning message">
-          <i class="close icon"></i>
           <div class="header">
             Email Confirmation Needed!
           </div>
-          Your email address is still unverified, please kindly check your inbox and confirm your email address. You can also resend the verification link if needed.
+          Your email address is unverified, please kindly check your inbox and confirm your email address. You can also resend the verification link if needed.
         </div>
         <?php endif; ?>
         <form class="ui large equal width form" method="post" action="">
