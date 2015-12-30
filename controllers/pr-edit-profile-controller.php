@@ -6,30 +6,30 @@
 
 class PR_Edit_Profile {
 
-	public $user_id;
-	public $first_name;
-	public $last_name;
-	public $display_name;
-	public $description;
-	public $user_url;
-	public $ref_sports;
-	public $ref_interests;
-	public $interests;
-	public $other_sports;
-	public $location;
-	public $gender;
-	public $birth_day;
-	public $birth_month;
-	public $birth_year;
-	public $year_started_running;
-	public $facebook;
-	public $twitter;
-	public $instagram;
-	public $months;
-	public $height;
-	public $weight;
+	private $user_id;
+	private $first_name;
+	private $last_name;
+	private $display_name;
+	private $description;
+	private $user_url;
+	private $ref_sports;
+	private $ref_interests;
+	private $interests;
+	private $other_sports;
+	private $location;
+	private $gender;
+	private $birth_day;
+	private $birth_month;
+	private $birth_year;
+	private $year_started_running;
+	private $facebook;
+	private $twitter;
+	private $instagram;
+	private $months;
+	private $height;
+	private $weight;
 
-	public $cur_year;
+	private $cur_year;
 
 	
 	function __construct() {
@@ -46,34 +46,9 @@ class PR_Edit_Profile {
 		if( is_user_logged_in() ) {
 
 			$this->user_id = get_current_user_id();
-			$model->user_id = $this->user_id;
-
-			$attributes = array('errors'=>array(),'success'=>false);
-
-			if( isset ( $_POST['profile'] )) {
-
-				$valid = $this->validate_profile( $_POST['profile'], $this->user_id );
-
-				if( is_wp_error( $valid )) {
-
-					$errors[] = $valid->get_error_message();
-					$attributes['errors'] = $errors;
-
-				} else {
-
-					$model->profile = $_POST['profile'];
-					$success = $model->update_profile();	
-
-					if( !is_wp_error( $success ) ) {
-						$attributes['success'] = true; 
-					} else {
-						$attributes['errors'] = $success->get_error_message();
-					}
-				}
-
-				wp_reset_postdata();
-
-			}
+			
+			if( isset ( $_POST['profile'] ))
+				$this->update( $_POST['profile'] );
 			
 			$meta = get_user_meta( $this->user_id );
 
@@ -170,7 +145,8 @@ class PR_Edit_Profile {
 				$this->instagram = $meta['instagram'];
 			}	
 
-			return PR_Membership::get_html_template( 'edit-profile', $attributes ); 
+			require_once( dirname( __DIR__ ) . '/views/edit-profile.php' );
+			//return PR_Membership::get_html_template( 'edit-profile', $attributes ); 
 
 		} else {
 
@@ -178,6 +154,40 @@ class PR_Edit_Profile {
 
 		}
 
+	}
+
+	private function update( $post ) {
+
+		require_once( WPPR_PLUGIN_DIR . '/models/members-model.php' );
+		$model = new Members_Model;
+
+		if( isset ( $post )) {
+
+			$valid = $this->validate_profile( $_POST['profile'], $this->user_id );
+
+			if( is_wp_error( $valid )) {
+
+				$errors[] = $valid->get_error_message();
+				$result['errors'] = $errors;
+
+			} else {
+
+				$model->user_id = $this->user_id;
+				$model->profile = $post;
+				$success = $model->update_profile();	
+
+				if( !is_wp_error( $success ) ) {
+					$result['success'] = true; 
+				} else {
+					$result['errors'] = $success->get_error_message();
+				}
+			}
+
+			wp_reset_postdata();
+
+			return $result;
+
+		}
 	}
 
 	private function validate_profile( $profile, $user_id ) {

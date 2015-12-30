@@ -10,17 +10,17 @@
     </div>
     
     <div class="twelve wide left aligned column">
-      <?php if ( count( $attributes['errors'] ) > 0 ) : ?>
-        <?php foreach ( $attributes['errors'] as $error ) : ?>
-            <div class="ui error red inverted strong message">
+      <?php if ( isset( $result['errors'] ) && count( $result['errors'] ) > 0 ) : ?>
+        <?php foreach ( $result['errors'] as $error ) : ?>
+            <div class="ui error message">
                 <?php echo $error; ?>
             </div>
         <?php endforeach; ?>
       <?php endif; ?>
 
-      <?php if ( $attributes['success'] ) : ?>
-         <div class="ui success green inverted message">
-            <p class="lead">Ayos! You successfully updated your profile.</p>
+      <?php if ( isset( $result['success'] ) && $result['success'] ) : ?>
+         <div class="ui success message">
+            <p class="lead">You successfully updated your profile.</p>
         </div>
      <?php endif; ?>
 
@@ -60,7 +60,7 @@
           <label>What other sports you do?</label>
           <select name="profile[other_sports][]" multiple="" class="ui fluid dropdown">
             <?php 
-            if( count( $this->other_sports ) > 0 ) : 
+            if( isset( $this->other_sports ) && count( $this->other_sports ) > 0 ) : 
               foreach ($this->ref_sports as $sport)
               {
 
@@ -77,7 +77,7 @@
             <label>What are your interests?</label>
             <select name="profile[interests][]" multiple="" class="ui fluid search dropdown">
               <?php 
-              if( count( $this->interests ) > 0 ) :
+              if( isset( $this->interests ) && count( $this->interests ) > 0 ) :
                 foreach ($this->ref_interests as $interest)
                 {
 
@@ -198,15 +198,6 @@
           <label>Site</label>
           <input name="profile[user_url]" placeholder="Link to your blog or website" type="text" value="<?php echo $this->user_url; ?>">
         </div>
-
-
-        <!-- <div class="ui search">
-        <div class="ui icon input">
-          <input class="prompt" placeholder="Search countries..." type="text">
-          <i class="search icon"></i>
-        </div>
-        <div class="results"></div>
-      </div> -->
 
         <button class="ui green button" type="submit">Update Profile</button>
     </form>     
