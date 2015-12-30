@@ -6,15 +6,15 @@
 
 class PR_Account {
 
-	public $user_id;
-	public $user_login;
-	public $old_password;
-	public $current_password;
-	public $new_password;
-	public $confirm_password;
-	public $email;
-	public $key;
-	public $is_verified;
+	private $user_id;
+	private $user_login;
+	private $old_password;
+	private $current_password;
+	private $new_password;
+	private $confirm_password;
+	private $email;
+	private $key;
+	private $is_verified;
 
 	function __construct() {
 
@@ -39,8 +39,7 @@ class PR_Account {
 			if ( isset( $_POST['submit'] ))
 				$result = $this->update( $_POST['submit'] );
 
-			require_once( WPPR_PLUGIN_DIR . '/views/account.php' );
-			
+			require_once( dirname( __DIR__ ). '/views/account.php' );
 
 		} else {
 
