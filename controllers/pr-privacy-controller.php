@@ -6,55 +6,58 @@
 
 class PR_Privacy {
 
-	public $user_id;
-	public $first_name;
-	public $last_name;
-	public $display_name;
-	public $description;
-	public $user_url;
-	public $ref_sports;
-	public $interests;
-	public $other_sports;
-	public $location;
-	public $gender;
-	public $birth_month;
-	public $birth_year;
-	public $birth_day;
-	public $height;
-	public $weight;
-	public $year_started_running;
-	public $facebook;
-	public $twitter;
-	public $instagram;
-	public $age;
+	private $user_id;
+	private $first_name;
+	private $last_name;
+	private $display_name;
+	private $description;
+	private $user_url;
+	private $ref_sports;
+	private $interests;
+	private $other_sports;
+	private $location;
+	private $gender;
+	private $birth_month;
+	private $birth_year;
+	private $birth_day;
+	private $height;
+	private $weight;
+	private $year_started_running;
+	private $facebook;
+	private $twitter;
+	private $instagram;
+	private $age;
 
-	public $show_name;
-	public $show_gender;
-	public $show_location;
-	public $show_birthday;
-	public $show_birthyear;
-	public $show_year_started_running;
-	public $show_age;
-	public $show_interests;
-	public $show_activities;
-	public $show_personal_records;
-	public $show_groups;
-	public $show_total_distance;
-	public $show_total_time;
-	public $show_total_calories;
-	public $enable_connection_approval;
+	private $show_name;
+	private $show_gender;
+	private $show_location;
+	private $show_birthday;
+	private $show_birthyear;
+	private $show_year_started_running;
+	private $show_height;
+	private $show_weight;
+	private $show_age;
+	private $show_interests;
+	private $show_activities;
+	private $show_personal_records;
+	private $show_groups;
+	private $show_total_distance;
+	private $show_total_time;
+	private $show_total_calories;
+	private $enable_connection_approval;
 	
-	public $show_facebook;
-	public $show_twitter;
-	public $show_website;
+	private $show_facebook;
+	private $show_twitter;
+	private $show_website;
+	private $show_instagram;
 
 	
-	public function __construct() {
+	function __construct() {
 
      	add_shortcode( 'pr_privacy', array( $this, 'render_privacy_page' ) );
     }
 
-    public function render_privacy_page() {
+    function render_privacy_page() {
 
     	require_once( WPPR_PLUGIN_DIR . '/models/members-model.php' );
 		$model = new Members_Model;
@@ -123,7 +126,7 @@ class PR_Privacy {
 
     	}
 
-    	return PR_Membership::get_html_template( 'privacy', $attributes );
+    	require_once( dirname( __DIR__ ) . '/views/privacy.php' );
     }
 
     

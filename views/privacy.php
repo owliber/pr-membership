@@ -10,19 +10,19 @@
     </div>
     
     <div class="twelve wide left aligned column">
-      <?php if ( count( $attributes['errors'] ) > 0 ) : ?>
-        <?php foreach ( $attributes['errors'] as $error ) : ?>
-            <div class="ui error red inverted strong message">
+      <?php if ( isset( $result['errors'] ) && count( $result['errors'] ) > 0 ) : ?>
+        <?php foreach ( $result['errors'] as $error ) : ?>
+            <div class="ui error message">
                 <?php echo $error; ?>
             </div>
         <?php endforeach; ?>
       <?php endif; ?>
 
-      <?php if ( $attributes['success'] ) : ?>
-         <div class="ui success green inverted message">
+      <?php if ( isset( $result['success'] ) && $result['success'] ) : ?>
+         <div class="ui success message">
             <p class="lead">
-            <?php if ( $attributes['success'] == 1 ) {
-                    echo 'Boss, ayos secure na yan!.';
+            <?php if ( $result['success'] == 1 ) {
+                    echo 'Your privacy settings is now updated.';
                   } else {
                     echo 'We sent you an email for verification, please check your email.';
                   }?>
@@ -39,26 +39,7 @@
           </div>
         </h2>
           <div class="ui hidden divider"></div>
-          <!-- <h3>Global </h3>
-          <div class="ui divider"></div>
-          <div class="eight wide field">
-            <label>Who can see your profile?</label>
-            <select>
-              <option value="1">Everyone</option>
-              <option value="2">Only Me</option>
-              <option value="3">My Connections</option>
-              <option value="4">My Connections and Groups</option>
-            </select>
-          </div>
-          <div class="eight wide field">
-            <label>Who can see your new activity?</label>
-            <select>
-              <option value="1">Everyone</option>
-              <option value="2">Only Me</option>
-              <option value="3">My Connections</option>
-              <option value="4">My Connections and Groups</option>
-            </select>
-          </div> -->
+
           <h3>Profile</h3>
           <div class="ui divider"></div>
           <?php if ( isset( $this->first_name ) && isset( $this->last_name )) : ?>
