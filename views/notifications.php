@@ -10,22 +10,18 @@
     </div>
     
     <div class="twelve wide left aligned column">
-      <?php if ( count( $attributes['errors'] ) > 0 ) : ?>
+      <?php if ( isset( $result['errors'] ) && count( $result['errors'] ) > 0 ) : ?>
         <?php foreach ( $attributes['errors'] as $error ) : ?>
-            <div class="ui error red inverted strong message">
+            <div class="ui error message">
                 <?php echo $error; ?>
             </div>
         <?php endforeach; ?>
       <?php endif; ?>
 
-      <?php if ( $attributes['success'] ) : ?>
-         <div class="ui success green inverted message">
+      <?php if ( isset( $result['success'] ) &&  $result['success'] ) : ?>
+         <div class="ui success message">
             <p class="lead">
-            <?php if ( $attributes['success'] == 1 ) {
-                    echo 'Boss, ayos secure na yan!.';
-                  } else {
-                    echo 'We sent you an email for verification, please check your email.';
-                  }?>
+            <?php echo 'Notification settings was successfully changed.'; ?>
             </p>
         </div>
      <?php endif; ?>

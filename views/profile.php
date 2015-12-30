@@ -10,165 +10,158 @@
 }(document, 'script', 'facebook-jssdk'));</script>
 <!-- Facebook Like Plugin -->
 
-<?php  
-  $view = new PR_Profile;
-  $mid = $view->get_MID();
-  $uid = get_current_user_id();
-  $profile = get_userdata( $mid ); 
 
-?>
+<div id="page" class="ui top aligned very relaxed transparent stackable grid container">
+  <div class="ui <?php echo $profile->pr_member_headline_position; ?> floated five wide column inverted <?php echo $profile->pr_member_headline_color; ?> segment">
+  	   <h1 class="ui header">          
+          <?php if( $this->is_public( 'show_name' )) :
+                    echo $profile->first_name . ' ' . $profile->last_name;
+                else :
+                    echo $profile->display_name; 
+                endif; 
+          ?>
+        <span class="sub header">
+          <?php  echo $profile->display_name; ?>
+        </span>
+        </h1>
+        <p><?php echo $profile->description;
+         ?></p>    	
+       
+          <div class="ui list">
 
-   <div id="page" class="ui top aligned very relaxed transparent stackable grid container">
-    <div class="ui <?php echo $profile->pr_member_headline_position; ?> floated five wide column inverted <?php echo $profile->pr_member_headline_color; ?> segment">
-    	   <h1 class="ui header">          
-            <?php if( ! $view->is_private( 'show_name' )) :
-                      echo $profile->first_name . ' ' . $profile->last_name;
-                  else :
-                      echo $profile->display_name; 
-                  endif; 
-            ?>
-          <span class="sub header">
-            <?php  echo $profile->display_name; ?>
-          </span>
-          </h1>
-          <p><?php echo $profile->description;
-           ?></p>    	
-         
-            <div class="ui list">
+            <?php if ( ! empty( $profile->gender ) && $this->is_public( 'show_gender' ) ): ?>
+            <div class="item">
+              <i class="heterosexual icon"></i>
+                <div class="content">
+                 <?php echo $profile->gender; ?>
+               </div>
+             </div>  
+           <?php endif; ?>
 
-              <?php if ( ! empty( $profile->gender ) && ! $view->is_private( 'show_gender' ) ): ?>
-              <div class="item">
-                <i class="heterosexual icon"></i>
-                  <div class="content">
-                   <?php echo $profile->gender; ?>
-                 </div>
-               </div>  
-             <?php endif; ?>
+           <?php if ( ! empty( $profile->birthday ) && $this->is_public( 'show_birthday') ) : ?>
+            <div class="item">
+              <i class="birthday icon"></i>
+                <div class="content">
+                 <?php 
+                   if ( $this->is_public( 'show_birthyear' ) ) {
+                      echo $profile->birthday . ', ' . $profile->birth_year;
+                   } else {
+                      echo $profile->birthday;
+                   }
 
-             <?php if ( ! empty( $profile->birthday ) && ! $view->is_private( 'show_birthday') ) : ?>
-              <div class="item">
-                <i class="birthday icon"></i>
-                  <div class="content">
-                   <?php 
-                     if ( ! $view->is_private( 'show_birthyear' ) ) {
-                        echo $profile->birthday . ', ' . $profile->birth_year;
-                     } else {
-                        echo $profile->birthday;
-                     }
+                   if ( $this->is_public( 'show_age' ) ) {
+                      echo ' &mdash; '. $profile->age . ' years old ';
+                   }
+                 ?>
+               </div>
+             </div>  
+           <?php endif; ?>
 
-                     if ( ! $view->is_private( 'show_age' ) ) {
-                        echo ' &mdash; '. $profile->age . ' years old ';
-                     }
-                   ?>
-                 </div>
-               </div>  
-             <?php endif; ?>
+           <?php if ( $this->is_public( 'show_weight' ) ): ?>
+            <div class="item">
+              <i class="dashboard icon"></i>
+                <div class="content">
+                 <?php echo 'Wt '. $profile->weight . 'kg'; ?>
+                 <?php if ( $profile->show_height ) {
+                    echo '&mdash; Ht '. $profile->height . 'm';
+                 } ?>
+               </div>
+             </div>  
+           <?php endif; ?>
 
-             <?php if ( ! $view->is_private( 'show_weight' ) ): ?>
-              <div class="item">
-                <i class="dashboard icon"></i>
-                  <div class="content">
-                   <?php echo 'Wt '. $profile->weight . 'kg'; ?>
-                   <?php if ( $profile->show_height ) {
-                      echo '&mdash; Ht '. $profile->height . 'm';
-                   } ?>
-                 </div>
-               </div>  
-             <?php endif; ?>
+            <?php if ( ! empty( $profile->location ) && $this->is_public( 'show_location' ) ) : ?>
+            <div class="item">
+              <i class="marker icon"></i>
+                <div class="content">
+                 <?php echo $profile->location; ?>
+               </div>
+             </div>  
+           <?php endif; ?>
 
-              <?php if ( ! empty( $profile->location ) && $view->is_private( 'show_location' ) ) : ?>
-              <div class="item">
-                <i class="marker icon"></i>
-                  <div class="content">
-                   <?php echo $profile->location; ?>
-                 </div>
-               </div>  
-             <?php endif; ?>
+          </div> <!-- ui list -->
 
-            </div> <!-- ui list -->
-
-            <?php if ( ! PR_Membership::is_member_page() && ! $view->is_connected( $mid, $uid ) ) : ?>
-            <!-- Connect -->
-            <div class="ui left labeled button" tabindex="1">
-              <a id="total_connections" class="ui basic right pointing label">
-                <?php echo $profile->total_connections; ?>
-              </a>
-              <?php if ( is_user_logged_in() ) : ?>
-              <button id="btn_connect" class="ui teal button" value="<?php echo $view->member_id; ?>">
+          <?php if ( ! PR_Membership::is_member_page() && ! $this->is_connected() ) : ?>
+          <!-- Connect -->
+          <div class="ui left labeled button" tabindex="1">
+            <a id="total_connections" class="ui basic right pointing label">
+              <?php echo $profile->total_connections; ?>
+            </a>
+            <?php if ( is_user_logged_in() ) : ?>
+            <button id="btn_connect" class="ui teal button" value="<?php echo $this->member_id; ?>">
+              <i class="user icon"></i> Connect
+            </button>
+            <input type="hidden" name="request_status" id="request_status" value="<?php echo $profile->has_pending_request(); ?>">
+            <?php else : ?>
+              <a class="ui teal button" href="<?php echo home_url( 'register' ); ?>">
                 <i class="user icon"></i> Connect
-              </button>
-              <input type="hidden" name="request_status" id="request_status" value="<?php echo $profile->has_pending_request( $mid, $uid ); ?>">
-              <?php else : ?>
-                <a class="ui teal button" href="<?php echo home_url( 'register' ); ?>">
-                  <i class="user icon"></i> Connect
-                </a>
-              <?php endif; ?>
-              
-            </div>          
-          <?php endif; ?>
-          
-          <!-- facebook likes -->
-          <div class="fb-like" data-href="<?php echo esc_url(CURRENT_URI); ?>" data-layout="button_count" data-action="like" data-show-faces="false" data-share="true"></div>
-          <!-- facebook likes -->
-
-          <?php if ( ! $view->is_private( 'show_website' ) || ! $view->is_private( 'show_facebook' ) || ! $view->is_private( 'show_twitter' ) || ! $view->is_private( 'show_instagram' )  ) : ?>
-          <div class="ui horizontal divider"> 
-            <i class="linkify icon"></i> links
-          </div>
-            <?php if( ! empty( $profile->interests ) && is_array( $profile->interests ) ) : ?>
-            <div class="ui list">
-              <i class="pin icon"></i> 
-              <?php foreach( $profile->interests as $interest ) : ?>
-                <a href="search?tag=<?php echo $interest; ?>" class="ui mini label"><?php echo $interest; ?></a>
-              <?php endforeach; ?>
-            </div>
+              </a>
             <?php endif; ?>
-          	<div class="ui inverted list">
-              <?php if( ! empty( $profile->user_url ) && ! $view->is_private( 'show_website' ) ) : ?>
-              <div class="item">
-                <i class="globe icon"></i>
-                  <div class="content">
-          	       <a href="<?php echo $profile->user_url; ?>" target="_blank"><?php echo $profile->user_url; ?></a>
-                 </div>
-               </div>          
-              <?php endif; ?>
+            
+          </div>          
+        <?php endif; ?>
+        
+        <!-- facebook likes -->
+        <div class="fb-like" data-href="<?php echo esc_url(CURRENT_URI); ?>" data-layout="button_count" data-action="like" data-show-faces="false" data-share="true"></div>
+        <!-- facebook likes -->
 
-              <?php if( ! empty( $profile->facebook ) && ! $view->is_private( 'show_facebook' ) ) : ?>
-              <div class="item">
-                <i class="facebook icon"></i>
-                  <div class="content">
-                    <a href="http://www.facebook.com/<?php echo str_replace("/", "", $profile->facebook); ?>" target="_blank"><?php echo $profile->facebook; ?></a>
-                  </div>
+        <?php if ( $this->is_public( 'show_website' ) || $this->is_public( 'show_facebook' ) || $this->is_public( 'show_twitter' ) || $this->is_public( 'show_instagram' )  ) : ?>
+        <div class="ui horizontal divider"> 
+          <i class="linkify icon"></i> links
+        </div>
+          <?php if( ! empty( $profile->interests ) && is_array( $profile->interests ) ) : ?>
+          <div class="ui list">
+            <i class="pin icon"></i> 
+            <?php foreach( $profile->interests as $interest ) : ?>
+              <a href="search?tag=<?php echo $interest; ?>" class="ui mini label"><?php echo $interest; ?></a>
+            <?php endforeach; ?>
+          </div>
+          <?php endif; ?>
+        	<div class="ui inverted list">
+            <?php if( ! empty( $profile->user_url ) && $this->is_public( 'show_website' ) ) : ?>
+            <div class="item">
+              <i class="globe icon"></i>
+                <div class="content">
+        	       <a href="<?php echo $profile->user_url; ?>" target="_blank"><?php echo $profile->user_url; ?></a>
                </div>
-              <?php endif; ?>
-          	 
-              <?php if( ! empty( $profile->twitter ) && ! $view->is_private( 'show_twitter' ) ) { ?>
-              <div class="item">
-                <i class="twitter icon"></i>
-                  <div class="content">
-          	       <a href="http://www.twitter.com/<?php echo str_replace("/", "", $profile->twitter); ?>" target="_blank"><?php echo $profile->twitter;  ?></a>
-                 </div>
+             </div>          
+            <?php endif; ?>
+
+            <?php if( ! empty( $profile->facebook ) && $this->is_public( 'show_facebook' ) ) : ?>
+            <div class="item">
+              <i class="facebook icon"></i>
+                <div class="content">
+                  <a href="http://www.facebook.com/<?php echo str_replace("/", "", $profile->facebook); ?>" target="_blank"><?php echo $profile->facebook; ?></a>
+                </div>
+             </div>
+            <?php endif; ?>
+        	 
+            <?php if( ! empty( $profile->twitter ) && $this->is_public( 'show_twitter' ) ) { ?>
+            <div class="item">
+              <i class="twitter icon"></i>
+                <div class="content">
+        	       <a href="http://www.twitter.com/<?php echo str_replace("/", "", $profile->twitter); ?>" target="_blank"><?php echo $profile->twitter;  ?></a>
                </div>
-              <?php } ?>
+             </div>
+            <?php } ?>
 
-              <?php if( ! empty( $profile->instagram ) && ! $view->is_private( 'show_instagram' ) ) { ?>
-              <div class="item">
-                <i class="instagram icon"></i>
-                  <div class="content">
-          	       <a href="http://www.instagram.com/<?php echo str_replace("/", "", $profile->instagram); ?>" target="_blank"><?php echo $profile->instagram; ?></a>
-                 </div>
+            <?php if( ! empty( $profile->instagram ) && $this->is_public( 'show_instagram' ) ) { ?>
+            <div class="item">
+              <i class="instagram icon"></i>
+                <div class="content">
+        	       <a href="http://www.instagram.com/<?php echo str_replace("/", "", $profile->instagram); ?>" target="_blank"><?php echo $profile->instagram; ?></a>
                </div>
-              <?php } ?>
+             </div>
+            <?php } ?>
 
-            </div> <!-- ui inverted list -->
-        <?php endif; ?> 
+          </div> <!-- ui inverted list -->
+      <?php endif; ?> 
 
-    </div>
-  </div> <!-- ui container -->
+  </div>
+</div> <!-- ui container -->
 
 <!-- Statistics -->
 
-<?php if ( count( $view->activities( $mid, true ) ) > 0 || ( PR_Membership::is_member_page() )  ) : ?>
+<?php if ( count( $this->activities( true ) ) > 0 || ( PR_Membership::is_member_page() )  ) : ?>
 
 <div id="page" class="topgradient semitransparent">
   <div class="ui data stackable relaxed grid container">
@@ -185,7 +178,7 @@
         </div>
         <div class="statistic">
           <div class="value">
-            <?php echo number_format( $view->total_races( $mid )->total, 0 ); ?>
+            <?php echo number_format( $this->total_races()->total, 0 ); ?>
           </div>
           <div class="label">
             Races
@@ -193,7 +186,7 @@
         </div>
         <div class="statistic">
           <div class="value">
-            <?php echo ( ! empty( $view->statistic( $mid )->activity_count ) ) ? number_format( $view->statistic( $mid )->activity_count, 0 ) : 0 ; ?>
+            <?php echo ( ! empty( $this->statistic()->activity_count ) ) ? number_format( $this->statistic()->activity_count, 0 ) : 0 ; ?>
           </div>
           <div class="label">
             Ran Made
@@ -201,31 +194,31 @@
         </div>
         <div class="statistic">
           <div class="value">
-            <?php echo ( !empty( $view->statistic( $mid )->total_distance ) ) ? number_format( $view->statistic( $mid )->total_distance, 0 ) : 0; ?>
+            <?php echo ( !empty( $this->statistic()->total_distance ) ) ? number_format( $this->statistic()->total_distance, 0 ) : 0; ?>
           </div>
           <div class="label">
             Kilometers
           </div>
         </div>
-        <div class="statistic">
+       <!--  <div class="statistic">
           <div class="value">
-            <?php echo ( !empty( $view->statistic( $mid )->total_calories )) ? number_format( $view->statistic( $mid )->total_calories, 0 ) : 0; ?>
+            <php echo ( !empty( $this->statistic()->total_calories )) ? number_format( $this->statistic()->total_calories, 0 ) : 0; ?>
           </div>
           <div class="label">
             Calories
           </div>
-        </div>
-        <div class="statistic">
+        </div> -->
+        <!-- <div class="statistic">
           <div class="value">
-            <?php echo ( !empty( $view->statistic( $mid )->total_elev_gain ) ) ? number_format( $view->statistic( $mid )->total_elev_gain, 0 ) : 0; ?>
+            <php echo ( !empty( $this->statistic()->total_elev_gain ) ) ? number_format( $this->statistic()->total_elev_gain, 0 ) : 0; ?>
           </div>
           <div class="label">
             Elevation
           </div>
-        </div>
+        </div> -->
         <div class="statistic">
           <div class="value">
-            <?php echo ( !empty( $view->statistic( $mid )->total_time ) ) ?  $view->statistic( $mid )->total_time : 0; ?>
+            <?php echo ( !empty( $this->statistic()->total_time ) ) ?  $this->statistic()->total_time : 0; ?>
           </div>
           <div class="label">
             Total Time
@@ -244,12 +237,12 @@
           <th class="collapsing">Distance (K)</th>
           <th class="collapsing">Time</th>
           <th class="collapsing">Avg. Pace (min/km)</th>
-          <th class="collapsing">Calories</th>
-          <th class="collapsing">Elev Gain (m)</th>
+          <!-- <th class="collapsing">Calories</th>
+          <th class="collapsing">Elev Gain (m)</th> -->
         </tr>
       </thead>
       <tbody>
-        <?php foreach ( $view->activities( $mid ) as $row ) : ?>
+        <?php foreach ( $this->activities() as $row ) : ?>
         <tr>
           <td><?php echo $row->activity_name; ?></td>
           <td><?php echo ucfirst($row->activity_type); ?></td>
@@ -257,8 +250,8 @@
           <td><?php echo $row->distance; ?></td>
           <td><?php echo $row->total_time; ?></td>
           <td><?php echo $row->average_pace; ?></td>
-          <td><?php echo $row->calories; ?></td>
-          <td><?php echo $row->elevation_gain; ?></td>
+         <!--  <td><php echo $row->calories; ?></td>
+          <td><php echo $row->elevation_gain; ?></td> -->
         </tr>
       <?php endforeach; ?>        
       </tbody>
@@ -339,14 +332,14 @@
           <label>Avg. Pace (min/km)</label>
           <input id="average_pace" name="activity[average_pace]" type="text" value="00:00" readonly>
         </div>
-        <div class="required field">
+        <!-- <div class="required field">
           <label>Calories (C)</label>
           <input name="activity[calories]" type="text" value="0" required>
         </div>
         <div class="align right required field">
           <label>Elev Gain (m)</label>
           <input name="activity[elev_gain]" type="text" value="0" required>
-        </div>
+        </div> -->
       </div>      
        <div class="field">
         <label>Notes</label>
@@ -375,12 +368,12 @@
           <th>Distance (K)</th>
           <th>Time</th>
           <th>Avg. Pace (min/km)</th>
-          <th>Calories</th>
-          <th>Elev Gain (m)</th>
+          <!-- <th>Calories</th>
+          <th>Elev Gain (m)</th> -->
         </tr>
       </thead>
       <tbody>
-        <?php foreach ( $view->activities( $mid, false ) as $row ) : ?>
+        <?php foreach ( $this->activities( false ) as $row ) : ?>
         <tr>
           <td><?php echo $row->activity_name; ?></td>
           <td><?php echo ucfirst($row->activity_type); ?></td>
@@ -388,8 +381,8 @@
           <td><?php echo $row->distance; ?></td>
           <td><?php echo $row->total_time; ?></td>
           <td><?php echo $row->average_pace; ?></td>
-          <td><?php echo $row->calories; ?></td>
-          <td><?php echo $row->elevation_gain; ?></td>
+          <!-- <td><php echo $row->calories; ?></td>
+          <td><php echo $row->elevation_gain; ?></td> -->
         </tr>
       <?php endforeach; ?>        
       </tbody>

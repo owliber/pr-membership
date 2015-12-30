@@ -13,9 +13,7 @@
    <div class="twelve wide column">   
       <?php  
 
-      $view = new PR_Homepage;
-
-      $requests = $view->connection_requests();
+      $requests = $this->connection_requests();
 
       if( count( $requests ) > 0 ) :
             foreach ( $requests as $request ) :
@@ -96,7 +94,7 @@
 
       <!-- Group Join Requests -->
       <?php 
-        $group_requests = $view->group_requests();
+        $group_requests = $this->group_requests();
         if ( count( $group_requests ) > 0 ) : ?>                  
         <div class="ui divided items">
             <h4>Group Joins</h4>

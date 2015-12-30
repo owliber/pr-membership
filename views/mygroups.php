@@ -11,11 +11,11 @@
 
      <div class="twelve wide column">
 
-      <?php if ( $attributes ) : ?>
-        <div class="ui <?php echo $attributes['status_code']; ?> message">
+      <?php if ( isset( $result ) && count( $result ) > 0 ) : ?>
+        <div class="ui <?php echo $result['status_code']; ?> message">
           <i class="close icon"></i>
           <div class="header">
-            <?php echo $attributes['status_msg']; ?>
+            <?php echo $result['status_msg']; ?>
           </div>
         </div>
       <?php endif; ?>        
@@ -90,7 +90,7 @@
 
                     $total_members = get_post_meta( $group->ID, '_group_total', true ); 
                     if ( empty( $total_members ) ) $total_members = 0;
-                    $plural = (count( $total_members ) > 1 ) ? ' members' : ' member';
+                    $plural = ( $total_members > 1 ) ? ' members' : ' member';
                     echo $total_members . $plural;
 
                  ?></span>

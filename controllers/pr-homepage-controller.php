@@ -134,24 +134,16 @@ class PR_Homepage {
 
     		$user_id = get_current_user_id();
     		$model->user_id = $user_id;
-    		    		
-    		$upload_dir = wp_upload_dir();
-		  	$thumb_folder = get_option( 'pr_member_profile_thumbnail_path' );
-		  	$thumb_dir = trailingslashit( $upload_dir['baseurl']) . $thumb_folder;
-
-		  	$attributes = array(
-		  		'thumb_dir' => $thumb_dir
-		  	);
 
     		$privacy = $model->check_connection_privacy();
 
     		if( $privacy == 1 )
     			$this->privacy_status = $privacy;
 
-    		return PR_Membership::get_html_template( 'homepage', $attributes );
+    		require_once( dirname( __DIR__ ) . '/views/homepage.php' );
 
     	} else {
-    		echo '<script>window.location.replace("'.home_url().'")</script>';
+    		PR_Membership::pr_redirect( home_url() );
     	}
     	
     }

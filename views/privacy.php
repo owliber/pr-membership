@@ -21,11 +21,7 @@
       <?php if ( isset( $result['success'] ) && $result['success'] ) : ?>
          <div class="ui success message">
             <p class="lead">
-            <?php if ( $result['success'] == 1 ) {
-                    echo 'Your privacy settings is now updated.';
-                  } else {
-                    echo 'We sent you an email for verification, please check your email.';
-                  }?>
+            <?php echo 'Your privacy settings is now updated.'; ?>
             </p>
         </div>
      <?php endif; ?>

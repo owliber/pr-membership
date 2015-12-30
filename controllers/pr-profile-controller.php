@@ -11,9 +11,11 @@ class PR_Profile {
 	const DEFAULT_HEADLINE_COLOR = 'green';
 	const DEFAULT_HEADLINE_POSITION = 'left';
 
-	public $user_id;
-	public $member_id;
-	public $activities;
+	private $user_id;
+	private $member_id;
+	private $profile;
+	private $activities;
+	private $statistics;
 	
 	function __construct() {
 
@@ -119,8 +121,10 @@ class PR_Profile {
 		$this->user_id = get_current_user_id();
 		$this->member_id = $this->get_MID();
 		$this->load_profile_background();
+		$profile = get_userdata( $this->member_id );
 		
-		return Pr_Membership::get_html_template( 'profile' );
+		require_once( dirname( __DIR__ ) . '/views/profile.php' );
+		
 	}
 
 
@@ -139,12 +143,12 @@ class PR_Profile {
 
 	}
 
-	function has_pending_request( $member_id, $user_id ) {
+	function has_pending_request() {
 
 		require_once( WPPR_PLUGIN_DIR . '/models/profile-model.php' );
 		$model = new Profile_Model;
-		$model->member_id = $member_id;
-		$model->user_id = $user_id;
+		$model->member_id = $this->member_id;
+		$model->user_id = $this->user_id;
 
 		if( $model->get_request_status() )
 			return true;
@@ -153,12 +157,12 @@ class PR_Profile {
 
 	}
 
-	function is_connected( $member_id, $user_id ) {
+	function is_connected() {
 
 		require_once( WPPR_PLUGIN_DIR . '/models/profile-model.php' );
 		$model = new Profile_Model;
-		$model->member_id = $member_id;
-		$model->user_id = $user_id;
+		$model->member_id = $this->member_id;
+		$model->user_id = $this->user_id;
 
 		if( $model->check_connection_status() )
 			return true;
@@ -167,7 +171,7 @@ class PR_Profile {
 
 	}
 
-	function is_private( $key ) {
+	function is_public( $key ) {
 
 		if( metadata_exists( 'user', $this->member_id, $key ) ) {
 			$meta = get_user_meta( $this->member_id, $key, true );
@@ -180,24 +184,23 @@ class PR_Profile {
 
 	}
 
-	
 
-	function statistic( $member_id ) {
+	function statistic() {
 
 		require_once( WPPR_PLUGIN_DIR . '/models/profile-model.php' );
 		$model = new Profile_Model;
-		$model->member_id = $member_id;
+		$model->member_id = $this->member_id;
 
 		$statistics = $model->get_statistics();
 
 		return $statistics;
 	}
 
-	function total_races( $member_id ) {
+	function total_races() {
 
 		require_once( WPPR_PLUGIN_DIR . '/models/profile-model.php' );
 		$model = new Profile_Model;
-		$model->member_id = $member_id;
+		$model->member_id = $this->member_id;
 
 		// Get run count
 		$races_joined = $model->get_run_count( 'race' );
@@ -205,11 +208,11 @@ class PR_Profile {
 
 	}
 
-	function activities( $member_id, $limit = false ) {
+	function activities( $limit = false ) {
 
 		require_once( WPPR_PLUGIN_DIR . '/models/profile-model.php' );
 		$model = new Profile_Model;		
-		$model->member_id = $member_id;
+		$model->member_id = $this->member_id;
 
 		return $model->get_all_activities( $limit );
 		

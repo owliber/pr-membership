@@ -8,9 +8,6 @@
  *
  */
 
-//Instantiate class view controller
-$view = new PR_Connect; 
-
 ?>
 
 <div id="page" class="ui top aligned very relaxed stackable grid container">
@@ -18,7 +15,7 @@ $view = new PR_Connect;
 
 		<?php 
 			
-			foreach ( $view->list_members() as $member ) : 
+			foreach ( $this->list_members() as $member ) : 
 		
 				$user = get_userdata( $member->ID );
 

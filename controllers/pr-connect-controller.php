@@ -20,8 +20,9 @@ class PR_Connect {
 
 	function render_connect_page() {
 
-		$this->user_id = get_current_user_id();	  	
-		return PR_Membership::get_html_template( 'connect' );
+		$this->user_id = get_current_user_id();	  
+				
+		require_once( dirname( __DIR__ ) . '/views/connect.php' );
 
 	}
 

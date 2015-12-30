@@ -116,8 +116,7 @@ if ( ! class_exists( 'Group_Model' )) :
 	            )
 	        );
 
-			$approval = $result->is_approved;
-			if( $approval == 1)
+			if( $result->is_approved == 1)
 				return true;
 			else
 				return false;

@@ -7,12 +7,12 @@
 
 class PR_My_Groups {
 
-    public $group_id;
-    public $user_id;
-    public $groups;
-    public $other_groups;
-
-	public function __construct() {
+    private $group_id;
+    private $user_id;
+    private $groups;
+    private $other_groups;
+    
+	function __construct() {
 
      	add_shortcode( 'pr_mygroups', array( $this, 'render_member_groups' ) );
         add_action( 'wp_ajax_get_group_details', array( $this, 'get_group_details' ));
@@ -81,7 +81,7 @@ class PR_My_Groups {
         wp_die(); 
     }
 
-    public function render_member_groups() {
+    function render_member_groups() {
 
     	if( is_user_logged_in() ) {
 
@@ -92,40 +92,66 @@ class PR_My_Groups {
             $this->user_id = $user_id;
             $model->user_id = $user_id;
             $userdata = get_userdata( $user_id );
-            $attributes = "";
-            $has_attachment = false;
+            $result = array();
+
 
             if( isset( $_POST['group'] ) )  {
+            
+                $result = $this->save( $_POST['group'], $_POST['manage_form_group'], $_FILES['group_logo'] );
 
-                if ( isset ( $_POST['manage_form_group'] ) && wp_verify_nonce($_POST['manage_form_group'], 'form_group') ) {
+            }
 
-                    $data = $_POST['group'];
+            //Get joined groups
+            $groups = $model->get_member_groups( $user_id );
+            $group_ids = array();
 
-                    ( isset( $data['group_id'] ) && !empty( $data['group_id'] ) ) ? $is_update = true : $is_update = false;
+            require_once( dirname( __DIR__ ) . '/views/mygroups.php' );
 
-                    $model->post_slug = sanitize_title( $data['group_name'] );
+    	} else {
 
-                    $post = array(
-                        'post_title' => $data['group_name'],
-                        'post_content' => $data['description'],
+    		//redirect to login page
+    		$url = home_url();
+    		PR_Membership::pr_redirect( $url );
+
+    	}
+
+    }
+
+    function save( $post, $nonce, $attachment = null ) {
+
+        require_once( WPPR_PLUGIN_DIR . '/models/group-model.php' );
+        $model = new Group_Model;
+        $has_attachment = false;
+
+        if( isset( $post ) )  {
+
+                if ( isset ( $nonce ) && wp_verify_nonce( $nonce, 'form_group') ) {
+
+                    ( isset( $post['group_id'] ) && !empty( $post['group_id'] ) ) ? $is_update = true : $is_update = false;
+
+                    $model->post_slug = sanitize_title( $post['group_name'] );
+
+                    $postdata = array(
+                        'post_title' => $post['group_name'],
+                        'post_content' => $post['description'],
                         'post_status' => 'publish',
-                        'post_author' => $user_id,
+                        'post_author' => $this->user_id,
                         'post_type' => 'groups',
                         'post_name' => $model->post_slug,
                     );
 
-                    $meta_location = $data['location'];
-                    $meta_is_private =  ! isset( $data['is_private'] )  ? 0 : $data['is_private'];                    
+                    $meta_location = $post['location'];
+                    $meta_is_private =  ! isset( $post['is_private'] )  ? 0 : $post['is_private'];    
 
                     if ( $is_update ) {
 
-                        $post_id = $data['group_id'];
+                        $post_id = $post['group_id'];
 
                         $ID = array(
                             'ID' => $post_id,
                         );
 
-                        $post = array_merge( $post, $ID );
+                        $postdata = array_merge( $postdata, $ID );
 
                         $details = get_post( $post_id );
                         $post_name = $details->post_name;
@@ -136,7 +162,7 @@ class PR_My_Groups {
                             
                             if( ! $model->is_group_exist() ) {
 
-                                $result = wp_update_post( $post );
+                                $result = wp_update_post( $postdata );
                                 update_post_meta( $post_id, '_group_location', $meta_location );
                                 update_post_meta( $post_id, '_is_private', $meta_is_private );
                                 
@@ -153,7 +179,7 @@ class PR_My_Groups {
                         
                         } else {
 
-                            $result = wp_update_post( $post );
+                            $result = wp_update_post( $postdata );
                             update_post_meta( $post_id, '_group_location', $meta_location );
                             update_post_meta( $post_id, '_is_private', $meta_is_private );
                             
@@ -166,35 +192,14 @@ class PR_My_Groups {
 
                         if ( ! $model->is_group_exist() ) {
 
-                            $post_id = wp_insert_post( $post );  
-                            $result = $model->add_group_member( $post_id, $user_id, 1, 1 ); //group_id, user_id, is_approved, is_admin
+                            $post_id = wp_insert_post( $postdata );  
+                            $result = $model->add_group_member( $post_id, $this->user_id, 1, 1 ); //group_id, user_id, is_approved, is_admin
 
                             add_post_meta( $post_id, '_group_location', $meta_location, true );
                             add_post_meta( $post_id, '_group_total', 1, true );
                             add_post_meta( $post_id, '_is_private', 1, true );
 
-                            //Upload and attach image
-                    
-                            if( isset($_FILES['group_logo'] ) && @$_FILES['group_logo']['name'] ){
-
-                                $has_attachment = true;
-                                $file = $_FILES['group_logo'];
-                                $upload_folder = get_option( 'pr_group_logo_path' );
-
-                                $valid_image = $this->verify_image( $file );
-
-                                if( $valid_image ) {
-
-                                    $uploaded_file = $this->process_image( $_FILES['group_logo'] );
-
-                                    if( $uploaded_file !== false ) {
-                                        $this->attach_image( $post_id, $uploaded_file, $is_update ); 
-                                    }
-
-                                }
-
-                            }
-
+                            
                             $status_code = 0;
                             $status_msg = 'Your new group was successfully created.';
 
@@ -204,9 +209,31 @@ class PR_My_Groups {
                             $status_msg = 'The group name is no longer available. Please try a new one.';
 
                         }
-
                         
                     }
+
+                    //Upload and attach image
+                    
+                    if( isset( $attachment ) && @$attachment['name'] ){
+
+                        $has_attachment = true;
+
+                        $upload_folder = get_option( 'pr_group_logo_path' );
+
+                        $valid_image = $this->verify_image( $attachment );
+
+                        if( $valid_image ) {
+
+                            $uploaded_file = $this->process_image( $attachment );
+
+                            if( $uploaded_file !== false ) {
+                                $this->attach_image( $post_id, $uploaded_file, $is_update ); 
+                            }
+
+                        }
+
+                    }
+                    
                         
                     if( $has_attachment && ( ! $valid_image || $uploaded_file === false )) {
                         $status_msg .= 'However, the image file is invalid or not uploaded successfully.';
@@ -214,30 +241,14 @@ class PR_My_Groups {
 
                 }
 
-                $attributes['status_code'] = $status_code;
-                $attributes['status_msg'] = $status_msg;
+                $result = array( 
+                    'status_code' => $status_code,
+                    'status_msg' => $status_msg
+                ); 
                
             }
 
-            //Get joined groups
-            $groups = $model->get_member_groups( $user_id );
-            $group_ids = array();
-
-            foreach( $groups as $group ) {
-                $group_ids[] = $group->group_id;
-            }
-
-            $this->other_groups = $group_ids;
-                       
-    		return PR_Membership::get_html_template( 'mygroups', $attributes );
-
-    	} else {
-
-    		//redirect to login page
-    		$url = home_url();
-    		PR_Membership::pr_redirect( $url );
-
-    	}
+            return $result;
 
     }
 

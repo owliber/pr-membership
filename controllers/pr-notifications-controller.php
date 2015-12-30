@@ -15,7 +15,7 @@ class PR_Notifications {
 
     	$attributes = array('errors'=>array(),'success'=>false);
 
-    	return PR_Membership::get_html_template( 'notifications', $attributes );
+    	require_once( dirname( __DIR__ ) . '/views/notifications.php' );
     }
 
 }
