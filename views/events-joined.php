@@ -79,7 +79,7 @@
           <div class="ui info message">
             <i class="close icon"></i>
             <div class="header">
-              You have not joined any events yet. Please vist our lists of new <a href="<php echo home_url( 'events' ); ?>"> events</a> here.
+              You have not joined any events yet. Please vist our lists of new <a href="<?php echo home_url( 'events' ); ?>"> events</a> here.
             </div>
           </div>
         
