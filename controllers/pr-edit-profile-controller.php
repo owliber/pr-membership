@@ -74,6 +74,7 @@ class PR_Edit_Profile {
 			$this->display_name = $userdata->display_name;
 
 			$this->ref_sports = $model->get_other_sports();
+
 			if( isset( $meta['other_sports'] )) {
 				$this->other_sports = $meta['other_sports'];
 				$this->other_sports = unserialize($this->other_sports);

@@ -58,17 +58,19 @@
         </div>
         <div class="field">
           <label>What other sports you do?</label>
+
           <select name="profile[other_sports][]" multiple="" class="ui fluid dropdown">
             <?php 
-            if( isset( $this->other_sports ) && count( $this->other_sports ) > 0 ) : 
+             
               foreach ($this->ref_sports as $sport)
               {
-
-                in_array( $sport->sport_name, $this->other_sports ) ? $selected = " selected" : $selected = "";
+                $selected = "";
+                if( count( $this->other_sports ) > 0) 
+                  in_array( $sport->sport_name, $this->other_sports ) ? $selected = " selected" : $selected = "";
                 echo '<option '.$selected.' value="'.$sport->sport_name.'">'.$sport->sport_name.'</option>';
 
               }
-            endif;
+            
             ?>
           </select>
         </div>
@@ -77,21 +79,22 @@
             <label>What are your interests?</label>
             <select name="profile[interests][]" multiple="" class="ui fluid search dropdown">
               <?php 
-              if( isset( $this->interests ) && count( $this->interests ) > 0 ) :
+              
                 foreach ($this->ref_interests as $interest)
                 {
-
-                  in_array( $interest->interest_name, $this->interests ) ? $selected = " selected" : $selected = "";
+                  $selected = "";
+                  if( count( $this->interests ) > 0) 
+                    in_array( $interest->interest_name, $this->interests ) ? $selected = " selected" : $selected = "";
                   echo '<option '.$selected.' value="'.$interest->interest_name.'">'.$interest->interest_name.'</option>';
 
                 }
-              endif;
+              
               ?>
             </select>           
           </div>
         </div>         
         <div class="fields">          
-          <div class="field">
+          <div class="required field">
             <label>Gender</label>
             <select name="profile[gender]" class="ui search dropdown" required>
               <?php 
