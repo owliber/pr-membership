@@ -123,7 +123,7 @@ if ( ! class_exists( 'PR_Membership' )) :
 		}
 		
 
-		public function compute_age( $month, $day, $year ) 
+		public static function compute_age( $month, $day, $year ) 
 		{ 
 		        $curMonth = date("m");
 		        $curDay = date("j");
