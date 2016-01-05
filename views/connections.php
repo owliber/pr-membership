@@ -23,6 +23,9 @@
 
                 $user_id = $connection->member_id;
                 $thumb_file = get_user_meta( $user_id, 'pr_member_thumbnail_image', true );
+                if( empty( $thumb_file ))
+                  $thumb_file = 'wireframe.png';
+
                 $thumbnail = THUMB_DIR . '/'.$thumb_file;
                 $member = get_userdata( $user_id ); 
         ?>
