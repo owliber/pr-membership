@@ -13,9 +13,11 @@ class PR_Profile {
 
 	private $user_id;
 	private $member_id;
-	private $profile;
 	private $activities;
 	private $statistics;
+	private $headline_position;
+	private $headline_color;
+	private $age;
 	
 	function __construct() {
 
@@ -23,7 +25,7 @@ class PR_Profile {
 		add_action( 'wp_ajax_connect_request', array( $this, 'connect_request' ));
 		add_action( 'wp_ajax_nopriv_connect_request', array( $this, 'connect_request' ));
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_ajax_script' ));
-		add_action(	'wp_head', array( $this, 'load_profile_background' ));
+		//add_action(	'wp_head', array( $this, 'load_profile_background' ));
 
 	}
 
@@ -118,12 +120,35 @@ class PR_Profile {
 
 	function render_profile() {
 
-		$this->user_id = get_current_user_id();
-		$this->member_id = $this->get_MID();
-		$this->load_profile_background();
-		$profile = get_userdata( $this->member_id );
-		
-		require_once( dirname( __DIR__ ) . '/views/profile.php' );
+		if( is_author() ) :
+
+			$this->user_id = get_current_user_id();
+			$this->member_id = $this->get_MID();
+
+			$headline_position = get_user_meta( $this->member_id, 'pr_member_headline_position', true );
+			$headline_color = get_user_meta( $this->member_id, 'pr_member_headline_color', true );
+
+			$month = get_user_meta( $this->member_id, 'birth_month', true );
+			$day = get_user_meta( $this->member_id, 'birth_day', true );
+			$year = get_user_meta( $this->member_id, 'birth_year', true );
+
+			$this->age = PR_Membership::compute_age($month, $day, $year);
+			
+			if( ! isset( $headline_position  ) && empty( $headline_position ) )
+				$this->headline_position = self::DEFAULT_HEADLINE_POSITION;
+			else
+				$this->headline_position = $headline_position;
+
+			if( ! isset( $headline_color ) && empty( $headline_color ))
+				$this->headline_color = self::DEFAULT_HEADLINE_COLOR;
+			else
+				$this->headline_color = $headline_color;
+
+			$this->load_profile_background();
+			
+			require_once( dirname( __DIR__ ) . '/views/profile.php' );
+			
+		endif;
 		
 	}
 
@@ -137,17 +162,20 @@ class PR_Profile {
 
 		if ( username_exists( $member ) ) {
 			$profile = get_user_by( 'login', $member );
+
+			return $profile->ID;
 		}
 
-		return $profile->ID;
+		return false;
 
 	}
 
-	function has_pending_request() {
+	public function has_pending_request() {
 
 		require_once( WPPR_PLUGIN_DIR . '/models/profile-model.php' );
 		$model = new Profile_Model;
-		$model->member_id = $this->member_id;
+
+		$model->member_id = $this->get_MID();
 		$model->user_id = $this->user_id;
 
 		if( $model->get_request_status() )
@@ -157,7 +185,7 @@ class PR_Profile {
 
 	}
 
-	function is_connected() {
+	public function is_connected() {
 
 		require_once( WPPR_PLUGIN_DIR . '/models/profile-model.php' );
 		$model = new Profile_Model;
@@ -263,7 +291,13 @@ class PR_Profile {
 	function load_profile_background() {
 
 	  	$image_file = get_user_meta( $this->member_id, 'pr_member_background_image', true );
+		
+		if( empty( $image_file ))
+			$image_file = 'default.jpg';
+
 		$profile_background = PROFILE_URL . $image_file;
+
+
 
 		$background = '<style type="text/css" id="custom-background-css-override">
 	        	body { 

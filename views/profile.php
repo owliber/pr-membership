@@ -10,47 +10,53 @@
 }(document, 'script', 'facebook-jssdk'));</script>
 <!-- Facebook Like Plugin -->
 
+<?php $profile = get_userdata( $this->member_id ); ?>
 
 <div id="page" class="ui top aligned very relaxed transparent stackable grid container">
-  <div class="ui <?php echo $profile->pr_member_headline_position; ?> floated five wide column inverted <?php echo $profile->pr_member_headline_color; ?> segment">
+  <div class="ui <?php echo $this->headline_position; ?> floated five wide column inverted <?php echo $this->headline_color; ?> segment">
   	   <h1 class="ui header">          
           <?php if( $this->is_public( 'show_name' )) :
-                    echo $profile->first_name . ' ' . $profile->last_name;
+                    echo get_user_meta( $this->member_id, 'first_name', true ) . ' ' . get_user_meta( $this->member_id, 'last_name', true )  ;
                 else :
                     echo $profile->display_name; 
                 endif; 
           ?>
+        <?php if( $this->is_public( 'show_name' )) : ?>
         <span class="sub header">
           <?php  echo $profile->display_name; ?>
         </span>
+        <?php endif; ?>
         </h1>
-        <p><?php echo $profile->description;
+        <p><?php echo get_user_meta( $this->member_id, 'description', true ) ;
          ?></p>    	
        
           <div class="ui list">
 
-            <?php if ( ! empty( $profile->gender ) && $this->is_public( 'show_gender' ) ): ?>
+            <?php if ( get_user_meta( $this->member_id, 'gender', true ) != "" && $this->is_public( 'show_gender' ) ): ?>
             <div class="item">
               <i class="heterosexual icon"></i>
                 <div class="content">
-                 <?php echo $profile->gender; ?>
+                 <?php get_user_meta( $this->member_id, 'gender', true ) == 1 ? $gender = 'Male' : $gender =  'Female'; echo $gender; ?>
                </div>
              </div>  
            <?php endif; ?>
 
-           <?php if ( ! empty( $profile->birthday ) && $this->is_public( 'show_birthday') ) : ?>
+           <?php if ( $this->is_public( 'show_birthday') ) : ?>
             <div class="item">
               <i class="birthday icon"></i>
                 <div class="content">
-                 <?php 
+                 <?php
+
+                   $birthday =  date('F d, Y', mktime(0, 0, 0, get_user_meta( $this->member_id, 'birth_month', true ), get_user_meta( $this->member_id, 'birth_day', true ), get_user_meta( $this->member_id, 'birth_year', true ) ) );
+                  
                    if ( $this->is_public( 'show_birthyear' ) ) {
-                      echo $profile->birthday . ', ' . $profile->birth_year;
+                      echo $birthday;
                    } else {
-                      echo $profile->birthday;
+                      echo str_replace(",", "", date('F d, ', strtotime( $birthday ))) ;
                    }
 
                    if ( $this->is_public( 'show_age' ) ) {
-                      echo ' &mdash; '. $profile->age . ' years old ';
+                      echo ' &mdash; '. $this->age . ' years old ';
                    }
                  ?>
                </div>
@@ -61,19 +67,19 @@
             <div class="item">
               <i class="dashboard icon"></i>
                 <div class="content">
-                 <?php echo 'Wt '. $profile->weight . 'kg'; ?>
-                 <?php if ( $profile->show_height ) {
-                    echo '&mdash; Ht '. $profile->height . 'm';
+                 <?php echo 'Wt '. get_user_meta( $this->member_id, 'weight', true ) . 'kg'; ?>
+                 <?php if ( $this->is_public( 'show_height' ) ) {
+                    echo '&mdash; Ht '. get_user_meta( $this->member_id, 'height', true ) . 'm';
                  } ?>
                </div>
              </div>  
            <?php endif; ?>
 
-            <?php if ( ! empty( $profile->location ) && $this->is_public( 'show_location' ) ) : ?>
+            <?php if ( get_user_meta( $this->member_id, 'location', true ) != "" && $this->is_public( 'show_location' ) ) : ?>
             <div class="item">
               <i class="marker icon"></i>
                 <div class="content">
-                 <?php echo $profile->location; ?>
+                 <?php echo get_user_meta( $this->member_id, 'location', true ); ?>
                </div>
              </div>  
            <?php endif; ?>
@@ -84,13 +90,13 @@
           <!-- Connect -->
           <div class="ui left labeled button" tabindex="1">
             <a id="total_connections" class="ui basic right pointing label">
-              <?php echo $profile->total_connections; ?>
+              <?php echo get_user_meta( $this->member_id, 'total_connections', true ); ?>
             </a>
             <?php if ( is_user_logged_in() ) : ?>
             <button id="btn_connect" class="ui teal button" value="<?php echo $this->member_id; ?>">
               <i class="user icon"></i> Connect
             </button>
-            <input type="hidden" name="request_status" id="request_status" value="<?php echo $profile->has_pending_request(); ?>">
+            <input type="hidden" name="request_status" id="request_status" value="<?php echo $this->has_pending_request(); ?>">
             <?php else : ?>
               <a class="ui teal button" href="<?php echo home_url( 'register' ); ?>">
                 <i class="user icon"></i> Connect
@@ -108,10 +114,13 @@
         <div class="ui horizontal divider"> 
           <i class="linkify icon"></i> links
         </div>
-          <?php if( ! empty( $profile->interests ) && is_array( $profile->interests ) ) : ?>
+          <?php 
+          $interests = get_user_meta( $this->member_id, 'interests', true );
+          if( $interests != ""  && is_array( $interests ) && $this->is_public( 'show_interests' ) ) : ?>
           <div class="ui list">
             <i class="pin icon"></i> 
-            <?php foreach( $profile->interests as $interest ) : ?>
+            <?php 
+              foreach( $interests as $interest ) : ?>
               <a href="search?tag=<?php echo $interest; ?>" class="ui mini label"><?php echo $interest; ?></a>
             <?php endforeach; ?>
           </div>
@@ -126,29 +135,29 @@
              </div>          
             <?php endif; ?>
 
-            <?php if( ! empty( $profile->facebook ) && $this->is_public( 'show_facebook' ) ) : ?>
+            <?php if( get_user_meta( $this->member_id, 'facebook', true ) != "" && $this->is_public( 'show_facebook' ) ) : ?>
             <div class="item">
               <i class="facebook icon"></i>
                 <div class="content">
-                  <a href="http://www.facebook.com/<?php echo str_replace("/", "", $profile->facebook); ?>" target="_blank"><?php echo $profile->facebook; ?></a>
+                  <a href="http://www.facebook.com/<?php echo str_replace("/", "", get_user_meta( $this->member_id, 'facebook', true )); ?>" target="_blank"><?php echo get_user_meta( $this->member_id, 'facebook', true ); ?></a>
                 </div>
              </div>
             <?php endif; ?>
         	 
-            <?php if( ! empty( $profile->twitter ) && $this->is_public( 'show_twitter' ) ) { ?>
+            <?php if( get_user_meta( $this->member_id, 'twitter', true ) != "" && $this->is_public( 'show_twitter' ) ) { ?>
             <div class="item">
               <i class="twitter icon"></i>
                 <div class="content">
-        	       <a href="http://www.twitter.com/<?php echo str_replace("/", "", $profile->twitter); ?>" target="_blank"><?php echo $profile->twitter;  ?></a>
+        	       <a href="http://www.twitter.com/<?php echo str_replace("/", "", get_user_meta( $this->member_id, 'twitter', true )); ?>" target="_blank"><?php echo get_user_meta( $this->member_id, 'twitter', true );  ?></a>
                </div>
              </div>
             <?php } ?>
 
-            <?php if( ! empty( $profile->instagram ) && $this->is_public( 'show_instagram' ) ) { ?>
+            <?php if( get_user_meta( $this->member_id, 'instagram', true ) != "" && $this->is_public( 'show_instagram' ) ) { ?>
             <div class="item">
               <i class="instagram icon"></i>
                 <div class="content">
-        	       <a href="http://www.instagram.com/<?php echo str_replace("/", "", $profile->instagram); ?>" target="_blank"><?php echo $profile->instagram; ?></a>
+        	       <a href="http://www.instagram.com/<?php echo str_replace("/", "", get_user_meta( $this->member_id, 'instagram', true )); ?>" target="_blank"><?php echo get_user_meta( $this->member_id, 'instagram', true ); ?></a>
                </div>
              </div>
             <?php } ?>
@@ -166,11 +175,11 @@
 <div id="page" class="topgradient semitransparent">
   <div class="ui data stackable relaxed grid container">
 
-      <div class="ui <?php echo $profile->pr_member_headline_color; ?> statistics">
+      <div class="ui <?php echo $this->headline_color; ?> statistics">
         <!-- Statistics -->
         <div class="statistic">
           <div class="value">
-            <?php echo $profile->year_started_running; ?>
+            <?php echo get_user_meta( $this->member_id, 'year_started_running', true ); ?>
           </div>
           <div class="label">
             Running since
