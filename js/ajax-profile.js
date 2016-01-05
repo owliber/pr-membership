@@ -18,8 +18,7 @@ jQuery(document).ready(function($) {
     // since 2.8 ajaxurl is always defined in the admin header and points to admin-ajax.php
     $.post(AjaxConnect.ajaxurl, data, function(response) {
 
-        if ( response.result_code == 4 ) 
-          window.location.replace('https://pinoyrunners.co/register');
+        if ( response.result_code == 4 ) window.location.replace('http://localhost:9000/register');
 
         if ( response.result_code == 0 ) {
 
