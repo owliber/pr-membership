@@ -22,6 +22,7 @@ class PR_Events_Joined {
 
             require_once( WPPR_PLUGIN_DIR . '/models/event-model.php' );
             $model = new Event_Model;
+            $events = array();
             
             $user_id = get_current_user_id();
 
@@ -33,13 +34,12 @@ class PR_Events_Joined {
 
             $this->events_joined = $events;
                       
-    		return PR_Membership::get_html_template( 'events-joined' );
+    		require_once( dirname( __DIR__) . '/views/events-joined.php' );
 
     	} else {
 
     		//redirect to login page
-    		$url = home_url();
-    		PR_Membership::pr_redirect( $url );
+    		PR_Membership::pr_redirect( home_url() );
 
     	}
 

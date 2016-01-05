@@ -11,7 +11,7 @@ class PR_Connections {
 	
 	public function __construct() {
 
-		add_shortcode( 'pr_connections2', array( $this, 'render' ) );
+		add_shortcode( 'pr_connections', array( $this, 'render' ) );
 
 	}
 
@@ -26,13 +26,12 @@ class PR_Connections {
 
 			$this->connections = $model->get_all_connections();
 			
-			return PR_Membership::get_html_template( 'connections' );
+			require_once( dirname( __DIR__ ) . '/views/connections.php' );
 
 		} else {
 
 			//redirect to login page
-			$url = home_url();
-			PR_Membership::pr_redirect( $url );
+			PR_Membership::pr_redirect( home_url() );
 
 		}
 	}
