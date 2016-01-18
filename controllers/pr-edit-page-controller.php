@@ -4,20 +4,48 @@
  * Class to upload background image for members
  */
 
-class PR_Upload_Profile_Bg {
+class PR_Edit_Page {
 
 	const DEFAULT_HEADLINE_POSITION = 'left';
 
 	public $user_id;
-	//public $headline_position;
-
+	
 	function __construct() {
 
-		add_shortcode('pr_upload', array($this, 'render_upload_form'));
+		add_shortcode('pr_edit_page', array($this, 'render_top_sidebar'));
+		//add_action( 'wp_ajax_change_headline_bg', array( $this, 'change_headline_bg' ));
+        //add_action( 'wp_ajax_nopriv_change_headline_bg', 'change_headline_bg' );
+        //add_action( 'wp_enqueue_scripts', array($this, 'enqueue_ajax_script' ));
 
 	}
 
-	function render_upload_form() {
+	/*
+	function enqueue_ajax_script() {      
+
+      wp_enqueue_script( 'ajax-editpage-js', plugins_url(PR_Membership::PLUGIN_FOLDER  . '/js/ajax-editpage.js'), array('jquery'), '1.0.0', true );
+      wp_localize_script( 'ajax-editpage-js', 'AjaxGroup', array(
+        'ajaxurl' => admin_url( 'admin-ajax.php' ),
+        'security' => wp_create_nonce( 'pr-edit-member-page' )
+      ));
+
+      
+    }
+
+    function change_headline_bg() {
+
+    	$result_code = 0;
+    	$result_msg = "test";
+
+    	wp_send_json( array( 
+            'result_code'=>$result_code, 
+            'result_msg'=>$result_msg,
+        ) );
+
+        wp_die(); 
+    }
+    */
+
+	function render_top_sidebar() {
 
 		global $current_user;
 		
@@ -70,16 +98,8 @@ class PR_Upload_Profile_Bg {
 
  			$attributes['headline_position'] = $headline_position;
 
-			return PR_Membership::get_html_template( 'upload-form', $attributes );
-
-		} else {
-
-			echo '<div class="ui large red icon message">
-							<i class="bug icon"></i>
-							<div class="content">
-							  <h3>You need to be logged-in to upload image!</h3>
-							</div>
-						  </div>';
+			//return PR_Membership::get_html_template( 'edit-page', $attributes );
+			require_once( dirname( __DIR__) . '/views/edit-page.php' );
 
 		}
 
@@ -154,7 +174,7 @@ class PR_Upload_Profile_Bg {
 		$imagefile = $this->user_id . "_" . date('YmdHis') . '.' . preg_replace('{^.+?\.(?=\w+$)}', '', strtolower($file['name']));
 
 		$imagepath = $profile_dir . '/' . $imagefile;
-		$thumbfile = preg_replace("/(?=\.\w+$)/", '.thumbnail', $imagefile);
+		$thumbfile = preg_replace("/(?=\.\w+$)/", '_thumbnail', $imagefile);
 		$thumbpath = $thumb_dir . '/' . $thumbfile;
 
 		$imageinfo = getimagesize( $tmppath );

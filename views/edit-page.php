@@ -12,16 +12,17 @@
 	    <div class="ui inverted grey segment">
 	    	<form id="upload_profile_bg" method="post" action="<?php echo esc_url( $_SERVER['REQUEST_URI'] ); ?>" enctype="multipart/form-data">
 			<?php wp_nonce_field('upload_profile_form', 'upload_profile_form_submitted'); ?>
-		      <div class="ui action labeled input">
-		         <div class="ui label"> Background</div>
+		      <div class="ui text"> Upload a background at least 1024x768 in size</div> 
+		      <div class="ui action input">				              
 		      	<input type="file" id="profile_image" name="profile_image">
-		      	<button class="ui teal right labeled icon button">
+		      	<button id="btn-upload-bg" class="ui teal right labeled icon button" value="<?php echo $this->user_id; ?>">
 		        <i class="upload icon"></i> Upload</button>
 		      </div>
 		  	</form>
 	    </div>
 	    <div class="ui inverted grey segment">
 	    	<form id="colorpicker" method="post" action="<?php echo esc_url( $_SERVER['REQUEST_URI'] ); ?>">
+	    		<div class="ui text"> Pick your profile card color</div> 
 		      	<div class="ui buttons">	      	
 		      	  <button name="colorpicker" value="red" class="ui red button">&nbsp;</button>
 				  <button name="colorpicker" value="orange" class="ui orange button">&nbsp;</button>
@@ -40,7 +41,8 @@
 			</form>
 	    </div>	   
 	    <div class="ui grey inverted segment">
-	    	<form id="headline_position" method="post" action="<?php echo esc_url( $_SERVER['REQUEST_URI'] ); ?>">	    	
+	    	<form id="headline_position" method="post" action="<?php echo esc_url( $_SERVER['REQUEST_URI'] ); ?>">	    
+	    	<div class="ui text"> Position</div> 	
 				<?php 
 					$headline_position = $attributes['headline_position'];
 					$headline_position == "left" ? $radio_left="checked" : $radio_left=""; 

@@ -4,6 +4,7 @@
       <div class="ui secondary vertical pointing green menu">
         <a href="<?php echo home_url( 'home' ); ?>" class="item"> Home</a>
         <a href="<?php echo home_url( 'home/mygroups' ); ?>" class="item"> Groups</a>
+        <a href="<?php echo home_url( 'home/activities' ); ?>" class="item"> Activities</a>
         <a class="active item"> Connections</a>
         <a href="<?php echo home_url( 'home/events-joined' ); ?>" class="item"> Events Joined</a>
       </div>
@@ -15,7 +16,7 @@
         <i class="sitemap icon"></i>
           <div class="content">
           Connections
-          <div class="sub header"> Your network of friends and runners around the globe</div>
+          <div class="sub header"> Your network of friends and runners everywhere.</div>
         </div>
       </h2>      
       <?php if( count( $this->connections ) > 0 ) :
@@ -66,6 +67,19 @@
             </div>
             <div class="description">
               <p><?php echo wp_trim_words(get_user_meta( $user_id, 'description', true ), 40, '...'); ?></p>
+            </div>
+            <div class="extra">
+              <span class="small-caps">
+                <?php
+                  $total_connections = get_user_meta( $user_id, 'total_connections', true );
+
+                  if( empty( $total_connections ))
+                      $total_connections = 0;
+                                     
+                  $total_connections > 1 ? $s = ' connections' : $s = ' connection';
+                  echo number_format( $total_connections ) . $s;
+
+                ?></span>
             </div>
           </div>
         </div>

@@ -4,6 +4,7 @@
       <div class="ui secondary vertical pointing green menu">
         <a href="<?php echo home_url( 'home' ); ?>" class="item"> Home</a>
         <a href="<?php echo home_url( 'home/mygroups' ); ?>" class="item"> Groups</a>
+        <a href="<?php echo home_url( 'home/activities' ); ?>" class="item"> Activities</a>
         <a href="<?php echo home_url( 'home/connections' ); ?>" class="item"> Connections</a>
         <a class="active item"> Events Joined</a>
       </div>

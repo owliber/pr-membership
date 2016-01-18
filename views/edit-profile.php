@@ -18,9 +18,9 @@
         <?php endforeach; ?>
       <?php endif; ?>
 
-      <?php if ( isset( $result['success'] ) && $result['success'] ) : ?>
+      <?php if ( isset( $result['success'] ) && $result['success'] != "" ) : ?>
          <div class="ui success message">
-            <p class="lead">You successfully updated your profile.</p>
+            <p class="lead"><?php echo $result['success']; ?></p>
         </div>
      <?php endif; ?>
 
@@ -180,21 +180,21 @@
           <label>Facebook </label>
           <div class="ui left icon input">
             <i class="facebook icon"></i>
-            <input name="profile[facebook]" placeholder="cherry.devera" type="text" value="<?php echo $this->facebook; ?>">
+            <input name="profile[facebook]" placeholder="pinoyrunners.co" type="text" value="<?php echo $this->facebook; ?>">
           </div>
         </div>
         <div class="eight wide field">
           <label>Twitter </label>
           <div class="ui left icon input">
             <i class="twitter icon"></i>
-              <input name="profile[twitter]" placeholder="cherry_red" type="text" value="<?php echo $this->twitter; ?>">
+              <input name="profile[twitter]" placeholder="pinoy_runners" type="text" value="<?php echo $this->twitter; ?>">
           </div>
         </div>
         <div class="eight wide field">
           <label>Instagram</label>
           <div class="ui left icon input">
             <i class="instagram icon"></i>
-            <input name="profile[instagram]" placeholder="cherry_red" type="text" value="<?php echo $this->instagram; ?>">
+            <input name="profile[instagram]" placeholder="pinoyrunners.co" type="text" value="<?php echo $this->instagram; ?>">
           </div>
         </div>
         <div class="eight wide field">

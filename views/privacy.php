@@ -156,6 +156,7 @@
             </div>
           </div>
           <?php endif; ?>
+          <?php /*
           <h3>Activities</h3>
           <div class="ui divider"></div>
           <div class="inline field">
@@ -188,14 +189,16 @@
               <label>Show your lifetime total calories</label>
             </div>              
           </div>
+          */ ?>
           <h3>Connections</h3>
           <div class="ui divider"></div>
+            <?php /*
             <div class="inline field">
               <div class="ui toggle checkbox">
                 <input class="hidden" tabindex="14" type="checkbox" name="privacy[show_groups]" value="1" <?php if ($this->show_groups) echo 'checked'; ?>>
                 <label>Show your groups</label>
               </div>
-            </div> 
+            </div> */ ?>
             <div class="inline field">
             <div class="ui toggle checkbox">
               <input class="hidden" tabindex="18" type="checkbox" name="privacy[enable_connection_approval]" value="1" <?php if ($this->enable_connection_approval) echo 'checked'; ?>>

@@ -54,63 +54,103 @@ jQuery( document ).ready( function() {
 	  })
 	;
 
+	// Validate modal form
+	$('.field#frm_activity form')
+	  .form({
+	    on: 'blur',
+	    fields: {
+	      empty: {
+	        identifier  : 'empty',
+	        rules: [
+	          {
+	            type   : 'empty',
+	            prompt : 'Please enter a value'
+	          }
+	        ]
+	      },
+	      dropdown: {
+	        identifier  : 'dropdown',
+	        rules: [
+	          {
+	            type   : 'empty',
+	            prompt : 'Please select a dropdown value'
+	          }
+	        ]
+	      },
+	      checkbox: {
+	        identifier  : 'checkbox',
+	        rules: [
+	          {
+	            type   : 'checked',
+	            prompt : 'Please check the checkbox'
+	          }
+	        ]
+	      }
+	    }
+	  })
+	;
+
 	/* Modal Forms */
 
-	$('#new_activity.ui.modal')
-	  .modal('setting', 'closable', false)
-	  .modal('setting', 'transition', 'fade')
-	  .modal('attach events', '#btn_new_activity.button', 'show')
-	  .modal('attach events', '#btn_cancel.button', 'hide')
-	  .modal({
-	  	 blurring: false,
+	// $('#new_activity.ui.modal')
+	//   //.modal('setting', 'closable', false)
+	//   .modal('setting', 'transition', 'fade')
+	//   .modal('attach events', '#btn_new_activity.button', 'show')
+	//   .modal('attach events', '#btn_cancel.button', 'hide')
+	//   .modal({
+	//   	 blurring	: false,
+	//   	 closable	: false,
+	// 	 onApprove	: function() {
+	// 	      $("#frm_activity").submit();
+	// 	    },
+	// 	 onShow 	: function() {
+	// 	 	$("#bib").hide();
+	// 	 }
 
-	  });
+	//   });
 
-	$('#all-activities.ui.long.modal')
-	  .modal('setting', 'closable', true)
-	  .modal('setting', 'transition', 'fade')
-	  .modal('attach events', '#btn_viewall_activity', 'show')
-	  .modal('attach events', '#btn_all_activities', 'hide')
-	  .modal({
-	  	 blurring: true,
+	// $('#all-activities.ui.long.modal')
+	//   .modal('setting', 'closable', true)
+	//   .modal('setting', 'transition', 'fade')
+	//   .modal('attach events', '#btn_viewall_activity', 'show')
+	//   .modal('attach events', '#btn_all_activities', 'hide')
+	//   .modal({
+	//   	 blurring: true,
 
-	  });
+	//   });
 
-	$('#manage_group.ui.modal')
-	  .modal('setting', 'closable', false)
-	  .modal('setting', 'transition', 'fade')
-	  .modal('attach events', '#btn_new_group', 'show')
-	  .modal('attach events', '#btn_cancel', 'hide')
-	  .modal({
-	  	 blurring: true,
-	  	 onShow : function() {
-	  	 	$("#btn_submit_group").text("Submit");
-	        $("#modal_header").text("Add New Group");
-	        $("#group_id").val("");
-	        $("#group_name").val("");
-	        $("#group_location").val("");
-	        $("#group_desc").val("");
-	  	 }
-	  });
+	// $('#manage_group.ui.modal')
+	//   .modal('setting', 'closable', false)
+	//   .modal('setting', 'transition', 'fade')
+	//   .modal('attach events', '#btn_new_group', 'show')
+	//   .modal('attach events', '#btn_cancel', 'hide')
+	//   .modal({
+	//   	 blurring: true,
+	//   	 onShow : function() {
+	//   	 	$("#btn_submit_group").text("Submit");
+	//         $("#modal_header").text("Add New Group");
+	//         $("#group_id").val("");
+	//         $("#group_name").val("");
+	//         $("#group_location").val("");
+	//         $("#group_desc").val("");
+	//   	 }
+	//   });
 
 	/* End Modal Forms */
 
-
 	//Compute the average pace in minutes/km
-	$(".timepicker").change( function() {
+	$("#distance").change( function() {
 
 		var distance, total_time, 
 			time_part, hour, minute, 
-			seconds, total_minutes, pace, 
+			seconds, total_minute, total_minutes, pace, 
 			pace_minutes, pace_seconds, average_pace;
 
 		distance = $("#distance").val();
-		total_time = $("#total_time").val();
-		time_part = total_time.split(":");
-		hour = time_part[0];
-		minute = time_part[1];
-		seconds = time_part[2] / 60;
-		total_minutes =  ( hour * 60 )  + parseFloat(minute) + parseFloat(seconds);
+		total_hour = $("#total_hour").val();
+		total_minute = $("#total_minute").val();
+		total_minutes =  ( total_hour * 60 )  + parseFloat(total_minute);
+
 		pace = total_minutes / distance;
 		pace_minutes = Math.floor(pace)
 		pace_seconds = (( pace - pace_minutes ) * 60).toFixed(0);
@@ -121,6 +161,56 @@ jQuery( document ).ready( function() {
 		$("#average_pace").val(average_pace)
 
 	});
+
+
+	//Compute the average pace in minutes/km
+	$("#total_minute").change( function() {
+
+		var distance, total_time, 
+			time_part, hour, minute, 
+			seconds, total_minute, total_minutes, pace, 
+			pace_minutes, pace_seconds, average_pace;
+
+		distance = $("#distance").val();
+		total_hour = $("#total_hour").val();
+		total_minute = $("#total_minute").val();
+		total_minutes =  ( total_hour * 60 )  + parseFloat(total_minute);
+
+		pace = total_minutes / distance;
+		pace_minutes = Math.floor(pace)
+		pace_seconds = (( pace - pace_minutes ) * 60).toFixed(0);
+		pace_seconds = ("0" + pace_seconds).slice(-2); //add leading zero
+		pace_minutes = ("0" + pace_minutes).slice(-2); //add leading zero
+		average_pace = pace_minutes + ":" + pace_seconds;
+		
+		$("#average_pace").val(average_pace)
+
+	});
+
+	//Compute the average pace in minutes/km
+	$("#total_hour").change( function() {
+
+		var distance, total_time, 
+			time_part, hour, minute, 
+			seconds, total_minute, total_minutes, pace, 
+			pace_minutes, pace_seconds, average_pace;
+
+		distance = $("#distance").val();
+		total_hour = $("#total_hour").val();
+		total_minute = $("#total_minute").val();
+		total_minutes =  ( total_hour * 60 )  + parseFloat(total_minute);
+
+		pace = total_minutes / distance;
+		pace_minutes = Math.floor(pace)
+		pace_seconds = (( pace - pace_minutes ) * 60).toFixed(0);
+		pace_seconds = ("0" + pace_seconds).slice(-2); //add leading zero
+		pace_minutes = ("0" + pace_minutes).slice(-2); //add leading zero
+		average_pace = pace_minutes + ":" + pace_seconds;
+		
+		$("#average_pace").val(average_pace)
+
+	});
+
 
 
 	// Edit page sidebar on top
@@ -144,5 +234,23 @@ jQuery( document ).ready( function() {
 	  on: 'hover'
 	});
 
+ 	if( window.location.href == '/') {
+ 		
+		// Hide attribution for video if not loaded
+		window.addEventListener('load', function() {
+		    var video = document.querySelector('#bgvid');	    
+
+		    function checkLoad() {
+		        if (video.readyState !== 4) {
+		            $(".attribution").hide()
+		        } 
+		    }
+
+		    checkLoad();
+		}, false);
+
+	}
+
 
 } ); // ready()
+

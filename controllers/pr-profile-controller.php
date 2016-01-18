@@ -22,10 +22,17 @@ class PR_Profile {
 	function __construct() {
 
 		add_shortcode('pr_profile', array( $this, 'render_profile') );
+		add_shortcode( 'pr_activities', array( $this, 'render_activities' ) );
+
+		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_ajax_script' ));
 		add_action( 'wp_ajax_connect_request', array( $this, 'connect_request' ));
 		add_action( 'wp_ajax_nopriv_connect_request', array( $this, 'connect_request' ));
-		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_ajax_script' ));
-		//add_action(	'wp_head', array( $this, 'load_profile_background' ));
+		add_action( 'wp_ajax_get_record_details', array( $this, 'get_record_details' ));
+		add_action( 'wp_ajax_nopriv_get_record_details', array( $this, 'get_record_details' ));
+		add_action( 'wp_ajax_delete_record', array( $this, 'delete_record' ));
+		add_action( 'wp_ajax_nopriv_delete_record', array( $this, 'delete_record' ));
+		add_action( 'wp_ajax_update_record', array( $this, 'update_record' ));
+		add_action( 'wp_ajax_nopriv_update_record', array( $this, 'update_record' ));
 
 	}
 
@@ -33,7 +40,19 @@ class PR_Profile {
 	  wp_enqueue_script( 'ajax-profile-js', plugins_url(PR_Membership::PLUGIN_FOLDER  . '/js/ajax-profile.js'), array('jquery'), '1.0.0', true );
 	  wp_localize_script( 'ajax-profile-js', 'AjaxConnect', array(
 	    'ajaxurl' => admin_url( 'admin-ajax.php' ),
-	    'security' => wp_create_nonce( 'pr-connect-request' )
+	    'security' => wp_create_nonce( 'pr-connect-request' ),
+	  ));
+	  wp_localize_script( 'ajax-profile-js', 'AjaxGetDetails', array(
+	    'ajaxurl' => admin_url( 'admin-ajax.php' ),
+	    'security' => wp_create_nonce( 'pr-get-record-details' )
+	  ));
+	  wp_localize_script( 'ajax-profile-js', 'AjaxDelete', array(
+	    'ajaxurl' => admin_url( 'admin-ajax.php' ),
+	    'security' => wp_create_nonce( 'pr-delete-record' )
+	  ));
+	  wp_localize_script( 'ajax-profile-js', 'AjaxUpdate', array(
+	    'ajaxurl' => admin_url( 'admin-ajax.php' ),
+	    'security' => wp_create_nonce( 'pr-update-record' )
 	  ));
 	}
 
@@ -118,13 +137,103 @@ class PR_Profile {
 	
 	}
 
+	function get_record_details() {
+
+		if( is_user_logged_in() ) {
+
+			if ( (isset( $_POST['action'] ) && !empty( $_POST['action'] )) 
+				&& ( isset( $_POST['activity_id'] ) && !empty( $_POST['activity_id'] ))
+				&& ( isset( $_POST['security'] ) && !empty( $_POST['security'] ))
+			) {
+
+				check_ajax_referer( 'pr-get-record-details', 'security' );
+				$activity_id = intval( $_POST['activity_id'] ); //whom the request is for
+				$activity_name = "";
+
+				require_once( WPPR_PLUGIN_DIR . '/models/profile-model.php' );
+				$model = new Profile_Model;
+				$model->activity_id = $activity_id;
+				$model->user_id = get_current_user_id();
+				$result = $model->get_activity_details();
+				
+				if ( $result !== false ) {
+					$activity_name = $result->activity_name;
+					$activity_type = $result->activity_type;
+					$activity_date = date('Y-m-d',strtotime( $result->activity_date ));
+					$distance = $result->distance;
+					$bibnumber = $result->bibnumber;
+					$total_time = $result->total_time;
+					$time = explode(':', $total_time);
+					$hour_part = $time[0];
+					$min_part = $time[1];
+					$pace = $result->average_pace;
+					$notes = $result->notes;
+				}
+
+				wp_send_json( array( 
+					'activity_id' => $activity_id, 
+					'activity_name' => $activity_name, 
+					'activity_type' => $activity_type,
+					'activity_date' => $activity_date,
+					'distance' => $distance,
+					'bibnumber' => $bibnumber,
+					'total_hour' => $hour_part,
+					'total_min' => $min_part,
+					'pace' => $pace,
+					'notes' => $notes
+				) );
+
+				wp_die();
+			}
+		}
+
+	}
+
+	function delete_record() {
+
+		if( is_user_logged_in() ) {
+
+			if ( (isset( $_POST['action'] ) && !empty( $_POST['action'] )) 
+				&& ( isset( $_POST['activity_id'] ) && !empty( $_POST['activity_id'] ))
+				&& ( isset( $_POST['security'] ) && !empty( $_POST['security'] ))
+			) {
+
+				check_ajax_referer( 'pr-delete-record', 'security' );
+				$activity_id = intval( $_POST['activity_id'] ); //whom the request is for
+
+				require_once( WPPR_PLUGIN_DIR . '/models/profile-model.php' );
+				$model = new Profile_Model;
+				$model->activity_id = $activity_id;
+				$model->user_id = get_current_user_id();
+				$result = $model->delete_activity();
+				
+				if ( $result ) {
+					$result_code = 0;
+					$result_msg = 'The record was successfully deleted.';
+				} else {
+					$result_code = 1;
+					$result_msg = 'Something went wrong, please try again later.';
+				}
+
+				wp_send_json( array( 
+					'activity_id' => $activity_id,
+					'result_code'=> $result_code, 
+					'result_msg'=> $result_msg, 
+				) );
+
+				wp_die();
+			}
+		}
+
+	}
+
 	function render_profile() {
 
 		if( is_author() ) :
 
 			$this->user_id = get_current_user_id();
 			$this->member_id = $this->get_MID();
-
+			$this->load_profile_background();
 			$headline_position = get_user_meta( $this->member_id, 'pr_member_headline_position', true );
 			$headline_color = get_user_meta( $this->member_id, 'pr_member_headline_color', true );
 
@@ -144,7 +253,11 @@ class PR_Profile {
 			else
 				$this->headline_color = $headline_color;
 
-			$this->load_profile_background();
+			if ( isset( $_POST['activity'] ) ) :
+
+				$result = $this->add_activity( $_POST['activity'] );
+
+			endif;
 			
 			require_once( dirname( __DIR__ ) . '/views/profile.php' );
 			
@@ -152,6 +265,32 @@ class PR_Profile {
 		
 	}
 
+	function render_activities() {
+
+    	if( is_user_logged_in() ) {
+
+            $this->member_id = get_current_user_id();
+
+            if ( isset( $_POST['activity'] ) ) :
+
+            	if ( isset( $_POST['activity']['activity_id'] ) )
+            		$result = $this->add_activity( $_POST['activity'], false );
+            	else
+                	$result = $this->add_activity( $_POST['activity'] );
+
+            endif;
+
+            require_once( dirname( __DIR__ ) . '/views/activities.php' );
+
+    	} else {
+
+    		//redirect to login page
+    		$url = home_url();
+    		PR_Membership::pr_redirect( $url );
+
+    	}
+
+    }
 
 	function get_MID() {
 
@@ -246,43 +385,108 @@ class PR_Profile {
 		
 	}
 
-	function add_activity( $data ) {
+	function farthest_distance() {
 
-		if ( isset( $postdata ) ) {
+		require_once( WPPR_PLUGIN_DIR . '/models/profile-model.php' );
+		$model = new Profile_Model;
+		$model->member_id = $this->member_id;
+		$result = $model->get_farthest_distance();
+		return $result->max_distance;
+	}
 
-			$post = $_POST['activity'];
+	function fastest_pace() {
 
-			$post_data = array(
-				$this->member_id,
-				sanitize_text_field( $post['activity_name'] ),
-				sanitize_text_field( $post['activity_type'] ),
-				sanitize_text_field( $post['activity_date'] ),
-				(int) sanitize_text_field( $post['distance'] ),
-				sanitize_text_field( $post['total_time'] ),
-				sanitize_text_field( $post['average_pace'] ),
-				(int) sanitize_text_field( $post['calories'] ),
-				(int) sanitize_text_field( $post['elev_gain'] ),
-				sanitize_text_field( $post['notes'] ),
-			);
+		require_once( WPPR_PLUGIN_DIR . '/models/profile-model.php' );
+		$model = new Profile_Model;
+		$model->member_id = $this->member_id;
+		$result = $model->get_fastest_pace();
+		return $result->best_pace;
+	}
 
-			$success = $model->add_activity( $post_data );
+	function add_activity( $post, $is_new = true ) {
 
-			if ( $success ) {
-				$result = '<div class="ui large green icon message fade">
-							 <i class="checkmark icon"></i>
-								 <div class="content">
-								  <h3>Your new activity was successfully added!</h3>
+		require_once( WPPR_PLUGIN_DIR . '/models/profile-model.php' );
+		$model = new Profile_Model;
+
+		if ( isset( $post ) ) {
+
+			//concat total hour and minutes
+			$hour_part = sanitize_text_field( $post['total_hour'] );
+			$minute_part = sanitize_text_field( $post['total_minute'] );
+			$total_time = date('H:i', mktime($hour_part, $minute_part, 0, 0, 0 ));
+			$pace = explode(':', sanitize_text_field( $post['average_pace'] ));
+			$pace_min = $pace[0];
+			$pace_secs = $pace[1];
+			$pace_per_km = date('H:i:s', mktime(0, $pace_min, $pace_secs, 0, 0, 0 ));
+
+			if ( $is_new ) :
+
+				$post_data = array(
+					$this->member_id,
+					sanitize_text_field( $post['activity_name'] ),
+					sanitize_text_field( $post['activity_type'] ),
+					sanitize_text_field( $post['activity_date'] ),
+					floatval( sanitize_text_field( $post['distance'] ) ),
+					$total_time,
+					$pace_per_km,
+					sanitize_text_field( $post['bibnumber'] ),
+					sanitize_text_field( $post['notes'] ),
+				);
+
+				$success = $model->insert( $post_data );
+
+				if ( $success ) {
+					$result = '<div class="ui medium success icon message fade">
+								 <i class="checkmark icon"></i>
+									 <div class="content">
+									  <h3>Your new activity was successfully added!</h3>
+									</div>
+								</div>';
+				} else {
+					$result = '<div class="ui medium error icon message">
+								<i class="bug icon"></i>
+								<div class="content">
+								  <h3>Something went wrong, please try again later.</h3>
 								</div>
-							</div>';
-			} else {
-				$result = '<div class="ui large red icon message">
-							<i class="bug icon"></i>
-							<div class="content">
-							  <h3>Sorry, your new activity is not added!</h3>
-							</div>
-						  </div>';
-			}
+							  </div>';
+				}
 
+			else :
+
+				$post_data = array(
+					sanitize_text_field( $post['activity_name'] ),
+					sanitize_text_field( $post['activity_type'] ),
+					sanitize_text_field( $post['activity_date'] ),
+					floatval( sanitize_text_field( $post['distance'] ) ),
+					$total_time,
+					$pace_per_km,
+					sanitize_text_field( $post['bibnumber'] ),
+					sanitize_text_field( $post['notes'] ),
+					$this->member_id,
+					intval( sanitize_text_field( $post['activity_id'] )),
+				);
+
+				$success = $model->update( $post_data );
+
+				if ( $success ) {
+					$result = '<div class="ui medium success icon message fade">
+								 <i class="checkmark icon"></i>
+									 <div class="content">
+									  <h3>Your activity was successfully updated!</h3>
+									</div>
+								</div>';
+				} else {
+					$result = '<div class="ui medium error icon message">
+								<i class="bug icon"></i>
+								<div class="content">
+								  <h3>Something went wrong, please try again later.</h3>
+								</div>
+							  </div>';
+				}
+
+			endif;
+
+			
 			return $result;
 			
 		}

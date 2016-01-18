@@ -4,6 +4,7 @@
       <div class="ui secondary vertical pointing green menu">
         <a href="<?php echo home_url( 'home' ); ?>" class="item"> Home</a>
         <a class="active item"> Groups</a>
+        <a href="<?php echo home_url( 'home/activities' ); ?>" class="item"> Activities</a>
         <a href="<?php echo home_url( 'home/connections' ); ?>" class="item"> Connections</a>
         <a href="<?php echo home_url( 'home/events-joined' ); ?>" class="item"> Events Joined</a>
       </div>
@@ -146,7 +147,7 @@
       </div>
       <div class="inline field">
         <div class="ui toggle checkbox">
-          <input class="hidden" id="group_is_private" tabindex="3" type="checkbox" name="group[is_private]" value="1" >
+          <input class="hidden" id="group_is_private" tabindex="3" type="checkbox" name="group[is_private]" value="1">
           <label>Make this group private &mdash; <em>Private groups requires admins to authorize joins.</em> </label>
         </div>
       </div>

@@ -197,7 +197,7 @@ class PR_My_Groups {
 
                             add_post_meta( $post_id, '_group_location', $meta_location, true );
                             add_post_meta( $post_id, '_group_total', 1, true );
-                            add_post_meta( $post_id, '_is_private', 1, true );
+                            add_post_meta( $post_id, '_is_private', $meta_is_private, true );
 
                             
                             $status_code = 0;

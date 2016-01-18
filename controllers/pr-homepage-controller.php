@@ -35,6 +35,7 @@ class PR_Homepage {
 		
 		check_ajax_referer( 'pr-home-actions', 'security' );
 		$ignore_request = false;
+		$result_msg = "";
 
 		if ( (isset( $_POST['action'] ) && !empty( $_POST['action'] )) 
 				&& ( isset( $_POST['user_id'] ) && !empty( $_POST['user_id'] ))

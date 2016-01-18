@@ -22,7 +22,7 @@
 				$thumb_file = $user->pr_member_thumbnail_image; //get_user_meta( $member->ID, 'pr_member_thumbnail_image', true );
 
 				if ( empty( $thumb_file )) {
-					$thumbnail = 'http://placehold.it/800x800';
+					$thumbnail = 'https://placeholdit.imgix.net/~text?txtsize=75&txt=thumbnail&w=800&h=800';
 				} else {
 					$thumbnail = THUMB_DIR . '/'.$thumb_file;
 				}
@@ -33,7 +33,7 @@
 				<div class="ui dimmer">
 					<div class="content">
 						<div class="center">
-				        	<a class="ui inverted button" href="<?php echo home_url( 'member/'.$member->user_login ); ?>">View Profile</a>
+				        	<a class="ui teal button" href="<?php echo home_url( 'member/'.$member->user_login ); ?>">View Profile</a>
 				        </div>
 					</div>
 				</div>
@@ -44,22 +44,18 @@
 			    <a class="header">
 			    <?php 
 			    	
-			    	if ( $user->first_name != "" && $user->last_name != "" )
+			    	if ( is_public( 'show_name', $user->ID ) && $user->first_name != "" && $user->last_name != "" )
 			    		echo $user->first_name . ' ' . $user->last_name;
 			    	else
-			    		echo ucfirst( $user->user_nicename );
+			    		echo ucfirst( $user->display_name );
 				?>
 				</a>
 			    <div class="meta">
+			     <?php if ( is_public( 'show_name', $user->ID ) &&  $user->display_name != "" ) : ?>
 			      <span class="text">
-			      	<?php 
-			      	 
-			      	 	if ( $user->display_name != "")
-			      	 		echo $user->display_name;
-			      	 	else 
-			      	 		echo "&nbsp;";
-			        ?>
-			    </span>
+			      	<?php echo $user->display_name; ?>
+			      </span>
+				 <?php endif; ?>
 			    </div>
 			    <div class="description">
 			      <?php echo wp_trim_words( $user->description, 15, ' ...'); ?>

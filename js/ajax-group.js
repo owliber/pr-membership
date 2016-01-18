@@ -1,4 +1,22 @@
 jQuery(document).ready(function($) {
+
+  $('#manage_group.ui.modal')
+    .modal('setting', 'closable', false)
+    .modal('setting', 'transition', 'fade')
+    .modal('attach events', '#btn_new_group', 'show')
+    .modal('attach events', '#btn_cancel', 'hide')
+    .modal({
+       blurring: true,
+       onShow : function() {
+        $("#btn_submit_group").text("Submit");
+          $("#modal_header").text("Add New Group");
+          $("#group_id").val("");
+          $("#group_name").val("");
+          $("#group_location").val("");
+          $("#group_desc").val("");
+       }
+    });
+
  
   //Edit group modal   
    $(".button#btn_edit_group").on('click', function(){

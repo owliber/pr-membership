@@ -32,12 +32,11 @@ require_once( WPPR_PLUGIN_DIR . '/controllers/pr-account-controller.php' );
 require_once( WPPR_PLUGIN_DIR . '/controllers/pr-verify-email-controller.php' );
 require_once( WPPR_PLUGIN_DIR . '/controllers/pr-privacy-controller.php' );
 require_once( WPPR_PLUGIN_DIR . '/controllers/pr-notifications-controller.php' );
-require_once( WPPR_PLUGIN_DIR . '/controllers/pr-upload-controller.php' );
+require_once( WPPR_PLUGIN_DIR . '/controllers/pr-edit-page-controller.php' );
 require_once( WPPR_PLUGIN_DIR . '/controllers/pr-connect-controller.php' );
 require_once( WPPR_PLUGIN_DIR . '/controllers/pr-homepage-controller.php' );
 require_once( WPPR_PLUGIN_DIR . '/controllers/pr-mygroups-controller.php' );
 require_once( WPPR_PLUGIN_DIR . '/controllers/pr-connections-controller.php' );
-require_once( WPPR_PLUGIN_DIR . '/controllers/pr-groups-controller.php' );
 require_once( WPPR_PLUGIN_DIR . '/controllers/pr-events-joined-controller.php' );
 
 if ( ! class_exists( 'PR_Membership' )) :
@@ -61,10 +60,9 @@ if ( ! class_exists( 'PR_Membership' )) :
 			new PR_Privacy;
 			new PR_Notifications;
 			new PR_Connect;
-			new PR_Upload_Profile_Bg;
+			new PR_Edit_Page;
 			new PR_My_Groups;
 			new PR_Connections;
-			new PR_Groups;
 			new PR_Events_Joined;	
 	        
 	        // Register admin menu

@@ -5,6 +5,7 @@
     <div class="ui secondary vertical pointing green menu">
       <a class="active item"> Home</a>
       <a href="<?php echo home_url( 'home/mygroups' ); ?>" class="item"> Groups</a>
+      <a href="<?php echo home_url( 'home/activities' ); ?>" class="item"> Activities</a>
       <a href="<?php echo home_url( 'home/connections' ); ?>" class="item"> Connections</a>
       <a href="<?php echo home_url( 'home/events-joined' ); ?>" class="item"> Events Joined</a>
     </div>
@@ -165,9 +166,71 @@
           <?php endforeach; ?>
         </div>
       <?php endif; ?>
-      <!-- End group join requests -->
 
-      <?php if ( count( $requests ) == 0 || count( $group_requests ) == 0 ) : ?>
+      <!-- End group join requests -->
+      <?php
+            //Blog Posts
+            $args = array(
+                'posts_per_page'   => 25,
+                'offset'           => 0,     
+                'post_type'        => array( 'post', 'events'),
+                'post_status'      => 'publish',
+            );
+
+            $posts = new WP_Query( $args ); 
+
+            if ( $posts->have_posts() ) : ?>
+              <div class="ui divided items">
+
+                <?php while( $posts->have_posts() ) :
+                       setup_postdata( $posts ); 
+                       $posts->the_post();
+                ?>
+                <div class="item">
+                  <a class="ui small image" href="<?php the_permalink(); ?>">
+                    <?php if ( has_post_thumbnail() ) {                  
+                        echo get_the_post_thumbnail();
+                    }else {
+                      echo '<img src="'.WP_CONTENT_URL.'/uploads/thumbnail/wireframe.png">';
+                    }
+                    ?>
+                  </a>
+                  <div class="content">              
+                    <a class="header" href="<?php the_permalink(); ?>"><?php the_title(); ?> </a>
+                    <div class="description">                
+                      <p>
+                      <?php 
+                        //Remote the attached image
+                        $content = get_the_content();
+                        $content = preg_replace("/<img[^>]+\>/i", " ", $content);          
+                        $content = apply_filters('the_content', $content);
+                        $content = str_replace(']]>', ']]>', $content);
+                        $content = preg_replace('/^\s+|\n|\r|\s+$/m', '', $content);
+                        $content = wp_trim_words($content, 50, ' ...');
+                        
+                        echo $content;
+
+                      ?></p>
+                    </div>
+                    <?php $post_type = get_post_type();  
+                      if ( $post_type == 'events' ) :
+                    ?>
+                    <div class="extra">
+                      Posted in <labe class="ui small label"><?php echo ucfirst( $post_type ); ?></label>
+                    </div>
+                  <?php endif; ?>
+                  </div>
+                </div>
+              <?php
+              endwhile;
+              wp_reset_postdata(); ?>
+            </div>
+            <?php
+            endif;
+
+      ?>
+
+      <?php if ( count( $requests ) == 0 && count( $group_requests ) == 0  && count( $posts ) == 0 ): ?>
         <div class="ui info message">
             <div class="header">
                No more feeds at the moment.

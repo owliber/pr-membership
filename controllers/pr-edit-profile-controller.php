@@ -48,7 +48,7 @@ class PR_Edit_Profile {
 			$this->user_id = get_current_user_id();
 			
 			if( isset ( $_POST['profile'] ))
-				$this->update( $_POST['profile'] );
+				$result = $this->update( $_POST['profile'] );
 			
 			$meta = get_user_meta( $this->user_id );
 
@@ -147,7 +147,6 @@ class PR_Edit_Profile {
 			}	
 
 			require_once( dirname( __DIR__ ) . '/views/edit-profile.php' );
-			//return PR_Membership::get_html_template( 'edit-profile', $attributes ); 
 
 		} else {
 
@@ -177,8 +176,8 @@ class PR_Edit_Profile {
 				$model->profile = $post;
 				$success = $model->update_profile();	
 
-				if( !is_wp_error( $success ) ) {
-					$result['success'] = true; 
+				if( ! is_wp_error( $success ) ) {
+					$result['success'] = 'You successfully updated your profile.'; 
 				} else {
 					$result['errors'] = $success->get_error_message();
 				}
