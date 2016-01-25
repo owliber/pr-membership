@@ -1,39 +1,23 @@
 <?php
 
 /**
- * Class controller for viewing member details in site frontpage
- * @author  owliber@yahoo.com
- * @version 1.0
+ * Controller for connections
+ * 
  */
 
-class PR_Profile {
+class PR_Activities {
 
-	const DEFAULT_HEADLINE_COLOR = 'green';
-	const DEFAULT_HEADLINE_POSITION = 'left';
-
-	private $user_id;
-	private $member_id;
-	private $username;
-	private $activities;
-	private $statistics;
-	private $headline_position;
-	private $headline_color;
-	private $age;
+	public $connections;
 	
-	function __construct() {
+	public function __construct() {
 
-		add_shortcode('pr_profile', array( $this, 'render_profile') );
-
-		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_ajax_script' ));
-		add_action( 'wp_ajax_connect_request', array( $this, 'connect_request' ));
-		add_action( 'wp_ajax_nopriv_connect_request', array( $this, 'connect_request' ));
+		add_shortcode( 'pr_activities', array( $this, 'render_activities' ) );
 		add_action( 'wp_ajax_get_record_details', array( $this, 'get_record_details' ));
 		add_action( 'wp_ajax_nopriv_get_record_details', array( $this, 'get_record_details' ));
 		add_action( 'wp_ajax_delete_record', array( $this, 'delete_record' ));
 		add_action( 'wp_ajax_nopriv_delete_record', array( $this, 'delete_record' ));
 		add_action( 'wp_ajax_update_record', array( $this, 'update_record' ));
 		add_action( 'wp_ajax_nopriv_update_record', array( $this, 'update_record' ));
-
 	}
 
 	function enqueue_ajax_script() {
@@ -54,87 +38,6 @@ class PR_Profile {
 	    'ajaxurl' => admin_url( 'admin-ajax.php' ),
 	    'security' => wp_create_nonce( 'pr-update-record' )
 	  ));
-	}
-
-	function connect_request() {
-
-	  $total_connections = 0;
-	  $privacy = 0;
-
-	  if( is_user_logged_in() ) {
-
-	  	if ( (isset( $_POST['action'] ) && !empty( $_POST['action'] )) 
-				&& ( isset( $_POST['member_id'] ) && !empty( $_POST['member_id'] ))
-				&& ( isset( $_POST['security'] ) && !empty( $_POST['security'] ))
-			) {
-
-			check_ajax_referer( 'pr-connect-request', 'security' );
-			$this->member_id = intval( $_POST['member_id'] ); //whom the request is for
-			$this->user_id = get_current_user_id();
-
-			if ( ! $this->member_id ) {
-				
-				$result_code = 1;
-				$result_msg = 'invalid user or parameters';
-
-			} else {
-				
-				//validate member if valid
-				if ( PR_Membership::is_valid_user( $this->member_id )) {		
-
-					require_once( WPPR_PLUGIN_DIR . '/models/profile-model.php' );
-					$model = new Profile_Model;			
-					
-					$privacy = $model->check_connection_privacy();
-
-					$model->user_id = $this->user_id;
-					$model->member_id = $this->member_id;
-
-					if( $privacy == 1 ) {
-    					$result = $model->add_request();
-    				} else {
-    					$result = $model->process_connection();
-    				}
-
-    				$total_connections = get_user_meta( $this->member_id, 'total_connections', true );    					
-
-					if( !is_wp_error( $result )) {
-						$result_code = 0;
-						$result_msg = 'success';
-					}
-
-				} else {
-
-					$result_code = 2;
-					$result_msg = 'Oops, the user is invalid';
-
-				} 
-				
-			}
-
-		} else {
-
-			$result_code = 3;
-			$result_msg = 'The request is invalid';
-			
-		}
-
-	  } else {
-
-	  	$result_code = 4;
-		$result_msg = 'You are not logged in.';
-	  
-	  }
-	  
-		wp_send_json( array( 
-			'result_code'=>$result_code, 
-			'result_msg'=>$result_msg, 
-			'total_connections'=>$total_connections, 
-			'privacy_setting'=>$privacy 
-		) );
-
-		wp_die(); 
-	
 	}
 
 	function get_record_details() {
@@ -227,105 +130,34 @@ class PR_Profile {
 
 	}
 
-	function render_profile() {
+	function render_activities() {
 
-		if( is_author() ) :
+    	if( is_user_logged_in() ) {
 
-			$this->user_id = get_current_user_id();
-			$this->member_id = $this->get_MID();
-			$this->load_profile_background();
-			$headline_position = get_user_meta( $this->member_id, 'pr_member_headline_position', true );
-			$headline_color = get_user_meta( $this->member_id, 'pr_member_headline_color', true );
+            $this->member_id = get_current_user_id();
 
-			$month = get_user_meta( $this->member_id, 'birth_month', true );
-			$day = get_user_meta( $this->member_id, 'birth_day', true );
-			$year = get_user_meta( $this->member_id, 'birth_year', true );
+            if ( isset( $_POST['activity'] ) ) :            	
 
-			$this->age = PR_Membership::compute_age($month, $day, $year);
-			
-			if( ! isset( $headline_position  ) && empty( $headline_position ) )
-				$this->headline_position = self::DEFAULT_HEADLINE_POSITION;
-			else
-				$this->headline_position = $headline_position;
+            	if ( isset( $_POST['activity']['activity_id'] ) && !empty( $_POST['activity']['activity_id'] ) )
+            		$result = $this->add_activity( $_POST['activity'], false );
+            	else
+                	$result = $this->add_activity( $_POST['activity'] );
 
-			if( ! isset( $headline_color ) && empty( $headline_color ))
-				$this->headline_color = self::DEFAULT_HEADLINE_COLOR;
-			else
-				$this->headline_color = $headline_color;
+            endif;
 
-			if ( isset( $_POST['activity'] ) ) :
+            require_once( dirname( __DIR__ ) . '/views/activities.php' );
 
-				$result = $this->add_activity( $_POST['activity'] );
+    	} else {
 
-			endif;
-			
-			require_once( dirname( __DIR__ ) . '/views/profile.php' );
-			
-		endif;
-		
-	}
+    		//redirect to login page
+    		$url = home_url();
+    		PR_Membership::pr_redirect( $url );
 
-	function get_MID() {
+    	}
 
-		$URI = $_SERVER['REQUEST_URI'];		 		
-		$member = str_replace('/', '', str_replace('member','', $URI));
-		
-		$profile = null;
+    }
 
-		if ( username_exists( $member ) ) {
-			$profile = get_user_by( 'login', $member );
-
-			return $profile->ID;
-		}
-
-		return false;
-
-	}
-
-	public function has_pending_request() {
-
-		require_once( WPPR_PLUGIN_DIR . '/models/profile-model.php' );
-		$model = new Profile_Model;
-
-		$model->member_id = $this->get_MID();
-		$model->user_id = $this->user_id;
-
-		if( $model->get_request_status() )
-			return true;
-		else
-			return false;
-
-	}
-
-	public function is_connected() {
-
-		require_once( WPPR_PLUGIN_DIR . '/models/profile-model.php' );
-		$model = new Profile_Model;
-		$model->member_id = $this->member_id;
-		$model->user_id = $this->user_id;
-
-		if( $model->check_connection_status() )
-			return true;
-		else
-			return false;
-
-	}
-
-	function is_public( $key ) {
-
-		if( metadata_exists( 'user', $this->member_id, $key ) ) {
-			$meta = get_user_meta( $this->member_id, $key, true );
-
-			if( $meta == 1 )
-				return true;
-		}
-
-		return false;
-
-	}
-
-
-	function statistic() {
+    function statistic() {
 
 		require_once( WPPR_PLUGIN_DIR . '/models/profile-model.php' );
 		$model = new Profile_Model;
@@ -465,28 +297,5 @@ class PR_Profile {
 		}
 	}
 
-	function load_profile_background() {
-
-	  	$image_file = get_user_meta( $this->member_id, 'pr_member_background_image', true );
-		
-		if( empty( $image_file ))
-			$image_file = 'default.jpg';
-
-		$profile_background = PROFILE_URL . $image_file;
-
-
-
-		$background = '<style type="text/css" id="custom-background-css-override">
-	        	body { 
-	        		background: url(' . $profile_background . ') no-repeat center center fixed; 
-	  				-webkit-background-size: cover;
-	  				-moz-background-size: cover;
-	  				-o-background-size: cover;
-	  				background-size: cover; 
-	        	}
-	    	</style>';
-
-	   	echo $background;
-	}
 
 }
