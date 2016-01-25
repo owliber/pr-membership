@@ -20,7 +20,7 @@
       <?php endif; ?>
       <?php if( get_user_meta( $this->user_id, 'is_profile_update', true ) == 0 ) : ?>
       <div class="ui small warning message">
-        <p> Update your profile details so you will be recognized by other runners. <a href="<?php echo home_url( 'home'); ?>">Click here to update.</a></p>
+        <p> Update your profile so that other runners will see your details. <a href="<?php echo home_url( 'settings/profile'); ?>">Click here to update.</a></p>
       </div>
       <?php endif; ?>
 
