@@ -140,6 +140,8 @@ if ( ! class_exists( 'Signup_Model')) :
 				$user_meta = wp_update_user( $userdata );
 				add_user_meta( $user_id, 'is_email_verified', 1, true );
 				add_user_meta( $user_id, 'email_verification_key', $this->key, true );
+				add_user_meta( $user_id, 'has_profile_background', 0, true );
+				add_user_meta( $user_id, 'is_profile_update', 0, true );
 
 				if( !is_wp_error( $user_meta ))
 				{

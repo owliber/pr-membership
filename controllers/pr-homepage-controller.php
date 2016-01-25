@@ -6,8 +6,9 @@
 
 class PR_Homepage {
 
-	public $user_id;
-	public $privacy_status = 0;
+	private $user_id;
+	private $username;
+	private $privacy_status = 0;
 	
 	public function __construct() {
 
@@ -133,8 +134,10 @@ class PR_Homepage {
 
     	if ( is_user_logged_in() ) {
 
-    		$user_id = get_current_user_id();
-    		$model->user_id = $user_id;
+    		$this->user_id = get_current_user_id();
+    		$userdata = get_userdata( $this->user_id );
+    		$this->username = $userdata->user_login;
+    		$model->user_id = $this->user_id;
 
     		$privacy = $model->check_connection_privacy();
 

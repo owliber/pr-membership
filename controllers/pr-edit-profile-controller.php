@@ -28,6 +28,7 @@ class PR_Edit_Profile {
 	private $months;
 	private $height;
 	private $weight;
+	private $is_profile_update;
 
 	private $cur_year;
 

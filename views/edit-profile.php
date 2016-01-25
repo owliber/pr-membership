@@ -201,7 +201,7 @@
           <label>Site</label>
           <input name="profile[user_url]" placeholder="Link to your blog or website" type="text" value="<?php echo $this->user_url; ?>">
         </div>
-
+        <input name="profile[is_profile_update]" type="hidden" value="1">
         <button class="ui green button" type="submit">Update Profile</button>
     </form>     
     </div>

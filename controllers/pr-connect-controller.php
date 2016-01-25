@@ -34,6 +34,19 @@ class PR_Connect {
 
 		$args = array(
 			'exclude' => array( get_current_user_id() ),
+			'meta_query' => array(
+				'relation' => 'AND',
+				array(
+					'key'     => 'has_profile_background',
+					'value'   => 1,
+					'compare' => '='
+				),
+				array(
+					'key'     => 'is_profile_update',
+					'value'   => 1,
+					'compare' => '='
+				),
+			 ),
 			//'role' => 'member',
 		);
 

@@ -11,7 +11,19 @@
     </div>
   </div><!-- four wide right aligned column -->
 
-   <div class="twelve wide column">   
+   <div class="twelve wide column">  
+
+      <?php if( get_user_meta( $this->user_id, 'has_profile_background', true ) == 0 ) : ?>
+      <div class="ui small warning message">
+        <p> You don't have a profile background yet. Upload one of your best running shot now. <a href="<?php echo home_url( 'member/'.$this->username );?>">Edit your page and upload a background here.</a></p>
+      </div>
+      <?php endif; ?>
+      <?php if( get_user_meta( $this->user_id, 'is_profile_update', true ) == 0 ) : ?>
+      <div class="ui small warning message">
+        <p> Update your profile details so you will be recognized by other runners. <a href="<?php echo home_url( 'home'); ?>">Click here to update.</a></p>
+      </div>
+      <?php endif; ?>
+
       <?php  
 
       $requests = $this->connection_requests();
