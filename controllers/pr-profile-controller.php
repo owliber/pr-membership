@@ -24,6 +24,8 @@ class PR_Profile {
 
 		add_shortcode('pr_profile', array( $this, 'render_profile') );
 
+		
+		add_action( 'wp_head', array( $this, 'set_profile_bg'), 1, 3 );
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_ajax_script' ));
 		add_action( 'wp_ajax_connect_request', array( $this, 'connect_request' ));
 		add_action( 'wp_ajax_nopriv_connect_request', array( $this, 'connect_request' ));
@@ -33,6 +35,15 @@ class PR_Profile {
 		add_action( 'wp_ajax_nopriv_delete_record', array( $this, 'delete_record' ));
 		add_action( 'wp_ajax_update_record', array( $this, 'update_record' ));
 		add_action( 'wp_ajax_nopriv_update_record', array( $this, 'update_record' ));
+
+	}
+
+	function set_profile_bg() {
+
+		if ( is_author() ) :
+			$this->member_id = $this->get_MID();
+			$this->load_profile_background();
+		endif;
 
 	}
 
@@ -233,7 +244,7 @@ class PR_Profile {
 
 			$this->user_id = get_current_user_id();
 			$this->member_id = $this->get_MID();
-			$this->load_profile_background();
+			//$this->load_profile_background();
 			$headline_position = get_user_meta( $this->member_id, 'pr_member_headline_position', true );
 			$headline_color = get_user_meta( $this->member_id, 'pr_member_headline_color', true );
 
@@ -474,15 +485,14 @@ class PR_Profile {
 
 		$profile_background = PROFILE_URL . $image_file;
 
-
-
-		$background = '<style type="text/css" id="custom-background-css-override">
+		$background = '<style type="text/css" id="prbg">
 	        	body { 
-	        		background: url(' . $profile_background . ') no-repeat center center fixed; 
-	  				-webkit-background-size: cover;
-	  				-moz-background-size: cover;
-	  				-o-background-size: cover;
-	  				background-size: cover; 
+	        		background: url(' . $profile_background . ') no-repeat center center fixed  !important;
+	        		-webkit-background-size: cover !important;
+	  				-moz-background-size: cover !important;
+	  				-o-background-size: cover !important;
+	  				background-size: cover !important; 
+	  				
 	        	}
 	    	</style>';
 
