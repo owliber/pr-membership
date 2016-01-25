@@ -12,29 +12,111 @@ class PR_Edit_Page {
 	
 	function __construct() {
 
-		add_shortcode('pr_edit_page', array($this, 'render_top_sidebar'));
-		//add_action( 'wp_ajax_change_headline_bg', array( $this, 'change_headline_bg' ));
-        //add_action( 'wp_ajax_nopriv_change_headline_bg', 'change_headline_bg' );
-        //add_action( 'wp_enqueue_scripts', array($this, 'enqueue_ajax_script' ));
+		add_shortcode( 'pr_edit_page', array($this, 'render_top_sidebar'));
+		add_action( 'wp_ajax_upload_profile_bg', array( $this, 'upload_profile_bg' ));
+        add_action( 'wp_ajax_nopriv_upload_profile_bg', 'upload_profile_bg' );
+        add_action( 'wp_enqueue_scripts', array($this, 'enqueue_ajax_script' ));
 
 	}
 
-	/*
 	function enqueue_ajax_script() {      
 
       wp_enqueue_script( 'ajax-editpage-js', plugins_url(PR_Membership::PLUGIN_FOLDER  . '/js/ajax-editpage.js'), array('jquery'), '1.0.0', true );
-      wp_localize_script( 'ajax-editpage-js', 'AjaxGroup', array(
+      wp_localize_script( 'ajax-editpage-js', 'AjaxUpload', array(
         'ajaxurl' => admin_url( 'admin-ajax.php' ),
-        'security' => wp_create_nonce( 'pr-edit-member-page' )
+        'security' => wp_create_nonce( 'pr-upload-profile-bg' )
       ));
 
       
     }
 
-    function change_headline_bg() {
+    function upload_profile_bg() {
 
-    	$result_code = 0;
-    	$result_msg = "test";
+    	global $current_user;
+		
+		if ( is_user_logged_in() ) {
+
+			$this->user_id = $current_user->ID;
+			$userdata = get_userdata( $this->user_id );
+
+			if ( isset ( $_POST['action'] )  && isset( $_POST['security'] )) {
+
+				check_ajax_referer( 'pr-upload-profile-bg', 'security' );
+				if( isset( $_FILES['profile_image'] ) && @$_FILES['profile_image']['name'] ){
+
+					$result = $this->parse_file_errors( $_FILES['profile_image'] );
+
+					if( $result['error'] ) {
+
+						$result_code = 3;
+						$result_msg = $result['error'];
+				   
+				  	} else {
+				 		
+				   		$result = $this->process_image( $_FILES['profile_image'], $userdata );
+
+				   		if( $result ) {
+
+				   			$has_profile_background = get_user_meta( $this->user_id, 'has_profile_background', true );
+
+					   		if( $has_profile_background == 0 )
+					   			update_user_meta( $this->user_id, 'has_profile_background', 1, $has_profile_background );
+
+					   		$result_code = 0;
+							$result_msg = 'Image was successfully uploaded';
+
+				   		} else {
+
+				   			$result_code = 1;
+							$result_msg = 'Unable to process image';
+				   		}
+				   		
+
+				   	}
+
+					// if( isset( $_FILES["profile_image"]["type"] ))
+					// {
+					// 	$validextensions = array("jpeg", "jpg", "png");
+					// 	$temporary = explode(".", $_FILES["profile_image"]["name"]);
+					// 	$file_extension = end($temporary);
+
+					// 	if ((($_FILES["profile_image"]["type"] == "image/png") || ($_FILES["profile_image"]["type"] == "image/jpg") || ($_FILES["profile_image"]["type"] == "image/jpeg")
+					// 	) && ($_FILES["profile_image"]["size"] > 100000)//Approx. 100kb files can be uploaded.
+					// 	&& in_array($file_extension, $validextensions)) {
+						
+					// 		$uploaded_image = $_FILES['profile_image'];						
+					// 		$result = $this->parse_file_errors( $uploaded_image );
+
+					// 		if( $result['error'] ) {
+
+					// 			$result_code = 3;
+					// 			$result_msg = $result['error'];
+						   
+					// 	  	} else {
+						 		
+					// 	   		$this->process_image( $uploaded_image, $userdata );
+
+					// 	   		$result_code = 0;
+					// 			$result_msg = 'success';
+						   		
+					// 	   	};
+					// 	}
+					// 	else
+					// 	{
+					// 		$result_code = 1;
+					// 		$result_msg = 'Invalid size or file type.';
+					// 	}
+					// }
+				}
+
+			} else {
+
+				$result_code = 2;
+				$result_msg = 'Image was not uploaded successfully.';
+
+			}
+
+		} 
 
     	wp_send_json( array( 
             'result_code'=>$result_code, 
@@ -43,7 +125,6 @@ class PR_Edit_Page {
 
         wp_die(); 
     }
-    */
 
 	function render_top_sidebar() {
 
@@ -54,26 +135,30 @@ class PR_Edit_Page {
 			$this->user_id = $current_user->ID;
 			$userdata = get_userdata( $this->user_id );
 
-			if ( isset ( $_POST['upload_profile_form_submitted'] ) && wp_verify_nonce($_POST['upload_profile_form_submitted'], 'upload_profile_form') ) {
+			// if ( isset ( $_POST['upload_profile_form_submitted'] ) && wp_verify_nonce($_POST['upload_profile_form_submitted'], 'upload_profile_form') ) {
 
-				if( isset($_FILES['profile_image'] ) && @$_FILES['profile_image']['name'] ){
+			// 	if( isset($_FILES['profile_image'] ) && @$_FILES['profile_image']['name'] ){
 
-						$uploaded_image = $_FILES['profile_image'];						
-						$result = $this->parse_file_errors( $uploaded_image );
+			// 			$uploaded_image = $_FILES['profile_image'];						
+			// 			$result = $this->parse_file_errors( $uploaded_image );
 
-						if( $result['error'] ) {
+			// 			if( $result['error'] ) {
 
-							$this->alert_message( $result['error'] );
+			// 				$this->alert_message( $result['error'] );
 					   
-					  	} else {
+			// 		  	} else {
 					 		
-					   		$this->process_image( $uploaded_image, $userdata );
+			// 		   		$this->process_image( $uploaded_image, $userdata );
+			// 		   		$has_profile_background = get_user_meta( $this->user_id, 'has_profile_background', true );
+
+			// 		   		if( $has_profile_background == 0 )
+			// 		   			update_user_meta( $this->user_id, 'has_profile_background', 1, $has_profile_background );
 					   		
-					   	};
+			// 		   	};
 
-				}
+			// 	}
 
-			}
+			// }
 
 			if ( isset ( $_POST['colorpicker'] ) ) {
 
@@ -180,7 +265,7 @@ class PR_Edit_Page {
 		$imageinfo = getimagesize( $tmppath );
 		if( ! $imageinfo || ! $imageinfo[0] || ! $imageinfo[1] ) {
 
-			$error = "Unable to get image dimensions.";				
+			return "Unable to get image dimensions.";				
 
 		} else if( $imageinfo[0] >= $profile_background_max_dimension || $imageinfo[1] >= $profile_background_max_dimension ){
 
@@ -218,12 +303,6 @@ class PR_Edit_Page {
 			} else {
 				add_user_meta( $this->user_id, 'pr_member_thumbnail_image', $thumbfile, true );
 			}
-
-			// update_usermeta($this->user_id, "pr_member_background_image_width", $imageinfo[0]); 
-			// update_usermeta($this->user_id, "pr_member_background_image_height", $imageinfo[1]);
-			// update_usermeta($this->user_id, "pr_member_thumbnail_image", $thumbfile);
-			// update_usermeta($this->user_id, "pr_member_thumbnail_image_width", $thumbinfo[0]);
-			// update_usermeta($this->user_id, "pr_member_thumbnail_image_height", $thumbinfo[1]);
 			
 			//Delete old thumbnail if it has a different filename (extension)
 			if($oldimagefile != $imagefile)

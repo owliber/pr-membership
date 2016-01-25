@@ -7,16 +7,19 @@
 ?>
 
 <!-- Upload Profile Background Form-->
-
 	<div class="ui horizontal transparent-1 segments">	
 	    <div class="ui inverted grey segment">
 	    	<form id="upload_profile_bg" method="post" action="<?php echo esc_url( $_SERVER['REQUEST_URI'] ); ?>" enctype="multipart/form-data">
-			<?php wp_nonce_field('upload_profile_form', 'upload_profile_form_submitted'); ?>
-		      <div class="ui text"> Upload a background at least 1024x768 in size</div> 
-		      <div class="ui action input">				              
+			<?php //wp_nonce_field('upload_profile_form', 'upload_profile_form_submitted'); ?>
+		      <div class="ui text"> Upload a background at least 1024x768 pixels in size</div> 
+		     
+		      <div class="ui action input">		
 		      	<input type="file" id="profile_image" name="profile_image">
 		      	<button id="btn-upload-bg" class="ui teal right labeled icon button" value="<?php echo $this->user_id; ?>">
 		        <i class="upload icon"></i> Upload</button>
+		      </div>
+		       <div class="ui tiny rounded spaced image">
+		      	<img id="preview_image" src="<?php echo get_template_directory_uri(); ?>/assets/images/wireframe.png" height="50" />
 		      </div>
 		  	</form>
 	    </div>
