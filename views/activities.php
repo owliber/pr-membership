@@ -88,11 +88,12 @@
                 <tr>
                   <th>#</th>
                   <th>Activity</th>
+                  <th>Location</th>
                   <th>Type</th>
                   <th>Date</th>
-                  <th>Dist (K)</th>
-                  <th>Time</th>
-                  <th>Pace (min/km)</th>
+                  <th>Distance (K)</th>
+                  <!-- <th>Time</th>
+                  <th>Pace (min/km)</th> -->
                   <th><i class="setting icon"></i></th>
                 </tr>
               </thead>
@@ -101,11 +102,12 @@
                 <tr>
                   <td><?php echo $ctr; ?></td>
                   <td><?php echo $row->activity_name; ?></td>
+                  <td><?php echo $row->location; ?></td>
                   <td><?php echo ucfirst($row->activity_type); ?></td>
                   <td><?php echo date('F d, Y',strtotime($row->activity_date)); ?></td>          
                   <td><?php echo $row->distance; ?></td>
-                  <td><?php echo $row->total_time; ?></td>
-                  <td><?php echo date('i:s',strtotime( $row->average_pace )); ?></td>
+                  <?php /* <td><?php echo $row->total_time; ?></td>
+                  <td><?php echo date('i:s',strtotime( $row->average_pace )); ?></td> */ ?>
                   <td>
                     <div class="ui mini buttons">
                       <button id="btn-update" class="ui icon button btn-update-<?php echo $row->activity_id;?>" value="<?php echo $row->activity_id; ?>"><i class="edit icon"></i></button>
