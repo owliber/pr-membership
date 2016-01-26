@@ -244,6 +244,7 @@
       <thead>
         <tr>
           <th class="collapsing">Activity</th>
+          <th class="collapsing">Location</th>
           <th class="collapsing">Activity Type</th>
           <th class="collapsing">Date</th>
           <th class="collapsing">Distance (K)</th>
@@ -258,6 +259,7 @@
         <?php foreach ( $this->activities() as $row ) : ?>
         <tr id="row-id-<?php echo $row->activity_id; ?>">
           <td class="nowrap"><strong><?php echo $row->activity_name; ?></strong></td>
+          <td class="nowrap"><strong><?php echo $row->location; ?></strong></td>
           <td><?php echo ucfirst($row->activity_type); ?></td>
           <td class="nowrap"><?php echo date('F d, Y',strtotime($row->activity_date)); ?></td>          
           <td><?php echo $row->distance; ?></td>
@@ -302,9 +304,15 @@
   </div>
   <div class="content">
     <form id="frm_activity" class="ui equal width form" method="post" action="">
-      <div class="required field">
-          <label>Activity Name</label>
-          <input id="activity_name" name="activity[activity_name]" placeholder="e.g Seaside Running" type="text" value="" required>
+      <div class="fields">
+        <div class="required field">
+            <label>Activity Name</label>
+            <input id="activity_name" name="activity[activity_name]" placeholder="e.g Seaside Running" type="text" value="" required>
+        </div>
+        <div class="required field">
+            <label>Location</label>
+            <input id="activity_location" name="activity[location]" placeholder="e.g Pasay City" type="text" value="" required>
+        </div>
       </div>
       <div class="fields">
         <div class="required field">
@@ -397,6 +405,7 @@
       <thead>
         <tr>
           <th>Activity</th>
+          <th>Location</th>
           <th>Activity Type</th>
           <th>Date</th>
           <th>Distance (K)</th>
@@ -410,6 +419,7 @@
         <?php foreach ( $this->activities( false ) as $row ) : ?>
         <tr>
           <td><?php echo $row->activity_name; ?></td>
+          <td><?php echo $row->location; ?></td>
           <td><?php echo ucfirst($row->activity_type); ?></td>
           <td><?php echo date('F d, Y',strtotime($row->activity_date)); ?></td>          
           <td><?php echo $row->distance; ?></td>

@@ -186,8 +186,8 @@ if ( ! class_exists( 'Profile_Model' )) :
 
 			global $wpdb;
 
-			$sql = "INSERT INTO wp_activities ( user_id, activity_name, activity_type, activity_date, distance, total_time, average_pace, bibnumber, notes )
-					VALUES ( %d, %s, %s, %s, %f, %s, %s, %s, %s ) ";
+			$sql = "INSERT INTO wp_activities ( user_id, activity_name, location, activity_type, activity_date, distance, total_time, average_pace, bibnumber, notes )
+					VALUES ( %d, %s, %s, %s, %s, %f, %s, %s, %s, %s ) ";
 
 			$result = $wpdb->query( $wpdb->prepare( $sql, $data) );
 
@@ -203,7 +203,7 @@ if ( ! class_exists( 'Profile_Model' )) :
 			global $wpdb;
 
 			$sql = "UPDATE wp_activities 
-					SET activity_name = %s, activity_type = '%s', activity_date = '%s', distance = '%f', total_time = '%s', average_pace = '%s', bibnumber = '%s', notes = '%s'
+					SET activity_name = '%s', location = '%s', activity_type = '%s', activity_date = '%s', distance = '%f', total_time = '%s', average_pace = '%s', bibnumber = '%s', notes = '%s'
 					WHERE user_id = '%d' AND activity_id = '%d'";
 
 			$result = $wpdb->query(

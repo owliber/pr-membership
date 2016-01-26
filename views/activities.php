@@ -139,9 +139,15 @@
   </div>
   <div class="content">
     <form id="frm_activity" class="ui equal width form" method="post" action="">
-      <div class="required field">
-          <label>Activity Name</label>
-          <input id="activity_name" name="activity[activity_name]" placeholder="e.g Seaside Running" type="text" value="" required>
+      <div class="fields">
+        <div class="required field">
+            <label>Activity Name</label>
+            <input id="activity_name" name="activity[activity_name]" placeholder="e.g Seaside Running" type="text" value="" required>
+        </div>
+        <div class="required field">
+            <label>Location</label>
+            <input id="activity_location" name="activity[location]" placeholder="e.g Pasay City" type="text" value="" required>
+        </div>
       </div>
       <div class="fields">
         <div class="required field">

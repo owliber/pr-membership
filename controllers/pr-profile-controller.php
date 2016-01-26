@@ -23,9 +23,8 @@ class PR_Profile {
 	function __construct() {
 
 		add_shortcode('pr_profile', array( $this, 'render_profile') );
-
 		
-		add_action( 'wp_head', array( $this, 'set_profile_bg'), 1, 3 );
+		add_action( 'wp_head', array( $this, 'set_profile_bg'), 5, 3 );
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_ajax_script' ));
 		add_action( 'wp_ajax_connect_request', array( $this, 'connect_request' ));
 		add_action( 'wp_ajax_nopriv_connect_request', array( $this, 'connect_request' ));
@@ -170,6 +169,7 @@ class PR_Profile {
 				if ( $result !== false ) {
 					$activity_name = $result->activity_name;
 					$activity_type = $result->activity_type;
+					$activity_location = $result->location;
 					$activity_date = date('Y-m-d',strtotime( $result->activity_date ));
 					$distance = $result->distance;
 					$bibnumber = $result->bibnumber;
@@ -184,6 +184,7 @@ class PR_Profile {
 				wp_send_json( array( 
 					'activity_id' => $activity_id, 
 					'activity_name' => $activity_name, 
+					'activity_location' => $activity_location,
 					'activity_type' => $activity_type,
 					'activity_date' => $activity_date,
 					'distance' => $distance,
@@ -409,6 +410,7 @@ class PR_Profile {
 					$this->member_id,
 					sanitize_text_field( $post['activity_name'] ),
 					sanitize_text_field( $post['activity_type'] ),
+					sanitize_text_field( $post['location'] ),
 					sanitize_text_field( $post['activity_date'] ),
 					floatval( sanitize_text_field( $post['distance'] ) ),
 					$total_time,
@@ -417,17 +419,17 @@ class PR_Profile {
 					sanitize_text_field( $post['notes'] ),
 				);
 
-				$success = $model->insert( $post_data );
+				$result = $model->insert( $post_data );
 
-				if ( $success ) {
-					$result = '<div class="ui medium success icon message fade">
+				if ( $result ) {
+					$result_msg = '<div class="ui medium success icon message fade">
 								 <i class="checkmark icon"></i>
 									 <div class="content">
 									  <h3>Your new activity was successfully added!</h3>
 									</div>
 								</div>';
 				} else {
-					$result = '<div class="ui medium error icon message">
+					$result_msg = '<div class="ui medium error icon message">
 								<i class="bug icon"></i>
 								<div class="content">
 								  <h3>Something went wrong, please try again later.</h3>
@@ -439,6 +441,7 @@ class PR_Profile {
 
 				$post_data = array(
 					sanitize_text_field( $post['activity_name'] ),
+					sanitize_text_field( $post['location'] ),
 					sanitize_text_field( $post['activity_type'] ),
 					sanitize_text_field( $post['activity_date'] ),
 					floatval( sanitize_text_field( $post['distance'] ) ),
@@ -450,17 +453,17 @@ class PR_Profile {
 					intval( sanitize_text_field( $post['activity_id'] )),
 				);
 
-				$success = $model->update( $post_data );
+				$result = $model->update( $post_data );
 
-				if ( $success ) {
-					$result = '<div class="ui medium success icon message fade">
+				if ( $result ) {
+					$result_msg = '<div class="ui medium success icon message fade">
 								 <i class="checkmark icon"></i>
 									 <div class="content">
 									  <h3>Your activity was successfully updated!</h3>
 									</div>
 								</div>';
 				} else {
-					$result = '<div class="ui medium error icon message">
+					$result_msg = '<div class="ui medium error icon message">
 								<i class="bug icon"></i>
 								<div class="content">
 								  <h3>Something went wrong, please try again later.</h3>
@@ -471,7 +474,7 @@ class PR_Profile {
 			endif;
 
 			
-			return $result;
+			return $result_msg;
 			
 		}
 	}
@@ -485,7 +488,7 @@ class PR_Profile {
 
 		$profile_background = PROFILE_URL . $image_file;
 
-		$background = '<style type="text/css" id="prbg">
+		$background = '<style type="text/css">
 	        	body { 
 	        		background: url(' . $profile_background . ') no-repeat center center fixed  !important;
 	        		-webkit-background-size: cover !important;

@@ -28,7 +28,8 @@ jQuery(document).ready(function($) {
               //Clear form
               $("#modal-header-activity").text("Add your new activity");
               $("#activity_id").val('');
-              $("#activity_name").val('');      
+              $("#activity_name").val(''); 
+              $("#activity_location").val('');      
               $("#activity_type").dropdown('set selected','Race');        
               $("#activity_date").val(curDate());
               $("#bibnumber").val('');
@@ -65,6 +66,7 @@ jQuery(document).ready(function($) {
               $("#modal-header-activity").text("Edit this activity");
               $("#activity_id").val(response.activity_id);
               $("#activity_name").val(response.activity_name);
+              $("#activity_location").val(response.activity_location);
               $('#activity_type').dropdown('set selected',response.activity_type);
               $("#activity_date").val(response.activity_date);
               $("#bibnumber").val(response.bibnumber);

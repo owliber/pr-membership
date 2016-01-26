@@ -58,9 +58,11 @@ class PR_Activities {
 				$model->activity_id = $activity_id;
 				$model->user_id = get_current_user_id();
 				$result = $model->get_activity_details();
+				var_dump($result);
 				
 				if ( $result !== false ) {
 					$activity_name = $result->activity_name;
+					$activity_location = $result->location;
 					$activity_type = $result->activity_type;
 					$activity_date = date('Y-m-d',strtotime( $result->activity_date ));
 					$distance = $result->distance;
@@ -75,7 +77,8 @@ class PR_Activities {
 
 				wp_send_json( array( 
 					'activity_id' => $activity_id, 
-					'activity_name' => $activity_name, 
+					'activity_name' => $activity_name,
+					'activity_location' => $activity_location, 
 					'activity_type' => $activity_type,
 					'activity_date' => $activity_date,
 					'distance' => $distance,
@@ -229,6 +232,7 @@ class PR_Activities {
 				$post_data = array(
 					$this->member_id,
 					sanitize_text_field( $post['activity_name'] ),
+					sanitize_text_field( $post['location'] ),
 					sanitize_text_field( $post['activity_type'] ),
 					sanitize_text_field( $post['activity_date'] ),
 					floatval( sanitize_text_field( $post['distance'] ) ),
@@ -238,17 +242,17 @@ class PR_Activities {
 					sanitize_text_field( $post['notes'] ),
 				);
 
-				$success = $model->insert( $post_data );
+				$result = $model->insert( $post_data );
 
-				if ( $success ) {
-					$result = '<div class="ui medium success icon message fade">
+				if ( $result ) {
+					$result_msg = '<div class="ui medium success icon message fade">
 								 <i class="checkmark icon"></i>
 									 <div class="content">
 									  <h3>Your new activity was successfully added!</h3>
 									</div>
 								</div>';
 				} else {
-					$result = '<div class="ui medium error icon message">
+					$result_msg = '<div class="ui medium error icon message">
 								<i class="bug icon"></i>
 								<div class="content">
 								  <h3>Something went wrong, please try again later.</h3>
@@ -260,6 +264,7 @@ class PR_Activities {
 
 				$post_data = array(
 					sanitize_text_field( $post['activity_name'] ),
+					sanitize_text_field( $post['location'] ),
 					sanitize_text_field( $post['activity_type'] ),
 					sanitize_text_field( $post['activity_date'] ),
 					floatval( sanitize_text_field( $post['distance'] ) ),
@@ -271,17 +276,17 @@ class PR_Activities {
 					intval( sanitize_text_field( $post['activity_id'] )),
 				);
 
-				$success = $model->update( $post_data );
+				$result = $model->update( $post_data );
 
-				if ( $success ) {
-					$result = '<div class="ui medium success icon message fade">
+				if ( $result ) {
+					$result_msg = '<div class="ui medium success icon message fade">
 								 <i class="checkmark icon"></i>
 									 <div class="content">
 									  <h3>Your activity was successfully updated!</h3>
 									</div>
 								</div>';
 				} else {
-					$result = '<div class="ui medium error icon message">
+					$result_msg = '<div class="ui medium error icon message">
 								<i class="bug icon"></i>
 								<div class="content">
 								  <h3>Something went wrong, please try again later.</h3>
@@ -292,7 +297,7 @@ class PR_Activities {
 			endif;
 
 			
-			return $result;
+			return $result_msg;
 			
 		}
 	}
