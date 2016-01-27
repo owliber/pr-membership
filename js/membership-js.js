@@ -1,4 +1,4 @@
-jQuery( document ).ready( function() {
+jQuery( document ).ready( function($) {
 
 	$('#user_login').attr( 'placeholder', 'Username' );
 	$('p.login-username').replaceWith( '<div class="field"><div class="ui left icon input"><input name="log" value="" placeholder="Username" id="user_login" required="" type="text" /><i class="user icon"></i></div></div>' );
@@ -89,54 +89,6 @@ jQuery( document ).ready( function() {
 	    }
 	  })
 	;
-
-	/* Modal Forms */
-
-	// $('#new_activity.ui.modal')
-	//   //.modal('setting', 'closable', false)
-	//   .modal('setting', 'transition', 'fade')
-	//   .modal('attach events', '#btn_new_activity.button', 'show')
-	//   .modal('attach events', '#btn_cancel.button', 'hide')
-	//   .modal({
-	//   	 blurring	: false,
-	//   	 closable	: false,
-	// 	 onApprove	: function() {
-	// 	      $("#frm_activity").submit();
-	// 	    },
-	// 	 onShow 	: function() {
-	// 	 	$("#bib").hide();
-	// 	 }
-
-	//   });
-
-	// $('#all-activities.ui.long.modal')
-	//   .modal('setting', 'closable', true)
-	//   .modal('setting', 'transition', 'fade')
-	//   .modal('attach events', '#btn_viewall_activity', 'show')
-	//   .modal('attach events', '#btn_all_activities', 'hide')
-	//   .modal({
-	//   	 blurring: true,
-
-	//   });
-
-	// $('#manage_group.ui.modal')
-	//   .modal('setting', 'closable', false)
-	//   .modal('setting', 'transition', 'fade')
-	//   .modal('attach events', '#btn_new_group', 'show')
-	//   .modal('attach events', '#btn_cancel', 'hide')
-	//   .modal({
-	//   	 blurring: true,
-	//   	 onShow : function() {
-	//   	 	$("#btn_submit_group").text("Submit");
-	//         $("#modal_header").text("Add New Group");
-	//         $("#group_id").val("");
-	//         $("#group_name").val("");
-	//         $("#group_location").val("");
-	//         $("#group_desc").val("");
-	//   	 }
-	//   });
-
-	/* End Modal Forms */
 
 	//Compute the average pace in minutes/km
 	$("#distance").change( function() {
@@ -234,22 +186,22 @@ jQuery( document ).ready( function() {
 	  on: 'hover'
 	});
 
- 	if( window.location.href == '/') {
+ // 	if( window.location.href == '/') {
  		
-		// Hide attribution for video if not loaded
-		window.addEventListener('load', function() {
-		    var video = document.querySelector('#bgvid');	    
+	// 	// Hide attribution for video if not loaded
+	// 	window.addEventListener('load', function() {
+	// 	    var video = document.querySelector('#bgvid');	    
 
-		    function checkLoad() {
-		        if (video.readyState !== 4) {
-		            $(".attribution").hide()
-		        } 
-		    }
+	// 	    function checkLoad() {
+	// 	        if (video.readyState !== 4) {
+	// 	            $(".attribution").hide()
+	// 	        } 
+	// 	    }
 
-		    checkLoad();
-		}, false);
+	// 	    checkLoad();
+	// 	}, false);
 
-	}
+	// }
 
 
 } ); // ready()

@@ -22,19 +22,24 @@ class PR_Profile {
 	
 	function __construct() {
 
-		add_shortcode('pr_profile', array( $this, 'render_profile') );
-		
+		add_shortcode('pr_profile', array( $this, 'render_profile') );		
 		add_action( 'wp_head', array( $this, 'set_profile_bg'), 5, 3 );
-		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_ajax_script' ));
-		add_action( 'wp_ajax_connect_request', array( $this, 'connect_request' ));
-		add_action( 'wp_ajax_nopriv_connect_request', array( $this, 'connect_request' ));
-		add_action( 'wp_ajax_get_record_details', array( $this, 'get_record_details' ));
-		add_action( 'wp_ajax_nopriv_get_record_details', array( $this, 'get_record_details' ));
-		add_action( 'wp_ajax_delete_record', array( $this, 'delete_record' ));
-		add_action( 'wp_ajax_nopriv_delete_record', array( $this, 'delete_record' ));
-		add_action( 'wp_ajax_update_record', array( $this, 'update_record' ));
-		add_action( 'wp_ajax_nopriv_update_record', array( $this, 'update_record' ));
+		add_action( 'init', array( $this, 'enqueue_ajax_actions') );
 
+	}
+
+	function enqueue_ajax_actions() {
+		if( is_user_logged_in() ) :
+			add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_ajax_script' ));
+			add_action( 'wp_ajax_connect_request', array( $this, 'connect_request' ));
+			add_action( 'wp_ajax_nopriv_connect_request', array( $this, 'connect_request' ));
+			add_action( 'wp_ajax_get_record_details', array( $this, 'get_record_details' ));
+			add_action( 'wp_ajax_nopriv_get_record_details', array( $this, 'get_record_details' ));
+			add_action( 'wp_ajax_delete_record', array( $this, 'delete_record' ));
+			add_action( 'wp_ajax_nopriv_delete_record', array( $this, 'delete_record' ));
+			add_action( 'wp_ajax_update_record', array( $this, 'update_record' ));
+			add_action( 'wp_ajax_nopriv_update_record', array( $this, 'update_record' ));
+		endif;
 	}
 
 	function set_profile_bg() {

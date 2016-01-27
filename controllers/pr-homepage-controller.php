@@ -13,12 +13,18 @@ class PR_Homepage {
 	public function __construct() {
 
      	add_shortcode( 'pr_home_page', array( $this, 'render_homepage' ) );
-     	add_action( 'wp_enqueue_scripts', array($this, 'enqueue_ajax_script' ));
-     	add_action( 'wp_ajax_process_request', array( $this, 'process_request' ));
-		add_action( 'wp_ajax_nopriv_process_request', 'process_request' );
-		add_action( 'wp_ajax_process_group_request', array( $this, 'process_group_request' ));
-		add_action( 'wp_ajax_nopriv_process_group_request', 'process_group_request' );
+     	add_action( 'init', array( $this, 'enqueue_ajax_actions') );
 		
+    }
+
+    function enqueue_ajax_actions() {
+    	if( is_user_logged_in() ) :
+    		add_action( 'wp_enqueue_scripts', array($this, 'enqueue_ajax_script' ));
+	     	add_action( 'wp_ajax_process_request', array( $this, 'process_request' ));
+			add_action( 'wp_ajax_nopriv_process_request', 'process_request' );
+			add_action( 'wp_ajax_process_group_request', array( $this, 'process_group_request' ));
+			add_action( 'wp_ajax_nopriv_process_group_request', 'process_group_request' );
+		endif;
     }
 
     function enqueue_ajax_script() {

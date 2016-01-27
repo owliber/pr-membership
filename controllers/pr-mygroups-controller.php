@@ -22,14 +22,14 @@ class PR_My_Groups {
     }
 
     function enqueue_ajax_script() {      
-
-      wp_enqueue_script( 'ajax-groups-js', plugins_url(PR_Membership::PLUGIN_FOLDER  . '/js/ajax-group.js'), array('jquery'), '1.0.0', true );
-      //wp_enqueue_script( 'semantic_min_js', get_stylesheet_directory_uri() . '/js/semantic.min.js', array('jquery'), '', true );
-      wp_localize_script( 'ajax-groups-js', 'AjaxGroup', array(
-        'ajaxurl' => admin_url( 'admin-ajax.php' ),
-        'security' => wp_create_nonce( 'pr-get-group-details' )
-      ));
-
+        
+        if( is_user_logged_in() ) :              
+            wp_enqueue_script( 'ajax-groups-js', plugins_url(PR_Membership::PLUGIN_FOLDER  . '/js/ajax-group.js'), array('jquery'), '1.0.0', true );
+            wp_localize_script( 'ajax-groups-js', 'AjaxGroup', array(
+                'ajaxurl' => admin_url( 'admin-ajax.php' ),
+                'security' => wp_create_nonce( 'pr-get-group-details' )
+              ));
+        endif;
       
     }
 

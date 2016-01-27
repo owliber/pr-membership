@@ -13,10 +13,16 @@ class PR_Edit_Page {
 	function __construct() {
 
 		add_shortcode( 'pr_edit_page', array($this, 'render_top_sidebar'));
-		add_action( 'wp_ajax_upload_profile_bg', array( $this, 'upload_profile_bg' ));
-        add_action( 'wp_ajax_nopriv_upload_profile_bg', 'upload_profile_bg' );
-        add_action( 'wp_enqueue_scripts', array($this, 'enqueue_ajax_script' ));
+		add_action( 'init', array( $this, 'enqueue_ajax_actions') );
+		
+	}
 
+	function enqueue_ajax_actions() {
+		if( is_user_logged_in() ):
+			add_action( 'wp_ajax_upload_profile_bg', array( $this, 'upload_profile_bg' ));
+	        add_action( 'wp_ajax_nopriv_upload_profile_bg', 'upload_profile_bg' );
+	        add_action( 'wp_enqueue_scripts', array($this, 'enqueue_ajax_script' ));
+        endif;
 	}
 
 	function enqueue_ajax_script() {      

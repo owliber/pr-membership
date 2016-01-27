@@ -12,12 +12,20 @@ class PR_Activities {
 	public function __construct() {
 
 		add_shortcode( 'pr_activities', array( $this, 'render_activities' ) );
-		add_action( 'wp_ajax_get_record_details', array( $this, 'get_record_details' ));
-		add_action( 'wp_ajax_nopriv_get_record_details', array( $this, 'get_record_details' ));
-		add_action( 'wp_ajax_delete_record', array( $this, 'delete_record' ));
-		add_action( 'wp_ajax_nopriv_delete_record', array( $this, 'delete_record' ));
-		add_action( 'wp_ajax_update_record', array( $this, 'update_record' ));
-		add_action( 'wp_ajax_nopriv_update_record', array( $this, 'update_record' ));
+		add_action( 'init', array( $this, 'enqueue_ajax_actions') );
+		
+	}
+
+	function enqueue_ajax_actions() {
+		if( is_user_logged_in() ) :
+			add_action( 'wp_ajax_get_record_details', array( $this, 'get_record_details' ));
+			add_action( 'wp_ajax_nopriv_get_record_details', array( $this, 'get_record_details' ));
+			add_action( 'wp_ajax_delete_record', array( $this, 'delete_record' ));
+			add_action( 'wp_ajax_nopriv_delete_record', array( $this, 'delete_record' ));
+			add_action( 'wp_ajax_update_record', array( $this, 'update_record' ));
+			add_action( 'wp_ajax_nopriv_update_record', array( $this, 'update_record' ));
+		endif;
+
 	}
 
 	function enqueue_ajax_script() {
