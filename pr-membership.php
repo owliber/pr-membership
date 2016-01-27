@@ -39,6 +39,7 @@ require_once( WPPR_PLUGIN_DIR . '/controllers/pr-mygroups-controller.php' );
 require_once( WPPR_PLUGIN_DIR . '/controllers/pr-connections-controller.php' );
 require_once( WPPR_PLUGIN_DIR . '/controllers/pr-events-joined-controller.php' );
 require_once( WPPR_PLUGIN_DIR . '/controllers/pr-activities-controller.php' );
+require_once( WPPR_PLUGIN_DIR . '/controllers/pr-forgot-password-controller.php' );
 
 if ( ! class_exists( 'PR_Membership' )) :
 
@@ -66,6 +67,7 @@ if ( ! class_exists( 'PR_Membership' )) :
 			new PR_Connections;
 			new PR_Events_Joined;	
 			new PR_Activities;
+			new PR_ForgotPassword;
 	        
 	        // Register admin menu
 	        add_action('admin_menu', array($this, 'register_pr_membership_menu'));

@@ -29,9 +29,11 @@ class PR_Login {
 	 * @return string  The shortcode output
 	 */
 	public function render_login_form( $attributes, $content = null ) {
+
 	    // Parse shortcode attributes
 	    $default_attributes = array( 'show_title' => false );
 	    $attributes = shortcode_atts( $default_attributes, $attributes );
+	    
 	    $show_title = $attributes['show_title'];
 	 
 	    if ( is_user_logged_in() ) {
@@ -74,6 +76,14 @@ class PR_Login {
 	        PR_Membership::pr_redirect( $url );
 	    }
 	     
+	    // Check if the user just requested a new password 
+		if ( isset( $_REQUEST['checkemail'] ) && $_REQUEST['checkemail'] == 'confirm' ) {
+			$attributes['lost_password_sent'] = 'Check your email for a link to reset your password';
+		}
+		// Check if user just updated password
+		if ( isset( $_REQUEST['password'] ) && $_REQUEST['password'] == 'changed' )
+			$attributes['password_updated'] = 'Your have successfully changed your password.';
+
 	    // Pass the redirect parameter to the WordPress login functionality: by default,
 	    // don't specify a redirect, but if a valid redirect URL has been passed as
 	    // request parameter, use it.

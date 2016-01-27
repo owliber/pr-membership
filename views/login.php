@@ -3,7 +3,6 @@
         <div class="ui segments">
             <div class="ui raised segment">
                 
-                 <!-- Show errors if there are any -->
                     <?php if ( count( $attributes['errors'] ) > 0 ) : ?>
                         <?php foreach ( $attributes['errors'] as $error ) : ?>
                             <div class="ui error message fade">
@@ -13,6 +12,22 @@
                                 </div>                
                             </div>
                         <?php endforeach; ?>
+                    <?php endif; ?>
+
+                    <?php if ( isset( $attributes['lost_password_sent'] )) : ?>
+                         <div class="ui info message">
+                            <div class="header">
+                                <?php _e( $attributes['lost_password_sent'], 'pinoyrunners' ); ?>
+                            </div>                            
+                        </div>
+                    <?php endif; ?>
+
+                    <?php if ( isset( $attributes['password_updated'] )) : ?>
+                         <div class="ui success message">
+                            <div class="header">
+                                 <?php _e( $attributes['password_updated'], 'pinoyrunners' ); ?>
+                            </div>                            
+                        </div>
                     <?php endif; ?>
 
                 <div class="ui form">
