@@ -328,7 +328,7 @@ class PR_Profile {
 
 	}
 
-	function is_public( $key ) {
+	public function is_public( $key ) {
 
 		if( metadata_exists( 'user', $this->member_id, $key ) ) {
 			$meta = get_user_meta( $this->member_id, $key, true );

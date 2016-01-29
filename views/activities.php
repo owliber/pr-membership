@@ -31,7 +31,6 @@
               <div class="sub header"> Records of all your training and races joined since you started running.</div>
             </div>
           </h2>
-
           
             <div class="ui green statistics">
               <div class="statistic">
@@ -66,6 +65,7 @@
                   Farthest
                 </div>
               </div>
+              <?php if( PR_Profile::is_public( 'show_fastest_pace' )) : ?>
               <div class="statistic">
                 <div class="value">
                   <?php echo date('i:s',strtotime( $this->fastest_pace() )); ?>
@@ -74,6 +74,7 @@
                   Fastest Pace (min/km)
                 </div>
               </div>
+              <?php endif; ?>
             </div>
           
 

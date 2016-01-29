@@ -38,12 +38,10 @@ class PR_Privacy {
 	private $show_weight;
 	private $show_age;
 	private $show_interests;
-	private $show_activities;
-	private $show_personal_records;
-	private $show_groups;
-	private $show_total_distance;
+	private $show_fastest_pace;
 	private $show_total_time;
-	private $show_total_calories;
+	private $show_activity_time;
+	private $show_activity_pace;
 	private $enable_connection_approval;
 	
 	private $show_facebook;

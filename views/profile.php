@@ -186,7 +186,7 @@
 <div id="page" class="topgradient semitransparent">
   <div class="ui data stackable relaxed grid container">
     <?php if( isset( $result ) ) echo $result; ?>
-      <div class="ui <?php echo $this->headline_color; ?> statistics">
+      <div class="ui <?php echo $this->headline_color; ?> large statistics">
         <!-- Statistics -->
         <div class="statistic">
           <div class="value">
@@ -220,6 +220,7 @@
             Farthest Distance (K)
           </div>
         </div>
+        <?php if( $this->is_public( 'show_fastest_pace')) : ?>
         <div class="statistic">
           <div class="value">
             <?php echo date('i:s',strtotime( $this->fastest_pace() )); ?>
@@ -228,6 +229,8 @@
             Fastest Pace (min/km)
           </div>
         </div>
+        <?php endif; ?>
+        <?php if( $this->is_public( 'show_total_time')) : ?>
         <div class="statistic">
           <div class="value">
             <?php echo ( !empty( $this->statistic()->total_time ) ) ?  $this->statistic()->total_time : 0; ?>
@@ -236,6 +239,7 @@
             Total Time
           </div>
         </div>
+        <?php endif; ?>
       </div>
 
   </div>
@@ -248,8 +252,12 @@
           <th class="collapsing">Activity Type</th>
           <th class="collapsing">Date</th>
           <th class="collapsing">Distance (K)</th>
-          <th class="collapsing">Time</th>
+          <?php if( $this->is_public('show_activity_time')) : ?>
+            <th class="collapsing">Time</th>
+          <?php endif; ?>
+          <?php if( $this->is_public('show_activity_pace')) : ?>
           <th class="collapsing">Pace (min/km)</th>
+          <?php endif; ?>
           <?php if( PR_Membership::is_member_page() ) : ?>
           <th class="collapsing" align="center"><i class="setting icon"></i></th>
           <?php endif; ?>
@@ -263,8 +271,12 @@
           <td><?php echo ucfirst($row->activity_type); ?></td>
           <td class="nowrap"><?php echo date('F d, Y',strtotime($row->activity_date)); ?></td>          
           <td><?php echo $row->distance; ?></td>
+          <?php if( $this->is_public('show_activity_time')) : ?>
           <td><?php echo $row->total_time; ?></td>
+          <?php endif; ?>
+          <?php if( $this->is_public('show_activity_pace')) : ?>
           <td><?php echo date('i:s',strtotime( $row->average_pace ) ); ?></td>
+          <?php endif; ?>
           <?php if( PR_Membership::is_member_page() ) : ?>
           <td>
               <button id="btn-delete" class="ui mini icon button btn-delete-<?php echo $row->activity_id;?>" value="<?php echo $row->activity_id; ?>"><i class="delete icon"></i></button>
@@ -409,10 +421,12 @@
           <th>Activity Type</th>
           <th>Date</th>
           <th>Distance (K)</th>
+          <?php if( $this->is_public('show_activity_time')) : ?>
           <th>Time</th>
+          <?php endif; ?>
+          <?php if( $this->is_public('show_activity_pace')) : ?>
           <th>Pace (min/km)</th>
-          <!-- <th>Calories</th>
-          <th>Elev Gain (m)</th> -->
+          <?php endif; ?>
         </tr>
       </thead>
       <tbody>
@@ -423,8 +437,12 @@
           <td><?php echo ucfirst($row->activity_type); ?></td>
           <td><?php echo date('F d, Y',strtotime($row->activity_date)); ?></td>          
           <td><?php echo $row->distance; ?></td>
+          <?php if( $this->is_public('show_activity_time')) : ?>
           <td><?php echo $row->total_time; ?></td>
+          <?php endif; ?>
+          <?php if( $this->is_public('show_activity_pace')) : ?>
           <td><?php echo date('i:s',strtotime( $row->average_pace )); ?></td>
+          <?php endif; ?>
         </tr>
       <?php endforeach; ?>        
       </tbody>

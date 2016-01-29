@@ -106,12 +106,10 @@ if ( ! class_exists( 'Members_Model ')) :
                 'show_instagram',
                 'show_website',
                 'show_interests',
-                'show_personal_records',
-                'show_activities',
-                'show_groups',
-                'show_total_distance',
+                'show_fastest_pace',
                 'show_total_time',
-                'show_total_calories',
+                'show_activity_time',
+                'show_activity_pace',
                 'enable_connection_approval',
             );
 
