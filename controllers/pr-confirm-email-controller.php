@@ -30,19 +30,19 @@ class PR_Confirm_Email {
 			
 			//Sanitize keys
 			$model->key = sanitize_key( $_GET['key'] );
-			$model->user = sanitize_user( $_GET['user'] );
+			$model->user = sanitize_user( $_GET['user'], true );
 
 			$result = $model->validate_key();
 
 			if( $result !== false  && ! username_exists( $model->user ) ) {
 				
 				$userdata = array(
-					$model->user,
-					$model->user,
-					$result['signup_password'],
-					$result['signup_email'],
-					$result['signup_date'],
-					$model->user,
+					'user_login' => $model->user,
+					//$model->user,
+					'user_pass' => $result['signup_plain_password'],
+					'user_email' => $result['signup_email'],
+					'user_registerd' => $result['signup_date'],
+					'display_name' => $model->user,
 				);
 
 				//Transfer record from wp_signup table to wp_users
@@ -52,6 +52,8 @@ class PR_Confirm_Email {
 					
 					// Notify admin of new registration
 					//wp_new_user_notification( $result );
+					
+					$this->send_notification_msg( $model->user, $result['signup_email'], $result['signup_plain_password'] );
 										
 					echo $this->redirect_on_success();
 					
@@ -65,6 +67,29 @@ class PR_Confirm_Email {
 				echo $this->redirect_on_error();
 			}
 		}
+
+	}
+
+	function send_notification_msg( $user, $email, $password ) {    
+
+		require_once( WPPR_PLUGIN_DIR . '/models/signup-model.php' );
+		$model = new Signup_Model;
+		$template = $model->get_message_template(3);    	 
+
+		$subject = $template->message_subject; 
+		$message = $template->message_body;
+		
+		$placeholders = array(
+            'USERNAME' => $user,
+            'PASSWORD' => $password,
+        );
+
+        foreach($placeholders as $key => $value){
+            $message = str_replace('{'.$key.'}', $value, $message);
+        }
+
+		$headers = 'From: noreply@pinoyrunners.co' . "\r\n";           
+		wp_mail($email, $subject, $message, $headers);
 
 	}
 
