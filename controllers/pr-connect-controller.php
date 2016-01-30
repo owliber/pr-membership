@@ -23,9 +23,14 @@ class PR_Connect {
 		if( ! is_author() ) :
 
 		$this->user_id = get_current_user_id();	  
-				
-		require_once( dirname( __DIR__ ) . '/views/connect.php' );
 
+		// if ( isset( $_GET['r'] ) ) {
+
+		// 	echo '<script>alert("test");</script>';
+		// }
+
+		require_once( dirname( __DIR__ ) . '/views/connect.php' );
+		
 		endif;
 
 	}
@@ -34,6 +39,9 @@ class PR_Connect {
 
 		$args = array(
 			'exclude' => array( get_current_user_id() ),
+			'meta_key' => 'is_featured',
+	        'orderby' => 'meta_value_num',
+	        'order' => 'DESC',
 			'meta_query' => array(
 				'relation' => 'AND',
 				array(
