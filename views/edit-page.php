@@ -11,7 +11,7 @@
 	    <div class="ui inverted grey segment">
 	    	<form id="upload_profile_bg" method="post" action="<?php echo esc_url( $_SERVER['REQUEST_URI'] ); ?>" enctype="multipart/form-data">
 			<?php //wp_nonce_field('upload_profile_form', 'upload_profile_form_submitted'); ?>
-		      <div class="ui text"> Upload a background at least 1024x768 pixels in size</div> 
+		      <div class="ui text"> Upload a background at least 1250x800 pixels or higher.</div> 
 		     
 		      <div class="ui action input">		
 		      	<input type="file" id="profile_image" name="profile_image">
