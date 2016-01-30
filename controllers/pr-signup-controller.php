@@ -99,7 +99,6 @@
 		$userdata = array(
 			$username,
 			$email,
-			wp_hash_password( $password ),
 			$password,
 			$activation_key,
 			CUR_DATE,

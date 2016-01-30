@@ -39,7 +39,7 @@ if ( ! class_exists( 'Signup_Model')) :
 
 			global $wpdb;
 		
-			$sql = "INSERT INTO wp_signups ( signup_username, signup_email, signup_password, signup_activation_key, signup_date, signup_ip_address )
+			$sql = "INSERT INTO wp_signups ( signup_username, signup_email, signup_plain_password, signup_activation_key, signup_date, signup_ip_address )
 					VALUES ( %s, %s, %s, %s, %s, %s ) ";
 
 			$signup = $wpdb->query( $wpdb->prepare( $sql, $data) );
@@ -82,6 +82,7 @@ if ( ! class_exists( 'Signup_Model')) :
 					'signup_email' => $results->signup_email,
 					'signup_date' => $results->signup_date,
 					'signup_password' => $results->signup_password,
+					'signup_plain_password' => $results->signup_plain_password,
 				);
 
 				return $signup_data;
@@ -121,15 +122,19 @@ if ( ! class_exists( 'Signup_Model')) :
 		public function register_user( $data ) {
 		
 			global $wpdb;
+			require_once( WPPR_PLUGIN_DIR . '/models/group-model.php' );
+			$model = new Group_Model;
 
-			$sql = "INSERT INTO wp_users ( user_login, user_nicename, user_pass, user_email, user_registered, display_name )
-					VALUES ( %s, %s, %s, %s, %s, %s ) ";
+			// $sql = "INSERT INTO wp_users ( user_login, user_nicename, user_pass, user_email, user_registered, display_name )
+			// 		VALUES ( %s, %s, %s, %s, %s, %s ) ";
 
-			$result = $wpdb->query( $wpdb->prepare( $sql, $data) );
+			// $result = $wpdb->query( $wpdb->prepare( $sql, $data) );
 
-			if( !is_wp_error( $result ) )
+			$user_id = wp_insert_user( $data );
+
+			if( !is_wp_error( $user_id ) )
 			{
-				$user_id = $wpdb->insert_id;
+				// $user_id = $wpdb->insert_id;
 
 				$userdata = array(
 					'ID' => $user_id,
@@ -142,6 +147,13 @@ if ( ! class_exists( 'Signup_Model')) :
 				add_user_meta( $user_id, 'email_verification_key', $this->key, true );
 				add_user_meta( $user_id, 'has_profile_background', 0, true );
 				add_user_meta( $user_id, 'is_profile_update', 0, true );
+				add_user_meta( $user_id, 'is_featured', 0, true );
+
+				// add new member to PR group
+				$default_group_id = 277;
+				$model->add_group_member( $default_group_id, $user_id, 1); 
+				$total_member = get_post_meta( $default_group_id, '_group_total', true );
+				update_post_meta( $default_group_id, '_group_total', $total_member + 1, $total_member );
 
 				if( !is_wp_error( $user_meta ))
 				{
