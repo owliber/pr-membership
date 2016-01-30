@@ -25,12 +25,13 @@ class PR_Profile {
 		add_shortcode('pr_profile', array( $this, 'render_profile') );		
 		add_action( 'wp_head', array( $this, 'set_profile_bg'), 5, 3 );
 		add_action( 'init', array( $this, 'enqueue_ajax_actions') );
+		//add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_ajax_script' ));
 
 	}
 
 	function enqueue_ajax_actions() {
-		if( is_user_logged_in() ) :
-			add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_ajax_script' ));
+		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_ajax_script' ));
+		if( is_user_logged_in() ) :						
 			add_action( 'wp_ajax_connect_request', array( $this, 'connect_request' ));
 			add_action( 'wp_ajax_nopriv_connect_request', array( $this, 'connect_request' ));
 			add_action( 'wp_ajax_get_record_details', array( $this, 'get_record_details' ));
@@ -53,22 +54,24 @@ class PR_Profile {
 
 	function enqueue_ajax_script() {
 	  wp_enqueue_script( 'ajax-profile-js', plugins_url(PR_Membership::PLUGIN_FOLDER  . '/js/ajax-profile.js'), array('jquery'), '1.0.0', true );
-	  wp_localize_script( 'ajax-profile-js', 'AjaxConnect', array(
-	    'ajaxurl' => admin_url( 'admin-ajax.php' ),
-	    'security' => wp_create_nonce( 'pr-connect-request' ),
-	  ));
-	  wp_localize_script( 'ajax-profile-js', 'AjaxGetDetails', array(
-	    'ajaxurl' => admin_url( 'admin-ajax.php' ),
-	    'security' => wp_create_nonce( 'pr-get-record-details' )
-	  ));
-	  wp_localize_script( 'ajax-profile-js', 'AjaxDelete', array(
-	    'ajaxurl' => admin_url( 'admin-ajax.php' ),
-	    'security' => wp_create_nonce( 'pr-delete-record' )
-	  ));
-	  wp_localize_script( 'ajax-profile-js', 'AjaxUpdate', array(
-	    'ajaxurl' => admin_url( 'admin-ajax.php' ),
-	    'security' => wp_create_nonce( 'pr-update-record' )
-	  ));
+	  if( is_user_logged_in() ) :
+		  wp_localize_script( 'ajax-profile-js', 'AjaxConnect', array(
+		    'ajaxurl' => admin_url( 'admin-ajax.php' ),
+		    'security' => wp_create_nonce( 'pr-connect-request' ),
+		  ));
+		  wp_localize_script( 'ajax-profile-js', 'AjaxGetDetails', array(
+		    'ajaxurl' => admin_url( 'admin-ajax.php' ),
+		    'security' => wp_create_nonce( 'pr-get-record-details' )
+		  ));
+		  wp_localize_script( 'ajax-profile-js', 'AjaxDelete', array(
+		    'ajaxurl' => admin_url( 'admin-ajax.php' ),
+		    'security' => wp_create_nonce( 'pr-delete-record' )
+		  ));
+		  wp_localize_script( 'ajax-profile-js', 'AjaxUpdate', array(
+		    'ajaxurl' => admin_url( 'admin-ajax.php' ),
+		    'security' => wp_create_nonce( 'pr-update-record' )
+		  ));
+		endif;
 	}
 
 	function connect_request() {
@@ -250,7 +253,7 @@ class PR_Profile {
 
 			$this->user_id = get_current_user_id();
 			$this->member_id = $this->get_MID();
-			//$this->load_profile_background();
+			
 			$headline_position = get_user_meta( $this->member_id, 'pr_member_headline_position', true );
 			$headline_color = get_user_meta( $this->member_id, 'pr_member_headline_color', true );
 
