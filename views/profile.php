@@ -2,6 +2,9 @@
 
 <div id="page" class="ui top aligned very relaxed transparent stackable grid container">
   <div class="ui <?php echo $this->headline_position; ?> floated five wide column inverted <?php echo $this->headline_color; ?> segment">
+    <?php if( get_user_meta( $this->member_id, 'is_featured', true ) == 1 ) : ?>
+    <div class="ui green top right attached label">Featured</div>
+    <?php endif; ?>
   	   <h1 class="ui header">          
           <?php if( $this->is_public( 'show_name' )) :
                     echo get_user_meta( $this->member_id, 'first_name', true ) . ' ' . get_user_meta( $this->member_id, 'last_name', true )  ;
@@ -117,8 +120,8 @@
         </div>
         <?php endif; ?>
         
-        <!-- facebook likes -->
-        <div class="fb-like" data-href="<?php echo home_url( $_SERVER['REQUEST_URI'] ); ?>" data-layout="button_count" data-action="like" data-show-faces="false" data-share="true"></div>
+        <!-- facebook likes echo home_url( $_SERVER['REQUEST_URI'] ); -->
+        <div class="fb-like" data-href="<?php the_permalink(); ?>" data-layout="button_count" data-action="like" data-show-faces="false" data-share="true"></div>
         <!-- facebook likes -->
 
         <?php if ( $this->is_public( 'show_website' ) || $this->is_public( 'show_facebook' ) || $this->is_public( 'show_twitter' ) || $this->is_public( 'show_instagram' )  ) : ?>
@@ -264,7 +267,7 @@
         </tr>
       </thead>
       <tbody>
-        <?php foreach ( $this->activities() as $row ) : ?>
+        <?php foreach ( $this->activities( true ) as $row ) : ?>
         <tr id="row-id-<?php echo $row->activity_id; ?>">
           <td class="nowrap"><strong><?php echo $row->activity_name; ?></strong></td>
           <td class="nowrap"><strong><?php echo $row->location; ?></strong></td>
