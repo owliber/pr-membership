@@ -15,7 +15,7 @@
 	function __construct() {
         add_shortcode('pr_signup_form', array($this, 'render_signup_form'));
         add_shortcode('pr_register', array( $this, 'render_registration') );
-        add_action( 'user_register', 'send_activation_link');      
+        //add_action( 'user_register', 'send_activation_link');      
     }
 	
 	function render_signup_form( $attributes )
@@ -76,12 +76,22 @@
 
 	}
 
+	function sanitize_username( $username ) {
+
+		$username = sanitize_user( $username, true );
+		$username = strtolower( $username );
+		$username = str_replace(" ", "", $username);
+		$username = str_replace("-", "", $username);
+
+		return $username;
+	}
+
     function signup() {
 
     	require_once( WPPR_PLUGIN_DIR . '/models/signup-model.php' );
 		$model = new Signup_Model;
 
-		$username = sanitize_user( $this->username );
+		$username = $this->sanitize_username( $this->username );
 		$email = sanitize_email( $this->email );
 		$password = $this->password;
 		$activation_key = generate_key( $email );
@@ -90,6 +100,7 @@
 			$username,
 			$email,
 			wp_hash_password( $password ),
+			$password,
 			$activation_key,
 			CUR_DATE,
 			REMOTE_IP,			
@@ -108,7 +119,7 @@
             	$attributes['success'] = 'Please check your email for confirmation';
 
 				//send email confirmation to user
-				$this->send_activation_link( $username, $email, $password, $activation_key );
+				$this->send_activation_link( $username, $email, $activation_key );
 
  
 				
@@ -158,7 +169,7 @@
 				
 	}
 
-    function send_activation_link( $user, $email, $password, $key ) {    
+    function send_activation_link( $user, $email, $key ) {    
 
 		require_once( WPPR_PLUGIN_DIR . '/models/signup-model.php' );
 		$model = new Signup_Model;
@@ -172,7 +183,7 @@
 		$placeholders = array(
             'USERNAME' => $user,
             'CONFIRM_LINK' => $confirmation_link,
-            'PASSWORD' => $password,
+            //'PASSWORD' => $password,
         );
 
         foreach($placeholders as $key => $value){
