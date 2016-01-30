@@ -65,8 +65,8 @@ jQuery(document).ready(function(e) {
                         return false;
                      }
 
-                     if( sizeMB > 6 ) {
-                        alert("Image size is too large ("+sizeMB+"MB). Please upload only below 6MB.");
+                     if( sizeMB > 5 ) {
+                        alert("Image size is too large ("+sizeMB+"MB). Please upload only below 4MB.");
                         $("#profile_image").val("");
                         return false;
                      }
