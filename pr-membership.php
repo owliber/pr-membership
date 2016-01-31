@@ -47,6 +47,7 @@ if ( ! class_exists( 'PR_Membership' )) :
 
 		// Folder Name
 		const PLUGIN_FOLDER = 'pr-membership';
+		public $members;
 
 	    function __construct() {
 
@@ -71,36 +72,21 @@ if ( ! class_exists( 'PR_Membership' )) :
 	        
 	        // Register admin menu
 	        add_action('admin_menu', array($this, 'register_pr_membership_menu'));
-
-	        // Create the custom pages at plugin activation
-			//register_activation_hook( __FILE__, array( 'Pr_Login', 'plugin_activated' ) );
-			//register_activation_hook( __FILE__, 'add_member_role' );
-			//add_action('init', array($this, 'add_member_role'));
 			
 	    }
 
-	 //    function add_member_role() {
-	 //    	global $wp_roles;
-
-		//    	$result = add_role( 'member', 'Member', array( 'read' => true, 'level_0' => true ) );
-
-		//    	if ( null !== $result ) {
-		// 	    echo 'Member role is now created!';
-		// 	}
-		// 	else {
-		// 	    echo 'Member role already exists.';
-		// 	}
-		// }
-
-
+	
 	    function register_pr_membership_menu() {
 			add_menu_page('PR Membership', 'PR Membership', '', 'pr-membership-menu');
-			add_submenu_page( 'pr-membership-menu', 'Members', 'Members', 'manage_options', 'prm-members','prm_member_page_callback');
-			add_submenu_page( 'pr-membership-menu', 'Events', 'Events', 'manage_options', 'prm-events','prm_events_page_callback');
-			add_submenu_page( 'pr-membership-menu', 'Settings', 'Settings', 'manage_options', 'prm-settings','prm_settings_page_callback');
+			add_submenu_page( 'pr-membership-menu', 'Members', 'Members', 'manage_options', 'pr-members', array( $this, 'pr_member_lists'));
+			add_submenu_page( 'pr-membership-menu', 'Settings', 'Settings', 'manage_options', 'pr-settings', array( $this, 'pr_membership_settings'));
 		}
 
-		function prm_settings_page_callback() {
+		function pr_member_page() {
+			echo "<h2>" . __( 'Test Members', 'pr-membership') . "</h2>";
+		}
+
+		function pr_membership_settings() {
 			
 			echo '<div class="wrap"><div id="icon-tools" class="icon32"></div>';
 				echo '<h2>Settings</h2>';
@@ -108,19 +94,78 @@ if ( ! class_exists( 'PR_Membership' )) :
 
 		}
 
-		function prm_member_page_callback() {
-			
-			echo '<div class="wrap"><div id="icon-tools" class="icon32"></div>';
-				echo '<h2>Members</h2>';
-			echo '</div>';
+		function pr_member_lists() {
+						
+			require_once( WPPR_PLUGIN_DIR . '/models/members-model.php' );
+			$model = new Members_Model;
+
+			echo "<h2>" . __( 'Members with Incomplete Information', 'pr-membership') . "</h2>";
+
+			$args = array(
+				''
+			);
+
+			$users = $model->get_incomplete_profiles();
+			$ctr = 1;
+			?>
+			<form name="send-email" method="post" action="">
+				<table class="ui stackable table">
+	              <thead>
+	                <tr>
+	                  <th>#</th>
+	                  <th>Login</th>
+	                  <th>Email</th>
+	                </tr>
+	              </thead>
+	              <tbody>
+	                <?php foreach ( $users as $row ) : ?>
+	                <tr>
+	                  <td><?php echo $ctr; ?></td>
+	                  <td><?php echo $row->user_login; ?></td>
+	                  <td><?php echo $row->user_email; ?></td>
+	                </tr>
+	              <?php 
+	                $ctr++;
+	              endforeach; ?>        
+	              </tbody>
+	            </table>
+	            <input type="submit" name="SendEmail" value="Send Email" />
+	        </form>
+			<?php
+
+			if ( isset( $_POST['SendEmail'])) :
+
+				foreach( $users as $user ) {
+					$this->send_notification_msg( $user->user_login, $user->user_email );	
+				}
+
+				echo 'Notification sent!';
+
+			endif;
 
 		}
 
-		function prm_events_page_callback() {
+
+		function send_notification_msg( $user, $email ) {    
+
+			global $wpdb;
+
+			$template_id = 4;
+			$template = $wpdb->get_row( "SELECT * FROM wp_message_templates WHERE message_template_id = $template_id" );    
+
+			$subject = $template->message_subject; 
+			$message = $template->message_body;
 			
-			echo '<div class="wrap"><div id="icon-tools" class="icon32"></div>';
-				echo '<h2>Events</h2>';
-			echo '</div>';
+			$placeholders = array(
+	            'USERNAME' => $user,
+	        );
+
+	        foreach($placeholders as $key => $value){
+	            $message = str_replace('{'.$key.'}', $value, $message);
+	        }
+
+			$headers = 'From: noreply@pinoyrunners.co' . "\r\n";           
+			wp_mail($email, $subject, $message, $headers);
 
 		}
 		

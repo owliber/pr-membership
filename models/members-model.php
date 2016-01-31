@@ -138,6 +138,27 @@ if ( ! class_exists( 'Members_Model ')) :
             return $meta;
         }
 
+        public function get_incomplete_profiles() {
+
+            global $wpdb;
+            
+            $results = $wpdb->get_results(
+                "SELECT
+                          wu.user_login,
+                          wu.user_email
+                        FROM wp_users wu
+                          LEFT JOIN wp_usermeta wu1
+                            ON wu.ID = wu1.user_id
+                        WHERE ( wu1.meta_key = 'has_profile_background'
+                        AND wu1.meta_value = 0 )
+                        OR ( wu1.meta_key = 'is_profile_updated'
+                        AND wu1.meta_value = 0 )"
+            );
+
+           return $results;
+
+        }
+
     }
 
 endif;
