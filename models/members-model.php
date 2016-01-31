@@ -159,6 +159,23 @@ if ( ! class_exists( 'Members_Model ')) :
 
         }
 
+        public function get_unconfirmed_signups() {
+
+            global $wpdb;
+            
+            $results = $wpdb->get_results(
+                "SELECT
+                  ws.signup_username, ws.signup_email, ws.signup_activation_key, ws.signup_date
+                FROM wp_signups ws
+                WHERE ws.signup_email NOT IN (SELECT
+                    wu.user_email
+                  FROM wp_users wu)"
+            );
+
+           return $results;
+
+        }
+
     }
 
 endif;

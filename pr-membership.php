@@ -78,7 +78,8 @@ if ( ! class_exists( 'PR_Membership' )) :
 	
 	    function register_pr_membership_menu() {
 			add_menu_page('PR Membership', 'PR Membership', '', 'pr-membership-menu');
-			add_submenu_page( 'pr-membership-menu', 'Members', 'Members', 'manage_options', 'pr-members', array( $this, 'pr_member_lists'));
+			add_submenu_page( 'pr-membership-menu', 'Incomplete Profiles', 'Incomplete Profiles', 'manage_options', 'pr-incomplete-profile', array( $this, 'pr_incomplete_profiles'));
+			add_submenu_page( 'pr-membership-menu', 'Unconfirmed Signups', 'Unconfirmed Signups', 'manage_options', 'pr-unconfirmed-signups', array( $this, 'pr_unconfirmed_signups'));
 			add_submenu_page( 'pr-membership-menu', 'Settings', 'Settings', 'manage_options', 'pr-settings', array( $this, 'pr_membership_settings'));
 		}
 
@@ -94,7 +95,7 @@ if ( ! class_exists( 'PR_Membership' )) :
 
 		}
 
-		function pr_member_lists() {
+		function pr_incomplete_profiles() {
 						
 			require_once( WPPR_PLUGIN_DIR . '/models/members-model.php' );
 			$model = new Members_Model;
@@ -136,7 +137,76 @@ if ( ! class_exists( 'PR_Membership' )) :
 			if ( isset( $_POST['SendEmail'])) :
 
 				foreach( $users as $user ) {
-					$this->send_notification_msg( $user->user_login, $user->user_email );	
+
+					$placeholders = array(
+			            'USERNAME' => $user->user_login,
+			        );
+					$msg_template_id = 4;
+					$this->send_notification_msg( $user->user_login, $user->user_email, $placeholders, $msg_template_id );	
+				}
+
+				echo 'Notification sent!';
+
+			endif;
+
+		}
+
+		function pr_unconfirmed_signups() {
+						
+			require_once( WPPR_PLUGIN_DIR . '/models/members-model.php' );
+			$model = new Members_Model;
+
+			echo "<h2>" . __( 'Lists of unconfirmed signups', 'pr-membership') . "</h2>";
+
+			$args = array(
+				''
+			);
+
+			$signups = $model->get_unconfirmed_signups();
+			$ctr = 1;
+			?>
+			<form name="send-email" method="post" action="">
+				<table class="ui stackable table">
+	              <thead>
+	                <tr>
+	                  <th>#</th>
+	                  <th>Signup Date</th>
+	                  <th>Signup Username</th>
+	                  <th>Signup Email</th>
+	                  <th>Activation Key</th>
+	                </tr>
+	              </thead>
+	              <tbody>
+	                <?php foreach ( $signups as $signup ) : ?>
+	                <tr>
+	                  <td><?php echo $ctr; ?></td>
+	                  <td><?php echo date('M d, Y',strtotime( $signup->signup_date ) ); ?></td>
+	                  <td><?php echo $signup->signup_username; ?></td>
+	                  <td><?php echo $signup->signup_email; ?></td>
+	                  <td><?php echo $signup->signup_activation_key; ?></td>
+	                </tr>
+	              <?php 
+	                $ctr++;
+	              endforeach; ?>        
+	              </tbody>
+	            </table>
+	            <input type="submit" name="SendEmail" value="Send Email" />
+	        </form>
+			<?php
+
+			if ( isset( $_POST['SendEmail'])) :
+
+				foreach( $signups as $signup ) {
+
+					$home_url = home_url( 'confirm' );
+					$verification_link = add_query_arg( array('key'=>$signup->signup_activation_key, 'user'=>$signup->signup_username), $home_url );
+
+					$placeholders = array(
+			            'USERNAME' => $signup->signup_username,
+			            'VERIFY_LINK' => $verification_link,
+			        );
+					$msg_template_id = 5;
+					$this->send_notification_msg( $signup->signup_username, $signup->signup_email, $placeholders, $msg_template_id );	
 				}
 
 				echo 'Notification sent!';
@@ -146,19 +216,17 @@ if ( ! class_exists( 'PR_Membership' )) :
 		}
 
 
-		function send_notification_msg( $user, $email ) {    
+		function send_notification_msg( $user, $email, $placeholders, $template_id ) {    
 
 			global $wpdb;
-
-			$template_id = 4;
 			$template = $wpdb->get_row( "SELECT * FROM wp_message_templates WHERE message_template_id = $template_id" );    
 
 			$subject = $template->message_subject; 
 			$message = $template->message_body;
 			
-			$placeholders = array(
-	            'USERNAME' => $user,
-	        );
+			// $placeholders = array(
+	  //           'USERNAME' => $user,
+	  //       );
 
 	        foreach($placeholders as $key => $value){
 	            $message = str_replace('{'.$key.'}', $value, $message);
