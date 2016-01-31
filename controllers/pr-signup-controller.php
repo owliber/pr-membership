@@ -79,9 +79,15 @@
 	function sanitize_username( $username ) {
 
 		$username = sanitize_user( $username, true );
-		$username = strtolower( $username );
-		$username = str_replace(" ", "", $username);
-		$username = str_replace("-", "", $username);
+
+		if( is_email( $username )) {
+			$parts = explode("@", $username);
+			$username = $parts[0];
+		} else {
+			$username = strtolower( $username );
+			$username = str_replace(" ", "", $username);
+			$username = str_replace("-", "", $username);
+		}
 
 		return $username;
 	}
