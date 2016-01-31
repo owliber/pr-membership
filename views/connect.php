@@ -11,6 +11,22 @@
 ?>
 
 <div id="page" class="ui top aligned very relaxed stackable grid container">
+
+	<!-- <div class="ui teal secondary pointing fluid menu">
+	  <a href="<?php echo home_url( 'connect?r=all' );?>" class="active item">
+	    All
+	  </a>
+	  <a href="<?php echo home_url( 'connect?r=featured' );?>" class="item">
+	    Featured
+	  </a>
+	  <a href="<?php echo home_url( 'connect?r=popular' );?>" class="item">
+	    Popular
+	  </a>
+	  <a href="<?php echo home_url( 'connect?r=new' );?>" class="item">
+	    New
+	  </a>
+	</div> -->
+
 	<div class="ui four doubling fluid link special cards">
 
 		<?php 
@@ -18,6 +34,12 @@
 			foreach ( $this->list_members() as $member ) : 
 		
 				$user = get_userdata( $member->ID );
+				$is_featured = get_user_meta( $user->ID, 'is_featured', true );
+
+				if( isset( $is_featured ))
+					$is_featured == 1 ? $color = 'green' : $color = ''; 
+				else
+					$color = '';
 
 				$thumb_file = $user->pr_member_thumbnail_image; //get_user_meta( $member->ID, 'pr_member_thumbnail_image', true );
 
@@ -28,7 +50,7 @@
 				}
 		?>
 
-		<div class="card">
+		<div class="<?php echo $color; ?> card">				
 			<div class="blurring dimmable image">
 				<div class="ui dimmer">
 					<div class="content">
@@ -40,6 +62,11 @@
 				 <img src="<?php echo $thumbnail; ?>">
 			</div>
 			<div class="content">
+				<?php if( $is_featured == 1) : ?>
+				<div class="ui green top left attached label">
+			        Featured
+			     </div>
+			 	<?php endif; ?>
 			  	<i class="right floated star icon"></i>
 			    <a class="header">
 			    <?php 
