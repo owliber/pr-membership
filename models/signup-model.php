@@ -81,7 +81,6 @@ if ( ! class_exists( 'Signup_Model')) :
 					'signup_username' => $results->signup_username,
 					'signup_email' => $results->signup_email,
 					'signup_date' => $results->signup_date,
-					'signup_password' => $results->signup_password,
 					'signup_plain_password' => $results->signup_plain_password,
 				);
 
