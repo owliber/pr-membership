@@ -1,7 +1,11 @@
   <div id="page" class="ui two column top aligned very relaxed stackable grid container">
     
     <div class="four wide right aligned column">
-      <div class="ui secondary vertical pointing green menu">
+      <?php if ( wp_is_mobile() ) : ?>
+        <div class="ui visible thin bottom sidebar inverted teal menu">
+      <?php else : ?>
+        <div class="ui secondary vertical pointing green menu">
+      <?php endif; ?>
         <a href="<?php echo home_url( 'settings/profile' ); ?>" class="item"> Profile</a>
         <a class="active item"> Account</a>
         <a href="<?php echo home_url( 'settings/privacy' ); ?>" class="item"> Privacy</a>
@@ -40,21 +44,21 @@
           </div>
         </h2>
           <div class="ui hidden divider"></div>
-            <div class="eight wide field">
+            <div class="<?php echo !wp_is_mobile() ? 'eight wide' : ''; ?> field">
               <label>Username</label>
               <div class="ui disabled input">              
                 <input name="account[user_login]" type="text" value="<?php echo $this->user_login; ?>">
               </div>
             </div>
-            <div class="eight wide required field">
+            <div class="<?php echo !wp_is_mobile() ? 'eight wide' : ''; ?>required field">
               <label>Current Password</label>
               <input name="account[current_password]" type="password" value="" autcomplete="off" required>
             </div>
-            <div class="eight wide required field">
+            <div class="<?php echo !wp_is_mobile() ? 'eight wide' : ''; ?> required field">
               <label>New Password</label>
               <input name="account[new_password]" type="password" value="" autcomplete="off" required>
             </div>
-            <div class="eight wide required field">
+            <div class="<?php echo !wp_is_mobile() ? 'eight wide' : ''; ?> required field">
               <label>Confirm Password</label>
               <input name="account[confirm_password]" type="password" value="" autcomplete="off" required>
             </div>
@@ -70,7 +74,7 @@
         </div>
         <?php endif; ?>
         <form class="ui large equal width form" method="post" action="">
-            <div class="ten wide required field">
+            <div class="<?php echo !wp_is_mobile() ? 'ten wide' : ''; ?> required field">
               <label> Email Address</label>  
                <div class="ui icon input">         
                   <input name="account[email]" type="email" value="<?php echo $this->email; ?>" required>

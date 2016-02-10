@@ -18,8 +18,51 @@ class PR_Confirm_Email {
 	function __construct() {
 
         add_shortcode('pr_confirm_email', array($this, 'confirm_email'));
+        add_shortcode('pr_confirm_thankyou', array($this, 'confirm_thankyou'));
+        add_action( 'wp_enqueue_scripts', array($this, 'enqueue_subscribe_ajax_script' ));
+        add_action( 'wp_ajax_nopriv_subscribe_to_newsletter', 'subscribe_to_newsletter' );
+		add_action( 'wp_ajax_subscribe_to_newsletter', 'subscribe_to_newsletter' );
 
     }
+
+    function enqueue_subscribe_ajax_script() {   
+	  wp_enqueue_script( 'ajax-subscribe-js', plugins_url(PR_Membership::PLUGIN_FOLDER  . '/js/ajax-subscribe.js'), array('jquery'), '1.0.0', true );
+      wp_localize_script( 'ajax-subscribe-js', 'AjaxSubscribe', array(
+        'ajaxurl' => admin_url( 'admin-ajax.php' ),
+        'security' => wp_create_nonce( 'pr-subscribe-to-newsletter' )
+      ));
+	  
+	  
+	}
+
+    function subscribe_to_newsletter() {
+
+	    if ( isset( $_POST['name'] ) && isset( $_POST['email'] ) && is_email( $_POST['email'] ) ) {
+
+	        require_once( WP_PLUGIN_DIR . '/pr-membership/models/subscriber-model.php' );
+	        $model = new Subscriber_Model;
+
+	        $model->name = sanitize_text_field( $_POST['name'] );
+	        $model->email = sanitize_email( $_POST['email'] );
+	        $result = $model->insert();
+
+	        if( $result ) {
+	            $result_code = 0;
+	            $result_msg ="Thank you for subscribing to us! See you on the road!";
+	        } else {
+	            $result_code = 0;
+	            $result_msg ="Something went wrong, please try again later!";
+	        }        
+
+	        wp_send_json( array( 
+	                'result_code'=>$result_code, 
+	                'result_msg'=>$result_msg,
+	            ) );
+
+	        wp_die();
+
+	    }
+	}
 		
 	function confirm_email( $user, $key ) {
 
@@ -38,7 +81,7 @@ class PR_Confirm_Email {
 				
 				$userdata = array(
 					'user_login' => $model->user,
-					//$model->user,
+					'user_nicename' => $model->user,
 					'user_pass' => $result['signup_plain_password'],
 					'user_email' => $result['signup_email'],
 					'user_registerd' => $result['signup_date'],
@@ -55,7 +98,7 @@ class PR_Confirm_Email {
 					
 					$this->send_notification_msg( $model->user, $result['signup_email'], $result['signup_plain_password'] );
 										
-					echo $this->redirect_on_success();
+					echo $this->redirect_on_success( $result['signup_email'] );
 					
 					
 				} else {
@@ -67,6 +110,16 @@ class PR_Confirm_Email {
 				echo $this->redirect_on_error();
 			}
 		}
+
+	}
+
+	function confirm_thankyou(){
+
+		if( isset( $_REQUEST['email'] )) {
+			$this->email = sanitize_email( $_REQUEST['email'] );
+		}
+
+		 require_once( dirname( __DIR__ ) . '/views/thankyou.php' );
 
 	}
 
@@ -101,10 +154,10 @@ class PR_Confirm_Email {
 		return $js_script;
 	}
 
-	function redirect_on_success() {
+	function redirect_on_success( $email ) {
 
-		$js_script = '<script>alert("Congratulation! Please login now to customize your page.")</script>';
-		$js_script .= '<script>window.location.replace("'.home_url().'")</script>';
+		$redirect_url = 'thank-you?email='. $email;
+		$js_script = '<script>window.location.replace("'.home_url( $redirect_url ).'")</script>';
 
 		return $js_script;
 	}

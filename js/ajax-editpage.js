@@ -2,12 +2,8 @@ jQuery(document).ready(function(e) {
  
   $("#upload_profile_bg").on('submit',(function(e) {
 
+    if ( $("#profile_image").val() != "" ) {
       e.preventDefault();
-      if( $("#profile_image").val() == "") {
-        alert('Please select a background image');
-        return false;
-      }
-
       $('#btn-upload-bg').addClass( 'loading' );
       var formdata = new FormData(this);
       formdata.append('action','upload_profile_bg');
@@ -22,9 +18,14 @@ jQuery(document).ready(function(e) {
           processData:false,  
           success: function( result ) {
              $('#btn-upload-bg').removeClass( 'loading' );
+             console.log(result.result_msg);
              window.location.reload();
           }
         })
+    } else {
+      alert('Please select a background image.');
+      return false;
+    }
 
   }));
 
@@ -34,48 +35,41 @@ jQuery(document).ready(function(e) {
               
               var file = this.files[0];
               var imagefile = file.type;
+              var imagesize = file.size;
+              var imagesizeMB = imagesize / 1024 / 1024;
               var match= ["image/jpeg","image/png","image/jpg"];
-
+                           
               if( ! (( imagefile == match[0] ) || ( imagefile == match[1] ) || ( imagefile == match[2]) ) )
               {
                 alert('Please select a valid image file. Only jpeg, jpg, svg or png are allowed.');
                 $("#profile_image").val("");
                 return false;
-              }
-              else
-              {
-                
+              } else if (imagesizeMB > 4 ) {
+                alert('Image is too large, file size should not exceed 4MB.');
+                $("#profile_image").val("");
+                return false;
+              } else {
                 var reader = new FileReader();
-
                 reader.onload = function (e) {
-
-                  $('#preview_image').attr('src', e.target.result);
                   $("#profile_image").css("color","green");
-
                   var img = new Image;
-                  var sizeMB = file.size / 1024 / 1024;
-                  img.src = e.target.result;
                   img.onload = function() {
-                     var width = this.width;
-                     var height = this.height;
-
-                     if( width < 1024 ) {
-                        alert("Please upload at least 1024px by 768px. Your current image dimension is "+width+"x"+height+" pixels");
-                        $("#profile_image").val("");
-                        return false;
-                     }
-
-                     if( sizeMB > 5 ) {
-                        alert("Image size is too large ("+sizeMB+"MB). Please upload only below 4MB.");
-                        $("#profile_image").val("");
-                        return false;
-                     }
-
+                    if ( img.width < 1024 ) {
+                      alert("Image is too small, please upload at least 1024x768 pixels. Your current image size is "+img.width+"x"+img.height);
+                      $("#profile_image").val("");
+                      return false;
+                    } else if ( img.width > 3072 ) {
+                      alert("Image is too large, maximum size allowed is 3072x2048 pixels. Your current image size is "+img.width+"x"+img.height);
+                      $("#profile_image").val("");
+                      return false;
+                    }
+                    
                   };
 
+                  img.src = reader.result;
                 };
-                reader.readAsDataURL(this.files[0]);    
 
+                reader.readAsDataURL(this.files[0]);
               }
           });
       });

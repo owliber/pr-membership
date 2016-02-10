@@ -77,9 +77,9 @@ if ( ! class_exists( 'PR_Membership' )) :
 
 	
 	    function register_pr_membership_menu() {
-			add_menu_page('PR Membership', 'PR Membership', '', 'pr-membership-menu');
-			add_submenu_page( 'pr-membership-menu', 'Incomplete Profiles', 'Incomplete Profiles', 'manage_options', 'pr-incomplete-profile', array( $this, 'pr_incomplete_profiles'));
-			add_submenu_page( 'pr-membership-menu', 'Unconfirmed Signups', 'Unconfirmed Signups', 'manage_options', 'pr-unconfirmed-signups', array( $this, 'pr_unconfirmed_signups'));
+			add_menu_page('PR Membership', 'PR Membership', '', 'pr-membership-menu','','dashicons-groups',7);
+			add_submenu_page( 'pr-membership-menu', 'Profiles', 'Profiles', 'manage_options', 'pr-incomplete-profile', array( $this, 'pr_incomplete_profiles'));
+			add_submenu_page( 'pr-membership-menu', 'Signups', 'Signups', 'manage_options', 'pr-unconfirmed-signups', array( $this, 'pr_unconfirmed_signups'));
 			add_submenu_page( 'pr-membership-menu', 'Settings', 'Settings', 'manage_options', 'pr-settings', array( $this, 'pr_membership_settings'));
 		}
 
@@ -113,19 +113,23 @@ if ( ! class_exists( 'PR_Membership' )) :
 				<table class="ui stackable table">
 	              <thead>
 	                <tr>
-	                  <th>#</th>
+	                  <th colspan="2">#</th>
 	                  <th>Login</th>
 	                  <th>Email</th>
+	                  <th>Date Registered</th>
 	                </tr>
 	              </thead>
 	              <tbody>
 	                <?php foreach ( $users as $row ) : ?>
 	                <tr>
+	                  <td><input type="checkbox" name="user_login[]" id="user_login" value="<?php echo $row->user_login; ?>" /></td>
 	                  <td><?php echo $ctr; ?></td>
 	                  <td><?php echo $row->user_login; ?></td>
 	                  <td><?php echo $row->user_email; ?></td>
+	                  <td><?php echo date('M d, Y',strtotime( $row->user_registered )); ?></td>
 	                </tr>
 	              <?php 
+
 	                $ctr++;
 	              endforeach; ?>        
 	              </tbody>
@@ -136,16 +140,25 @@ if ( ! class_exists( 'PR_Membership' )) :
 
 			if ( isset( $_POST['SendEmail'])) :
 
-				foreach( $users as $user ) {
+				if( count($_POST['user_login']) > 0 ) {
 
-					$placeholders = array(
-			            'USERNAME' => $user->user_login,
-			        );
-					$msg_template_id = 4;
-					$this->send_notification_msg( $user->user_login, $user->user_email, $placeholders, $msg_template_id );	
+					$logins = $_POST['user_login'];
+					$ctr = 0;
+					foreach( $logins as $login ) {
+
+						$email = $model->get_email_by_username( $login );
+
+						$placeholders = array(
+				            'USERNAME' => $login,
+				        );
+
+						$msg_template_id = 4;
+						$this->send_notification_msg( $login, $email->user_email, $placeholders, $msg_template_id );	
+						$ctr++;
+					}
 				}
 
-				echo 'Notification sent!';
+				echo 'Notification sent to ('.$ctr.') users!';
 
 			endif;
 
@@ -169,21 +182,22 @@ if ( ! class_exists( 'PR_Membership' )) :
 				<table class="ui stackable table">
 	              <thead>
 	                <tr>
-	                  <th>#</th>
-	                  <th>Signup Date</th>
+	                  <th colspan="2">#</th>
 	                  <th>Signup Username</th>
 	                  <th>Signup Email</th>
 	                  <th>Activation Key</th>
+	                  <th>Signup Date</th>
 	                </tr>
 	              </thead>
 	              <tbody>
 	                <?php foreach ( $signups as $signup ) : ?>
 	                <tr>
+	                  <td><input type="checkbox" name="signup_username[]" id="user_login" value="<?php echo $signup->signup_username; ?>" /></td>
 	                  <td><?php echo $ctr; ?></td>
-	                  <td><?php echo date('M d, Y',strtotime( $signup->signup_date ) ); ?></td>
 	                  <td><?php echo $signup->signup_username; ?></td>
 	                  <td><?php echo $signup->signup_email; ?></td>
 	                  <td><?php echo $signup->signup_activation_key; ?></td>
+	                  <td><?php echo date('M d, Y',strtotime( $signup->signup_date ) ); ?></td>
 	                </tr>
 	              <?php 
 	                $ctr++;
@@ -196,20 +210,28 @@ if ( ! class_exists( 'PR_Membership' )) :
 
 			if ( isset( $_POST['SendEmail'])) :
 
-				foreach( $signups as $signup ) {
+				if( count( $_POST['signup_username']) > 0 ) {
 
-					$home_url = home_url( 'confirm' );
-					$verification_link = add_query_arg( array('key'=>$signup->signup_activation_key, 'user'=>$signup->signup_username), $home_url );
+					$signup_logins =  $_POST['signup_username'];
+					$ctr = 0;
 
-					$placeholders = array(
-			            'USERNAME' => $signup->signup_username,
-			            'VERIFY_LINK' => $verification_link,
-			        );
-					$msg_template_id = 5;
-					$this->send_notification_msg( $signup->signup_username, $signup->signup_email, $placeholders, $msg_template_id );	
+					foreach( $signup_logins as $login ) {
+
+						$result = $model->get_email_by_signup_username( $login );
+						$home_url = home_url( 'confirm' );
+						$verification_link = add_query_arg( array('key'=>$result->signup_activation_key, 'user'=>$login), $home_url );
+
+						$placeholders = array(
+				            'USERNAME' => $login,
+				            'VERIFY_LINK' => $verification_link,
+				        );
+						$msg_template_id = 5;
+						$this->send_notification_msg( $login, $result->signup_email, $placeholders, $msg_template_id );	
+						$ctr++;
+					}
 				}
 
-				echo 'Notification sent!';
+				echo 'Notification to ('.$ctr.') users sent!';
 
 			endif;
 
@@ -223,10 +245,6 @@ if ( ! class_exists( 'PR_Membership' )) :
 
 			$subject = $template->message_subject; 
 			$message = $template->message_body;
-			
-			// $placeholders = array(
-	  //           'USERNAME' => $user,
-	  //       );
 
 	        foreach($placeholders as $key => $value){
 	            $message = str_replace('{'.$key.'}', $value, $message);

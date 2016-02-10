@@ -1,7 +1,11 @@
   <div id="page" class="ui two column top aligned very relaxed stackable grid container">
     
     <div class="four wide right aligned column">
-      <div class="ui secondary vertical pointing green menu">
+      <?php if ( wp_is_mobile() ) : ?>
+        <div class="ui visible thin bottom sidebar inverted teal menu">
+      <?php else : ?>
+        <div class="ui secondary vertical pointing green menu">
+      <?php endif; ?>
         <a href="<?php echo home_url( 'settings/profile' ); ?>" class="item"> Profile</a>
         <a href="<?php echo home_url( 'settings/account' ); ?>" class="item"> Account</a>
         <a href="<?php echo home_url( 'settings/privacy' ); ?>" class="item"> Privacy</a>

@@ -28,8 +28,7 @@ jQuery(document).ready(function($) {
               //Clear form
               $("#modal-header-activity").text("Add your new activity");
               $("#activity_id").val('');
-              $("#activity_name").val(''); 
-              $("#activity_location").val('');      
+              $("#activity_name").val('');      
               $("#activity_type").dropdown('set selected','Race');        
               $("#activity_date").val(curDate());
               $("#bibnumber").val('');

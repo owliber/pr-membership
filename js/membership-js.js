@@ -1,10 +1,10 @@
-jQuery( document ).ready( function($) {
+jQuery( document ).ready( function() {
 
 	$('#user_login').attr( 'placeholder', 'Username' );
-	$('p.login-username').replaceWith( '<div class="field"><div class="ui left icon input"><input name="log" value="" placeholder="Username" id="user_login" required="" type="text" /><i class="user icon"></i></div></div>' );
+	$('p.login-username').replaceWith( '<div class="field"><div class="ui left icon input"><input name="log" value="" placeholder="Username" id="user_login" required="" type="text" autocomplete="off" /><i class="user icon"></i></div></div>' );
 	
 	$('#user_pass').attr( 'placeholder', 'Password' );
-	$('p.login-password').replaceWith( '<div class="field"><div class="ui left icon input"><input name="pwd" value="" placeholder="Password" id="user_pass" required="" type="password" /><i class="lock icon"></i></div></div>' );
+	$('p.login-password').replaceWith( '<div class="field"><div class="ui left icon input"><input name="pwd" value="" placeholder="Password" id="user_pass" required="" type="password" autocomplete="off" /><i class="lock icon"></i></div></div>' );
 
 	$('p.login-submit').replaceWith( '<div class="field"><div class="ui submit"><input class="ui blue button" name="wp-submit" value="Login" id="wp-submit" type="submit" /></div></div>' );
 	
@@ -164,15 +164,11 @@ jQuery( document ).ready( function($) {
 	});
 
 
-
-	// Edit page sidebar on top
-	
+	// Edit page sidebar on top	
 	$('.ui.top.sidebar')
 	  .sidebar('setting', 'dimPage', false)
-	  //.sidebar('setting', 'closable', false)
 	  .sidebar('setting', 'transition', 'overlay')
 	  .sidebar('attach events', '#btn-edit-page', 'show')
-	  //.sidebar('attach events', '#btn-edit-done', 'hide')
 	;
 
 	$( "body" ).removeClass( "pushable" );
@@ -186,22 +182,22 @@ jQuery( document ).ready( function($) {
 	  on: 'hover'
 	});
 
- // 	if( window.location.href == '/') {
+ 	if( window.location.href == '/') {
  		
-	// 	// Hide attribution for video if not loaded
-	// 	window.addEventListener('load', function() {
-	// 	    var video = document.querySelector('#bgvid');	    
+		// Hide attribution for video if not loaded
+		window.addEventListener('load', function() {
+		    var video = document.querySelector('#bgvid');	    
 
-	// 	    function checkLoad() {
-	// 	        if (video.readyState !== 4) {
-	// 	            $(".attribution").hide()
-	// 	        } 
-	// 	    }
+		    function checkLoad() {
+		        if (video.readyState !== 4) {
+		            $(".attribution").hide()
+		        } 
+		    }
 
-	// 	    checkLoad();
-	// 	}, false);
+		    checkLoad();
+		}, false);
 
-	// }
+	}
 
 
 } ); // ready()

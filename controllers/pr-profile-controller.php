@@ -185,7 +185,12 @@ class PR_Profile {
 					$time = explode(':', $total_time);
 					$hour_part = $time[0];
 					$min_part = $time[1];
-					$pace = $result->average_pace;
+					//$pace = $result->average_pace;
+					$pace_part = explode(':', $result->average_pace);
+					$pace_hour_part = $pace_part[0];
+					$pace_min_part = $pace_part[1];
+					$pace_secs_part = $pace_part[2];
+					$pace = implode(':', array( $pace_min_part, $pace_secs_part ) );
 					$notes = $result->notes;
 				}
 
@@ -403,14 +408,19 @@ class PR_Profile {
 
 		if ( isset( $post ) ) {
 
+			$pace_per_km = '00:00';
+			$total_time =  '00:00';
+
 			//concat total hour and minutes
-			$hour_part = sanitize_text_field( $post['total_hour'] );
-			$minute_part = sanitize_text_field( $post['total_minute'] );
-			$total_time = date('H:i', mktime($hour_part, $minute_part, 0, 0, 0 ));
-			$pace = explode(':', sanitize_text_field( $post['average_pace'] ));
-			$pace_min = $pace[0];
-			$pace_secs = $pace[1];
-			$pace_per_km = date('H:i:s', mktime(0, $pace_min, $pace_secs, 0, 0, 0 ));
+			if ( ( isset( $post['total_hour']) && $post['total_hour'] != '00' ) && ( isset( $post['total_minute']) && $post['total_minute'] != '00' ) ) :
+				$hour_part = sanitize_text_field( $post['total_hour'] );
+				$minute_part = sanitize_text_field( $post['total_minute'] );
+				$total_time = date('H:i', mktime($hour_part, $minute_part, 0, 0, 0 ));
+				$pace = explode(':', sanitize_text_field( $post['average_pace'] ));
+				$pace_min = $pace[0];
+				$pace_secs = $pace[1];
+				$pace_per_km = date('H:i:s', mktime(0, $pace_min, $pace_secs, 0, 0, 0 ));
+			endif;
 
 			if ( $is_new ) :
 
@@ -498,7 +508,7 @@ class PR_Profile {
 
 		$background = '<style type="text/css">
 	        	body { 
-	        		background: url(' . $profile_background . ') no-repeat center center fixed  !important;
+	        		background: url(' . $profile_background . ') no-repeat center center fixed !important;
 	        		-webkit-background-size: cover !important;
 	  				-moz-background-size: cover !important;
 	  				-o-background-size: cover !important;

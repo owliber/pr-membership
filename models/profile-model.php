@@ -186,7 +186,7 @@ if ( ! class_exists( 'Profile_Model' )) :
 
 			global $wpdb;
 
-			$sql = "INSERT INTO wp_activities ( user_id, activity_name, location, activity_type, activity_date, distance, total_time, average_pace, bibnumber, notes )
+			$sql = "INSERT INTO wp_activities ( user_id, activity_name, activity_type, location, activity_date, distance, total_time, average_pace, bibnumber, notes )
 					VALUES ( %d, %s, %s, %s, %s, %f, %s, %s, %s, %s ) ";
 
 			$result = $wpdb->query( $wpdb->prepare( $sql, $data) );

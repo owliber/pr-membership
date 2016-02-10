@@ -1,9 +1,12 @@
 <?php $profile = get_userdata( $this->member_id ); ?>
 
 <div id="page" class="ui top aligned very relaxed transparent stackable grid container">
-  <div class="ui <?php echo $this->headline_position; ?> floated five wide column inverted <?php echo $this->headline_color; ?> segment">
+  <div id="profile" class="ui <?php echo $this->headline_position; ?> floated five wide padded column <?php echo $this->headline_color; ?> inverted segment">
     <?php if( get_user_meta( $this->member_id, 'is_featured', true ) == 1 ) : ?>
     <div class="ui green top right attached label">Featured</div>
+    <?php endif; ?>
+    <?php if( wp_is_mobile() && PR_Membership::is_member_page() ) : ?>
+     <button id="btn-edit-page" class="ui right floated red small inverted button">Edit Page</button>
     <?php endif; ?>
   	   <h1 class="ui header">          
           <?php if( $this->is_public( 'show_name' )) :
@@ -18,8 +21,15 @@
         </span>
         <?php endif; ?>
         </h1>
-        <p><?php echo get_user_meta( $this->member_id, 'description', true ) ;
-         ?></p>    	
+        <?php 
+            $description = get_user_meta( $this->member_id, 'description', true ) ;
+            if( isset($description) && str_word_count( $description ) > 100 ) {
+              $text_size = '14px';
+            } else {
+              $text_size = '100%';
+            }
+         ?>
+         <span class="description"><?php echo $description; ?></span>    	
        
           <div class="ui list">
 
@@ -79,7 +89,7 @@
 
           <?php if ( ! PR_Membership::is_member_page() && ! $this->is_connected() ) : ?>
           <!-- Connect -->
-          <div class="ui left labeled button" tabindex="1">
+          <div class="ui left labeled mini button" tabindex="1">
             <a id="total_connections" class="ui basic right pointing label">
               <?php 
               $total_connections = get_user_meta( $this->member_id, 'total_connections', true );
@@ -90,16 +100,15 @@
               ?>
             </a>
             <?php if ( is_user_logged_in() ) : ?>
-            <button id="btn_connect" class="ui teal button" value="<?php echo $this->member_id; ?>">
+            <button id="btn_connect" class="ui teal mini button" value="<?php echo $this->member_id; ?>">
               <i class="user icon"></i> Connect
             </button>
             <input type="hidden" name="request_status" id="request_status" value="<?php echo $this->has_pending_request(); ?>">
             <?php else : ?>
-              <a class="ui teal button" href="<?php echo home_url( 'register' ); ?>">
+              <a class="ui teal mini button" href="<?php echo home_url( 'register' ); ?>">
                 <i class="user icon"></i> Connect
               </a>
             <?php endif; ?>
-            
           </div>          
         <?php endif; ?>
 
@@ -255,14 +264,21 @@
           <th class="collapsing">Activity Type</th>
           <th class="collapsing">Date</th>
           <th class="collapsing">Distance (K)</th>
-          <?php if( $this->is_public('show_activity_time')) : ?>
+          
+          <?php if( $this->is_public('show_total_time')) : ?>
             <th class="collapsing">Time</th>
           <?php endif; ?>
+          
           <?php if( $this->is_public('show_activity_pace')) : ?>
-          <th class="collapsing">Pace (min/km)</th>
+            <th class="collapsing">Pace (min/km)</th>
           <?php endif; ?>
+          
+          <?php if( $this->is_public('show_remarks')) : ?>
+          <th class="collapsing">Remarks</th>
+          <?php endif; ?>
+
           <?php if( PR_Membership::is_member_page() ) : ?>
-          <th class="collapsing" align="center"><i class="setting icon"></i></th>
+            <th class="collapsing" align="center"><i class="setting icon"></i></th>
           <?php endif; ?>
         </tr>
       </thead>
@@ -274,12 +290,19 @@
           <td><?php echo ucfirst($row->activity_type); ?></td>
           <td class="nowrap"><?php echo date('F d, Y',strtotime($row->activity_date)); ?></td>          
           <td><?php echo $row->distance; ?></td>
-          <?php if( $this->is_public('show_activity_time')) : ?>
-          <td><?php echo $row->total_time; ?></td>
+          
+          <?php if( $this->is_public('show_total_time')) : ?>
+            <td><?php echo $row->total_time; ?></td>
           <?php endif; ?>
+          
           <?php if( $this->is_public('show_activity_pace')) : ?>
-          <td><?php echo date('i:s',strtotime( $row->average_pace ) ); ?></td>
+            <td><?php echo date('i:s',strtotime( $row->average_pace ) ); ?></td>
           <?php endif; ?>
+          
+          <?php if( $this->is_public('show_remarks')) : ?>
+          <td class="nowrap"><?php echo $row->notes; ?></td>
+          <?php endif; ?>
+
           <?php if( PR_Membership::is_member_page() ) : ?>
           <td>
               <button id="btn-delete" class="ui mini icon button btn-delete-<?php echo $row->activity_id;?>" value="<?php echo $row->activity_id; ?>"><i class="delete icon"></i></button>
@@ -343,6 +366,7 @@
             <input id="activity_date" name="activity[activity_date]" type="text" value="<?php echo date('Y-m-d'); ?>" required>
               <i class="calendar icon"></i>
             </div> 
+            <?php if ( is_user_logged_in() ) : ?>
             <script type="text/javascript">
                 $(document).ready(function() {
                     $('#activity_date').daterangepicker({
@@ -355,7 +379,8 @@
                         console.log(start.toISOString(), end.toISOString(), label);
                     });
                 });
-            </script>        
+            </script> 
+          <?php endif; ?>
         </div>
         <div id="bib" class="ui field">
           <label>Bib Number</label>
@@ -430,6 +455,9 @@
           <?php if( $this->is_public('show_activity_pace')) : ?>
           <th>Pace (min/km)</th>
           <?php endif; ?>
+          <?php if( $this->is_public('show_remarks')) : ?>
+          <th>Remarks</th>
+          <?php endif; ?>
         </tr>
       </thead>
       <tbody>
@@ -445,6 +473,9 @@
           <?php endif; ?>
           <?php if( $this->is_public('show_activity_pace')) : ?>
           <td><?php echo date('i:s',strtotime( $row->average_pace )); ?></td>
+          <?php endif; ?>
+          <?php if( $this->is_public('show_remarks')) : ?>
+          <td class="nowrap"><?php echo $row->notes; ?></td>
           <?php endif; ?>
         </tr>
       <?php endforeach; ?>        

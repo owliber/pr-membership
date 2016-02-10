@@ -61,13 +61,14 @@
 				</div>
 				 <img src="<?php echo $thumbnail; ?>">
 			</div>
-			<div class="content">
-				<?php if( $is_featured == 1) : ?>
+			<?php if( $is_featured == 1) : ?>
 				<div class="ui green top left attached label">
 			        Featured
 			     </div>
-			 	<?php endif; ?>
-			  	<i class="right floated star icon"></i>
+		 	<?php endif; ?>
+			<div class="content">
+				
+			  	<!-- <i class="right floated star icon"></i> -->
 			    <a class="header">
 			    <?php 
 			    	
@@ -85,7 +86,7 @@
 				 <?php endif; ?>
 			    </div>
 			    <div class="description">
-			      <?php echo wp_trim_words( $user->description, 15, ' ...'); ?>
+			      <?php echo wp_trim_words( $user->description, 15, ' &raquo;'); ?>
 			    </div>
 			</div>
 			<div class="extra content">

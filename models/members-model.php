@@ -110,6 +110,7 @@ if ( ! class_exists( 'Members_Model ')) :
                 'show_total_time',
                 'show_activity_time',
                 'show_activity_pace',
+                'show_remarks',
                 'enable_connection_approval',
             );
 
@@ -145,7 +146,8 @@ if ( ! class_exists( 'Members_Model ')) :
             $results = $wpdb->get_results(
                 "SELECT
                           wu.user_login,
-                          wu.user_email
+                          wu.user_email,
+                          wu.user_registered
                         FROM wp_users wu
                           LEFT JOIN wp_usermeta wu1
                             ON wu.ID = wu1.user_id
@@ -165,11 +167,52 @@ if ( ! class_exists( 'Members_Model ')) :
             
             $results = $wpdb->get_results(
                 "SELECT
-                  ws.signup_username, ws.signup_email, ws.signup_activation_key, ws.signup_date
+                  ws.signup_id, ws.signup_username, ws.signup_email, ws.signup_activation_key, ws.signup_date
                 FROM wp_signups ws
                 WHERE ws.signup_email NOT IN (SELECT
                     wu.user_email
                   FROM wp_users wu)"
+            );
+
+           return $results;
+
+        }
+
+        public function get_email_by_username( $username ) {
+
+            global $wpdb;
+            
+            $results = $wpdb->get_row(
+                $wpdb->prepare(
+                    "SELECT
+                          user_email
+                        FROM wp_users
+                     WHERE user_login = '%s'",
+                    array(
+                        $username
+                    )
+                )
+            );
+
+           return $results;
+
+        }
+
+        public function get_email_by_signup_username( $username ) {
+
+            global $wpdb;
+            
+            $results = $wpdb->get_row(
+                $wpdb->prepare(
+                    "SELECT
+                      ws.signup_email, 
+                      ws.signup_activation_key
+                    FROM wp_signups ws
+                    WHERE ws.signup_username = '%s'",
+                    array(
+                        $username
+                    )
+                )
             );
 
            return $results;

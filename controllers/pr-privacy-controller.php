@@ -42,6 +42,7 @@ class PR_Privacy {
 	private $show_total_time;
 	private $show_activity_time;
 	private $show_activity_pace;
+	private $show_remarks;
 	private $enable_connection_approval;
 	
 	private $show_facebook;

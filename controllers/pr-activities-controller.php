@@ -48,98 +48,102 @@ class PR_Activities {
 	  ));
 	}
 
-	function get_record_details() {
+	// function get_record_details() {
 
-		if( is_user_logged_in() ) {
+	// 	if( is_user_logged_in() ) {
 
-			if ( (isset( $_POST['action'] ) && !empty( $_POST['action'] )) 
-				&& ( isset( $_POST['activity_id'] ) && !empty( $_POST['activity_id'] ))
-				&& ( isset( $_POST['security'] ) && !empty( $_POST['security'] ))
-			) {
+	// 		if ( (isset( $_POST['action'] ) && !empty( $_POST['action'] )) 
+	// 			&& ( isset( $_POST['activity_id'] ) && !empty( $_POST['activity_id'] ))
+	// 			&& ( isset( $_POST['security'] ) && !empty( $_POST['security'] ))
+	// 		) {
 
-				check_ajax_referer( 'pr-get-record-details', 'security' );
-				$activity_id = intval( $_POST['activity_id'] ); //whom the request is for
-				$activity_name = "";
+	// 			check_ajax_referer( 'pr-get-record-details', 'security' );
+	// 			$activity_id = intval( $_POST['activity_id'] ); //whom the request is for
+	// 			$activity_name = "";
 
-				require_once( WPPR_PLUGIN_DIR . '/models/profile-model.php' );
-				$model = new Profile_Model;
-				$model->activity_id = $activity_id;
-				$model->user_id = get_current_user_id();
-				$result = $model->get_activity_details();
-				var_dump($result);
+	// 			require_once( WPPR_PLUGIN_DIR . '/models/profile-model.php' );
+	// 			$model = new Profile_Model;
+	// 			$model->activity_id = $activity_id;
+	// 			$model->user_id = get_current_user_id();
+	// 			$result = $model->get_activity_details();
 				
-				if ( $result !== false ) {
-					$activity_name = $result->activity_name;
-					$activity_location = $result->location;
-					$activity_type = $result->activity_type;
-					$activity_date = date('Y-m-d',strtotime( $result->activity_date ));
-					$distance = $result->distance;
-					$bibnumber = $result->bibnumber;
-					$total_time = $result->total_time;
-					$time = explode(':', $total_time);
-					$hour_part = $time[0];
-					$min_part = $time[1];
-					$pace = $result->average_pace;
-					$notes = $result->notes;
-				}
+	// 			if ( $result !== false ) {
+	// 				$activity_name = $result->activity_name;
+	// 				$activity_location = $result->location;
+	// 				$activity_type = $result->activity_type;
+	// 				$activity_date = date('Y-m-d',strtotime( $result->activity_date ));
+	// 				$distance = $result->distance;
+	// 				$bibnumber = $result->bibnumber;
+	// 				$total_time = $result->total_time;
+	// 				$time = explode(':', $total_time);
+	// 				$hour_part = $time[0];
+	// 				$min_part = $time[1];
+	// 				//$pace = $result->average_pace;
+	// 				$pace_part = explode(':', $result->average_pace);
+	// 				$pace_hour_part = $pace_part[0];
+	// 				$pace_min_part = $pace_part[1];
+	// 				$pace_secs_part = $pace_part[2];
+	// 				$pace = implode(':', array( $pace_min_part, $pace_secs_part ) );
+	// 				$notes = $result->notes;
+	// 			}
 
-				wp_send_json( array( 
-					'activity_id' => $activity_id, 
-					'activity_name' => $activity_name,
-					'activity_location' => $activity_location, 
-					'activity_type' => $activity_type,
-					'activity_date' => $activity_date,
-					'distance' => $distance,
-					'bibnumber' => $bibnumber,
-					'total_hour' => $hour_part,
-					'total_min' => $min_part,
-					'pace' => $pace,
-					'notes' => $notes
-				) );
+	// 			wp_send_json( array( 
+	// 				'activity_id' => $activity_id, 
+	// 				'activity_name' => $activity_name,
+	// 				'activity_location' => $activity_location, 
+	// 				'activity_type' => $activity_type,
+	// 				'activity_date' => $activity_date,
+	// 				'distance' => $distance,
+	// 				'bibnumber' => $bibnumber,
+	// 				'total_hour' => $hour_part,
+	// 				'total_min' => $min_part,
+	// 				'pace' => $pace,
+	// 				'notes' => $notes
+	// 			) );
 
-				wp_die();
-			}
-		}
+	// 			wp_die();
+	// 		}
+	// 	}
 
-	}
+	// }
 
-	function delete_record() {
+	// function delete_record() {
 
-		if( is_user_logged_in() ) {
+	// 	if( is_user_logged_in() ) {
 
-			if ( (isset( $_POST['action'] ) && !empty( $_POST['action'] )) 
-				&& ( isset( $_POST['activity_id'] ) && !empty( $_POST['activity_id'] ))
-				&& ( isset( $_POST['security'] ) && !empty( $_POST['security'] ))
-			) {
+	// 		if ( (isset( $_POST['action'] ) && !empty( $_POST['action'] )) 
+	// 			&& ( isset( $_POST['activity_id'] ) && !empty( $_POST['activity_id'] ))
+	// 			&& ( isset( $_POST['security'] ) && !empty( $_POST['security'] ))
+	// 		) {
 
-				check_ajax_referer( 'pr-delete-record', 'security' );
-				$activity_id = intval( $_POST['activity_id'] ); //whom the request is for
+	// 			check_ajax_referer( 'pr-delete-record', 'security' );
+	// 			$activity_id = intval( $_POST['activity_id'] ); //whom the request is for
 
-				require_once( WPPR_PLUGIN_DIR . '/models/profile-model.php' );
-				$model = new Profile_Model;
-				$model->activity_id = $activity_id;
-				$model->user_id = get_current_user_id();
-				$result = $model->delete_activity();
+	// 			require_once( WPPR_PLUGIN_DIR . '/models/profile-model.php' );
+	// 			$model = new Profile_Model;
+	// 			$model->activity_id = $activity_id;
+	// 			$model->user_id = get_current_user_id();
+	// 			$result = $model->delete_activity();
 				
-				if ( $result ) {
-					$result_code = 0;
-					$result_msg = 'The record was successfully deleted.';
-				} else {
-					$result_code = 1;
-					$result_msg = 'Something went wrong, please try again later.';
-				}
+	// 			if ( $result ) {
+	// 				$result_code = 0;
+	// 				$result_msg = 'The record was successfully deleted.';
+	// 			} else {
+	// 				$result_code = 1;
+	// 				$result_msg = 'Something went wrong, please try again later.';
+	// 			}
 
-				wp_send_json( array( 
-					'activity_id' => $activity_id,
-					'result_code'=> $result_code, 
-					'result_msg'=> $result_msg, 
-				) );
+	// 			wp_send_json( array( 
+	// 				'activity_id' => $activity_id,
+	// 				'result_code'=> $result_code, 
+	// 				'result_msg'=> $result_msg, 
+	// 			) );
 
-				wp_die();
-			}
-		}
+	// 			wp_die();
+	// 		}
+	// 	}
 
-	}
+	// }
 
 	function render_activities() {
 
@@ -240,8 +244,8 @@ class PR_Activities {
 				$post_data = array(
 					$this->member_id,
 					sanitize_text_field( $post['activity_name'] ),
-					sanitize_text_field( $post['location'] ),
 					sanitize_text_field( $post['activity_type'] ),
+					sanitize_text_field( $post['location'] ),					
 					sanitize_text_field( $post['activity_date'] ),
 					floatval( sanitize_text_field( $post['distance'] ) ),
 					$total_time,

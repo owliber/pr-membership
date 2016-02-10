@@ -1,7 +1,11 @@
   <div id="page" class="ui two column top aligned very relaxed stackable grid container">
     
     <div class="four wide right aligned column">
-      <div class="ui secondary vertical pointing green menu">
+      <?php if ( wp_is_mobile() ) : ?>
+        <div class="ui visible thin bottom sidebar inverted teal menu">
+      <?php else : ?>
+        <div class="ui secondary vertical pointing green menu">
+      <?php endif; ?>
         <a class="active item"> Profile</a>
         <a href="<?php echo home_url( 'settings/account' ); ?>" class="item"> Account</a>
         <a href="<?php echo home_url( 'settings/privacy' ); ?>" class="item"> Privacy</a>
@@ -9,7 +13,7 @@
       </div>
     </div>
     
-    <div class="twelve wide left aligned column">
+    <div class="<?php echo !wp_is_mobile() ? 'twelve wide' : ''; ?> left aligned column">
       <?php if ( isset( $result['errors'] ) && count( $result['errors'] ) > 0 ) : ?>
         <?php foreach ( $result['errors'] as $error ) : ?>
             <div class="ui error message">
@@ -27,7 +31,6 @@
       <form class="ui large equal width form" method="post" action="">
         
       <h2 class="ui left aligned header">
-        <!-- <img class="ui image" src="/images/icons/school.png"> -->
         <i class="user icon"></i>
         <div class="content">
           Profile
@@ -36,7 +39,7 @@
       </h2>
         <div class="ui hidden divider"></div>
         <div class="field">
-          <div class="ten wide field">
+          <div class="<?php echo !wp_is_mobile() ? 'ten wide' : ''; ?> field">
             <label>Display Name</label>
             <input name="profile[display_name]" placeholder="e.g The Road Eater, Pinay Mamaw, Hot Chick Runner" type="text" value="<?php echo $this->display_name;  ?>">
           </div>
@@ -176,28 +179,28 @@
           </div>
         </h3>
         <div class="ui divider"></div>
-        <div class="eight wide field">
+        <div class="<?php echo !wp_is_mobile() ? 'eight wide' : ''; ?> field">
           <label>Facebook </label>
           <div class="ui left icon input">
             <i class="facebook icon"></i>
             <input name="profile[facebook]" placeholder="pinoyrunners.co" type="text" value="<?php echo $this->facebook; ?>">
           </div>
         </div>
-        <div class="eight wide field">
+        <div class="<?php echo !wp_is_mobile() ? 'eight wide' : ''; ?> field">
           <label>Twitter </label>
           <div class="ui left icon input">
             <i class="twitter icon"></i>
               <input name="profile[twitter]" placeholder="pinoy_runners" type="text" value="<?php echo $this->twitter; ?>">
           </div>
         </div>
-        <div class="eight wide field">
+        <div class="<?php echo !wp_is_mobile() ? 'eight wide' : ''; ?> field">
           <label>Instagram</label>
           <div class="ui left icon input">
             <i class="instagram icon"></i>
             <input name="profile[instagram]" placeholder="pinoyrunners.co" type="text" value="<?php echo $this->instagram; ?>">
           </div>
         </div>
-        <div class="eight wide field">
+        <div class="<?php echo !wp_is_mobile() ? 'eight wide' : ''; ?> field">
           <label>Site</label>
           <input name="profile[user_url]" placeholder="Link to your blog or website" type="text" value="<?php echo $this->user_url; ?>">
         </div>

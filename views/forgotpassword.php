@@ -21,7 +21,11 @@
                     <form id="lostpasswordform" action="<?php echo wp_lostpassword_url(); ?>" method="post">
                         <div class="ui field">
                             <input type="text" name="user_login" id="user_login" placeholder="Enter your email address" required>
-                        </div>                 
+                        </div>   
+
+                        <div class="ui field">
+                            <?php echo do_shortcode( '[bws_google_captcha]' ); ?>
+                        </div>              
                         <input class="ui button" type="submit" name="submit" class="lostpassword-button" value="Recover Password"/>
                     </form>
 

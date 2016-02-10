@@ -1,8 +1,12 @@
 
-<div id="page" class="ui two column top aligned very relaxed stackable grid container">
+<div id="page" class="ui top aligned very relaxed two column stackable grid container">
  
   <div class="four wide right aligned column">
-    <div class="ui secondary vertical pointing green menu">
+    <?php if ( wp_is_mobile() ) : ?>
+      <div class="ui visible thin bottom sidebar inverted teal menu">
+    <?php else : ?>
+      <div class="ui secondary vertical pointing green menu">
+    <?php endif; ?>
       <a class="active item"> Home</a>
       <a href="<?php echo home_url( 'home/mygroups' ); ?>" class="item"> Groups</a>
       <a href="<?php echo home_url( 'home/activities' ); ?>" class="item"> Activities</a>
@@ -191,6 +195,8 @@
 
             $posts = new WP_Query( $args ); 
 
+            $i = 1;
+
             if ( $posts->have_posts() ) : ?>
               <div class="ui divided items">
 
@@ -198,7 +204,7 @@
                        setup_postdata( $posts ); 
                        $posts->the_post();
                 ?>
-                <div class="item">
+                <div class="item" id="post-<?php the_ID(); ?>">
                   <a class="ui small image" href="<?php the_permalink(); ?>">
                     <?php if ( has_post_thumbnail() ) {                  
                         echo get_the_post_thumbnail();
@@ -233,7 +239,21 @@
                   <?php endif; ?>
                   </div>
                 </div>
+                <?php if($i % 7 == 0) : ?>
+                  <div class="ui <?php if( wp_is_mobile() ) echo 'mobile'; ?> centered leaderboard ad" data-text="Leaderboard">
+                    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+                    <!-- home_feed_interval_ad -->
+                    <ins class="adsbygoogle"
+                         style="display:inline-block;width:728px;height:90px"
+                         data-ad-client="ca-pub-8465880978474028"
+                         data-ad-slot="1391844005"></ins>
+                    <script>
+                    (adsbygoogle = window.adsbygoogle || []).push({});
+                    </script>
+                  </div>
+                <?php endif; ?>
               <?php
+              $i++;
               endwhile;
               wp_reset_postdata(); ?>
             </div>
@@ -249,6 +269,19 @@
             </div>                
         </div>
       <?php endif; ?>
+
+      <!-- Google Adsense -->
+      <div class="ui <?php if( wp_is_mobile() ) echo 'mobile'; ?> centered leaderboard ad" data-text="Leaderboard">
+        <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+        <!-- home_feed_bottom_ad -->
+        <ins class="adsbygoogle"
+             style="display:inline-block;width:728px;height:90px"
+             data-ad-client="ca-pub-8465880978474028"
+             data-ad-slot="2868577207"></ins>
+        <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+        </script>
+      </div> <!-- Google Adsense -->
     </div><!-- column -->
     
 </div><!-- page -->

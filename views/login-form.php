@@ -37,14 +37,18 @@
             )
         );
     ?>    
-      <div class="ui divider"></div>
+      
+      <div class="ui horizontal divider">Or</div>
+          <div class="field">
+            <?php do_action('facebook_login_button'); ?>
+          </div>
      
-    <div class="field">
-        <div class="ui toggle checkbox">
-            <input class="hidden" tabindex="0" name="rememberme" id="rememberme" value="forever" type="checkbox">
-            <label>Remember me <span> &mdash; <a href="<?php echo wp_lostpassword_url(); ?>">Forgot Password?</a></span></label> 
+        <div class="field">
+            <div class="ui toggle checkbox">
+                <input class="hidden" tabindex="0" name="rememberme" id="rememberme" value="forever" type="checkbox">
+                <label>Remember me <span> &mdash; <a href="<?php echo wp_lostpassword_url(); ?>">Forgot Password?</a></span></label> 
+            </div>
         </div>
-    </div>
      
         
     <!-- wp_lostpassword_url(); -->

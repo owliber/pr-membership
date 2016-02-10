@@ -29,6 +29,9 @@
                             <label for="pass2"><?php _e( 'Repeat new password', 'pinoyrunners' ) ?></label>
                             <input type="password" name="pass2" id="pass2" size="20" value="" autocomplete="off" required>
                         </div>
+                        <div class="ui field">
+                            <?php echo do_shortcode( '[bws_google_captcha]' ); ?>
+                        </div>
                          
                         <p class="description"><?php echo wp_get_password_hint(); ?></p>                         
                         
