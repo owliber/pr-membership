@@ -111,6 +111,7 @@ if ( ! class_exists( 'Members_Model ')) :
                 'show_activity_time',
                 'show_activity_pace',
                 'show_remarks',
+                'show_personal_records',
                 'enable_connection_approval',
             );
 

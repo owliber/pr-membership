@@ -3,7 +3,7 @@
 <div id="page" class="ui top aligned very relaxed transparent stackable grid container">
   <div id="profile" class="ui <?php echo $this->headline_position; ?> floated five wide padded column <?php echo $this->headline_color; ?> inverted segment">
     <?php if( get_user_meta( $this->member_id, 'is_featured', true ) == 1 ) : ?>
-    <div class="ui green top right attached label">Featured</div>
+    <div class="ui green top right attached label">Featured Runner</div>
     <?php endif; ?>
     <?php if( wp_is_mobile() && PR_Membership::is_member_page() ) : ?>
      <button id="btn-edit-page" class="ui right floated red small inverted button">Edit Page</button>
@@ -256,7 +256,36 @@
 
   </div>
   <div id="data" class="ui stackable grid container">
-    <table class="ui tablet stackable inverted grey table">
+
+    <!-- Personal Records -->
+    <?php if ( $this->is_public( 'show_personal_records' ) ) : ?>
+    <?php 
+      $result = $this->personal_records(); 
+      $records = array_filter($result);
+      $cols = count($records);
+    ?>
+    <table class="ui center aligned celled small compact <?php echo $this->headline_color; ?> table">
+    <thead>
+      <tr>
+        <th colspan="<?php echo $cols; ?>" class="small-caps"><h4>Personal Records</h4></th>
+      </tr>
+      <tr>
+        <?php foreach( $records as $key=>$record) : ?>
+        <th><?php echo $key; ?>K</th>
+        <?php endforeach; ?>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <?php foreach( $records as $key=>$record) : ?>
+        <td><strong style="font-size:150%"><?php echo $record; ?></strong></td>
+        <?php endforeach; ?>
+      </tr>
+    </tbody>
+  </table>
+  <?php endif ?><!-- Personal Records -->
+
+    <table class="ui tablet stackable <?php echo $this->headline_color; ?> table">
       <thead>
         <tr>
           <th class="collapsing">Activity</th>
@@ -319,12 +348,12 @@
           <th colspan="8">
               <!-- Modal button -->
               <?php if( PR_Membership::is_member_page() ) : ?>
-                <div id="btn_new_activity" class="ui right floated small teal labeled icon button">
+                <div id="btn_new_activity" class="ui <?php echo ! wp_is_mobile() ? 'right floated' : ''; ?> small teal labeled icon button">
                   <i class="heartbeat icon"></i> Quick Add
                 </div>
               <?php endif; ?>
 
-               <div id="btn_viewall_activity" class="ui right floated small teal labeled icon button">
+               <div id="btn_viewall_activity" class="ui <?php echo ! wp_is_mobile() ? 'right floated' : ''; ?> small teal labeled icon button">
                 <i class="filter icon"></i>Show All Activities
               </div>
           </th>
@@ -397,7 +426,7 @@
             <label>Total Time (Hour)</label>
             <select id="total_hour" name="activity[total_hour]" class="ui fluid dropdown timepicker" required>
                 <?php 
-                for($i = 0; $i <= 24; $i++) {
+                for($i = 0; $i <= 23; $i++) {
                   $i = str_pad($i, 2, '0', STR_PAD_LEFT);
                   echo '<option value="'.$i.'">'.$i.'</option>';
                 }

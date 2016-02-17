@@ -1,4 +1,4 @@
-<div id="page" class="ui two column very relaxed stackable grid container">
+<div class="ui two column very relaxed stackable grid container">
   <div class="eight wide middle aligned column">
 
     <?php if ( isset( $attributes['errors'] ) && count( $attributes['errors'] ) > 0 ) : ?>
@@ -66,7 +66,7 @@
             <div class="ui hidden divider"></div>
 
             <div class="ui message">
-              <p>By signing up, you agree to the <a href="#">Terms and Conditions</a>, <a href="#">Privacy Policy</a> including the use of <a href="#">Cookie</a>. See you on the road!</p>
+              <p>By signing up, you agree to our <a href="#">Terms and Conditions</a> and <a href="<?php echo home_url( 'privacy' ); ?>">Privacy Policy</a>.</p>
             </div>
 
         </div> <!-- ui form -->

@@ -26,6 +26,7 @@
                             <button type="submit" id="subscribe2" class="ui teal button" value="Subscribe" >Subscribe</button>
                           </div>
                         </div>
+                        <div class="fb-like" data-href="https://pinoyrunners.co" data-layout="button_count" data-action="like" data-show-faces="true" data-share="true"></div>
                       </div>      
                     </form>
 

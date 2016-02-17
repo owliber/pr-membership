@@ -401,6 +401,31 @@ class PR_Profile {
 		return $result->best_pace;
 	}
 
+	function personal_records() {
+
+		require_once( WPPR_PLUGIN_DIR . '/models/profile-model.php' );
+		$model = new Profile_Model;
+		$total_time = null;
+		$distances = array(3,5,10,21,32,42,50,100,120);
+
+		foreach( $distances as $distance ) {
+			$model->member_id = $this->member_id;
+			$model->distance = $distance;
+			
+			$result =  $model->get_personal_records();
+
+			if( $result !== null )
+				$total_time = $result->total_time;
+
+			$pr[$distance] = $total_time;
+		}
+
+		$result = $pr;
+		
+		return $result;
+
+	}
+
 	function add_activity( $post, $is_new = true ) {
 
 		require_once( WPPR_PLUGIN_DIR . '/models/profile-model.php' );
@@ -508,7 +533,7 @@ class PR_Profile {
 
 		$background = '<style type="text/css">
 	        	body { 
-	        		background: url(' . $profile_background . ') no-repeat center center fixed !important;
+	        		background: url(' . $profile_background . ') no-repeat center top fixed !important;
 	        		-webkit-background-size: cover !important;
 	  				-moz-background-size: cover !important;
 	  				-o-background-size: cover !important;

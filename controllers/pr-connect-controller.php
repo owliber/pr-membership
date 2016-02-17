@@ -11,6 +11,8 @@ class PR_Connect {
 	public $members;
 	public $user_id;
 	public $member_id;
+	private $view;
+	private $active_class;
 
 	function __construct() {
 
@@ -24,10 +26,13 @@ class PR_Connect {
 
 		$this->user_id = get_current_user_id();	  
 
-		// if ( isset( $_GET['r'] ) ) {
+		$query_view = get_query_var( 'view' );
 
-		// 	echo '<script>alert("test");</script>';
-		// }
+		if ( isset( $query_view ) && ! empty( $query_view ) ) {
+
+			$this->view = $query_view;
+
+		}
 
 		require_once( dirname( __DIR__ ) . '/views/connect.php' );
 		
@@ -37,26 +42,53 @@ class PR_Connect {
 
 	public function list_members() {
 
-		$args = array(
-			'exclude' => array( get_current_user_id() ),
-			'meta_key' => 'is_featured',
-	        'orderby' => 'meta_value_num',
-	        'order' => 'DESC',
-			'meta_query' => array(
-				'relation' => 'AND',
-				array(
-					'key'     => 'has_profile_background',
-					'value'   => 1,
-					'compare' => '='
-				),
-				array(
-					'key'     => 'is_profile_update',
-					'value'   => 1,
-					'compare' => '='
-				),
-			 ),
-			//'role' => 'member',
-		);
+		if ( $this->view == 'featured' ) :
+			$args = array(
+				'exclude' => array( get_current_user_id() ),
+				//'meta_key' => 'is_featured',
+		        'orderby' => 'registered',
+		        'order' => 'DESC',
+				'meta_query' => array(
+					'relation' => 'AND',
+					array(
+						'key'     => 'has_profile_background',
+						'value'   => 1,
+						'compare' => '='
+					),
+					array(
+						'key'     => 'is_profile_update',
+						'value'   => 1,
+						'compare' => '='
+					),
+					array(
+						'key'     => 'is_featured',
+						'value'   =>  1,
+						'compare' => '='
+					),
+				 ),
+			);
+		else:
+			$key_val = 0;
+			$args = array(
+				'exclude' => array( get_current_user_id() ),
+		        //'orderby' => 'display_name',
+		        //'order' => 'DESC',
+				'meta_query' => array(
+					'relation' => 'AND',
+					array(
+						'key'     => 'has_profile_background',
+						'value'   => 1,
+						'compare' => '='
+					),
+					array(
+						'key'     => 'is_profile_update',
+						'value'   => 1,
+						'compare' => '='
+					),
+				 ),
+			);
+
+		endif;
 
 		return get_users( $args );
 	}

@@ -1,4 +1,4 @@
-  <div id="page" class="ui two column top aligned very relaxed stackable grid container">
+  <div class="ui two column top aligned very relaxed stackable grid container">
     
     <div class="four wide right aligned column">
       <?php if ( wp_is_mobile() ) : ?>
@@ -56,8 +56,8 @@
         </div>
 
         <div class="required field">
-          <label>Say something cool about you!</label>
-          <textarea name="profile[description]" rows="4" required><?php echo $this->description; ?></textarea>
+          <label>A small biography of yourself (500 characters)</label>
+          <textarea name="profile[description]" rows="4" maxlength="500" required><?php echo $this->description; ?></textarea>
         </div>
         <div class="field">
           <label>What other sports you do?</label>

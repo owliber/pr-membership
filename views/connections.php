@@ -1,4 +1,4 @@
-  <div id="page" class="ui top aligned very relaxed two column stackable grid container">
+  <div class="ui top aligned very relaxed two column stackable grid container">
  
     <div class="four wide right aligned column">
     <?php if ( wp_is_mobile() ) : ?>

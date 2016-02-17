@@ -10,25 +10,25 @@
 
 ?>
 
-<div class="ui top aligned very relaxed stackable grid container">
+<div id="page" class="ui top aligned very relaxed stackable grid container">
+
 	<div class="ui teal secondary pointing fluid menu">
-	  <a href="<?php echo home_url( 'connect?view=featured' );?>" class="<?php echo $this->view == 'featured' ? 'active' : ''; ?> item">
+	  <a href="<?php echo home_url( 'connect?view=featured' );?>" class="item">
 	    Featured
 	  </a>
-	  <a href="<?php echo home_url( 'connect?view=all' );?>" class="<?php echo $this->view == 'all' || empty( $this->view ) ? 'active' : ''; ?> item">
+	  <a href="<?php echo home_url( 'connect?view=all' );?>" class="active item">
 	    All Runners
-	  </a>	  
+	  </a>
+	  
 	  <!-- <a href="<?php echo home_url( 'connect?r=popular' );?>" class="item">
 	    Popular
 	  </a>
 	  <a href="<?php echo home_url( 'connect?r=new' );?>" class="item">
 	    New
 	  </a> -->
-	</div>	
-	<?php if( wp_is_mobile() ) : ?>
-		<div class="ui hidden divider"></div>
-	<?php endif; ?>
-	<div class="ui four fluid link special stackable cards">
+	</div>
+
+	<div class="ui four doubling fluid link special cards">
 
 		<?php 
 			
@@ -37,8 +37,8 @@
 				$user = get_userdata( $member->ID );
 				$is_featured = get_user_meta( $user->ID, 'is_featured', true );
 
-				if( isset( $is_featured ) && $is_featured == 1 )
-					$color = 'green';
+				if( isset( $is_featured ))
+					$is_featured == 1 ? $color = 'green' : $color = ''; 
 				else
 					$color = '';
 
@@ -51,7 +51,7 @@
 				}
 		?>
 
-		<div class="card">				
+		<div class="<?php echo $color; ?> card">				
 			<div class="blurring dimmable image">
 				<div class="ui dimmer">
 					<div class="content">
@@ -62,7 +62,7 @@
 				</div>
 				 <img src="<?php echo $thumbnail; ?>">
 			</div>
-			<?php if( $is_featured == 1 && $this->view != 'featured' ) : ?>
+			<?php if( $is_featured == 1) : ?>
 				<div class="ui green top left attached label">
 			        Featured
 			     </div>
@@ -117,7 +117,4 @@
 		</div>
 		<?php endforeach; ?>
 	</div>
-	<?php if( wp_is_mobile() ) : ?>
-		<div class="ui hidden divider"></div>
-	<?php endif; ?>
 </div>

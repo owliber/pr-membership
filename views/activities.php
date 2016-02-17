@@ -1,4 +1,4 @@
-<div id="page" class="ui top aligned very relaxed two column stackable grid container">
+<div class="ui top aligned very relaxed two column stackable grid container">
  
     <div class="four wide right aligned column">
     <?php if ( wp_is_mobile() ) : ?>
@@ -199,7 +199,7 @@
             <label>Total Time (Hour)</label>
             <select id="total_hour" name="activity[total_hour]" class="ui fluid dropdown timepicker" required>
                 <?php 
-                for($i = 0; $i <= 36; $i++) {
+                for($i = 0; $i <= 23; $i++) {
                   $i = str_pad($i, 2, '0', STR_PAD_LEFT);
                   echo '<option value="'.$i.'">'.$i.'</option>';
                 }

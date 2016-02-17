@@ -12,6 +12,7 @@ if ( ! class_exists( 'Profile_Model' )) :
 		public $member_id;
 		public $user_id;
 		public $activity_id;
+		public $distance;
 
 		public function get_all_activities( $limit = true ) {
 
@@ -355,6 +356,30 @@ if ( ! class_exists( 'Profile_Model' )) :
 			} else {					
 				add_user_meta( $this->member_id, $meta_key, 1, true );
 			}
+		}
+
+		public function get_personal_records() {
+
+			global $wpdb;
+
+	        $result = $wpdb->get_row(
+	            $wpdb->prepare(
+	                "SELECT
+					  MIN(total_time) AS total_time
+					FROM wp_activities
+					WHERE user_id = %d
+					AND `distance` = %d
+					  AND activity_type = 'Race' 
+					  AND total_time > 0",
+	                array(
+	                	$this->member_id,
+	                	$this->distance,
+	                )
+	            )
+	        );
+
+	        return $result;
+
 		}
 	}
 

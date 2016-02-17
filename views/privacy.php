@@ -1,4 +1,4 @@
-  <div id="page" class="ui two column top aligned very relaxed stackable grid container">
+  <div class="ui two column top aligned very relaxed stackable grid container">
     
     <div class="four wide right aligned column">
       <?php if ( wp_is_mobile() ) : ?>
@@ -165,19 +165,25 @@
           <div class="ui divider"></div>
           <div class="inline field">
             <div class="ui toggle checkbox">
-              <input class="hidden" tabindex="12" type="checkbox" name="privacy[show_fastest_pace]" value="1" <?php if ($this->show_fastest_pace) echo 'checked'; ?>>
+              <input class="hidden" tabindex="12" type="checkbox" name="privacy[show_personal_records]" value="1" <?php if ($this->show_personal_records) echo 'checked'; ?>>
+              <label>Show your personal records</label>
+            </div>
+          </div>
+          <div class="inline field">
+            <div class="ui toggle checkbox">
+              <input class="hidden" tabindex="13" type="checkbox" name="privacy[show_fastest_pace]" value="1" <?php if ($this->show_fastest_pace) echo 'checked'; ?>>
               <label>Show your fastest pace</label>
             </div>
           </div>
           <div class="inline field">
             <div class="ui toggle checkbox">
-              <input class="hidden" tabindex="16" type="checkbox" name="privacy[show_total_time]" value="1" <?php if ($this->show_total_time) echo 'checked'; ?>>
+              <input class="hidden" tabindex="14" type="checkbox" name="privacy[show_total_time]" value="1" <?php if ($this->show_total_time) echo 'checked'; ?>>
               <label>Show your total time</label>
             </div>              
           </div>
           <div class="inline field">
             <div class="ui toggle checkbox">
-              <input class="hidden" tabindex="16" type="checkbox" name="privacy[show_activity_time]" value="1" <?php if ($this->show_activity_time) echo 'checked'; ?>>
+              <input class="hidden" tabindex="15" type="checkbox" name="privacy[show_activity_time]" value="1" <?php if ($this->show_activity_time) echo 'checked'; ?>>
               <label>Show your activity time</label>
             </div>              
           </div>
@@ -189,7 +195,7 @@
           </div>
           <div class="inline field">
             <div class="ui toggle checkbox">
-              <input class="hidden" tabindex="16" type="checkbox" name="privacy[show_remarks]" value="1" <?php if ($this->show_remarks) echo 'checked'; ?>>
+              <input class="hidden" tabindex="17" type="checkbox" name="privacy[show_remarks]" value="1" <?php if ($this->show_remarks) echo 'checked'; ?>>
               <label>Show remarks/notes</label>
             </div>              
           </div>

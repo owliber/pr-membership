@@ -1,4 +1,4 @@
-<div id="page" class="ui top aligned very relaxed stackable grid container">
+<div class="ui top aligned very relaxed stackable grid container">
    <div class="eight wide centered column">
         <div class="ui segments">
             <div class="ui raised segment">
