@@ -198,6 +198,9 @@ jQuery( document ).ready( function() {
 		}, false);
 
 	}
+	
+	$('#username').alphanumeric({allow:".-"});
+	$('#user_login').alphanumeric({allow:".-"});
 
 
 } ); // ready()
