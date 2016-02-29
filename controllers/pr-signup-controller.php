@@ -70,6 +70,8 @@
 				echo 'Registration is disabled at the moment';
 			}
 			
+		 } else {
+		 	PR_Membership::pr_redirect( home_url( 'home' ));
 		 }
 
 		
