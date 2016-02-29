@@ -187,7 +187,7 @@
       <?php
             //Blog Posts
             $args = array(
-                'posts_per_page'   => 25,
+                'posts_per_page'   => 50,
                 'offset'           => 0,     
                 'post_type'        => array( 'post', 'events'),
                 'post_status'      => 'publish',
@@ -233,9 +233,10 @@
                     <?php $post_type = get_post_type();  
                       if ( $post_type == 'events' ) :
                     ?>
-                    <div class="extra">
-                      Posted in <labe class="ui small label"><?php echo ucfirst( $post_type ); ?></label>
+                    <div class="extra meta">
+                      Posted in <a href="<?php echo home_url( 'events' ); ?>"><?php echo ucfirst( $post_type ); ?></a> <?php wp_days_ago_v3(); ?>
                     </div>
+                    
                   <?php endif; ?>
                   </div>
                 </div>
