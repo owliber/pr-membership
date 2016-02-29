@@ -1,5 +1,5 @@
-<div class="ui two column very relaxed stackable grid container">
-  <div class="eight wide middle aligned column">
+<div class="ui two centered column very relaxed stackable grid container">
+  <div class="six wide middle aligned column">
 
     <?php if ( isset( $attributes['errors'] ) && count( $attributes['errors'] ) > 0 ) : ?>
               <div class="ui error message">
@@ -26,12 +26,14 @@
 
                 <h1 class="ui <?php echo wp_is_mobile() ? 'medium' : 'large'; ?> header">
                   <div class="content">
-                    Join us runner. Register now!
+                    Join us runner!
                   </div>
                 </h1>
+                <?php do_action('facebook_login_button'); ?>
+                <div class="ui horizontal divider">or register</div>
                 <div class="field">
                     <div class="ui left icon input">
-                      <input name="username" type="text" class="form-control login-field"
+                      <input id="username" name="username" type="text" class="form-control login-field"
                            value="<?php echo(isset($_POST['username']) ? $_POST['username'] : null); ?>"
                            placeholder="Username" id="username" autocomplete="off" required/>
                            <i class="user icon"></i>
@@ -72,16 +74,5 @@
         </div> <!-- ui form -->
 
         
-  </div>
-  <div class="ui vertical divider"><i class="ph flag"></i></div>
-
-  <div class="six wide middle aligned column">
-        <a class="ui labeled icon blue huge button" href="<?php echo home_url( 'login' ); ?>">
-            <i class="unlock alternate icon"></i>
-            Login using your account
-        </a>
-        <div class="ui horizontal divider">or</div>
-          <?php do_action('facebook_login_button'); ?>
-
   </div>
 </div>

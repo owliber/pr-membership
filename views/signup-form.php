@@ -22,7 +22,7 @@
     <div class="ui two fields">
       <div class="field">
           <div class="ui left icon input">
-            <input name="username" type="text" class="form-control login-field"
+            <input id="username" name="username" type="text" class="form-control login-field"
                  value="<?php echo(isset($_POST['username']) ? $_POST['username'] : null); ?>"
                  placeholder="Username" id="username" autocomplete="off" required/>
                  <i class="user icon"></i>
