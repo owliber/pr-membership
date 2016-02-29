@@ -24,33 +24,31 @@
     <?php if ( $attributes['show_title'] ) : ?>
         <h2><?php _e( 'Sign In', 'pr-login' ); ?></h2>
     <?php endif; ?>
-    
-    <div class="ui form">
-    <?php
-        wp_login_form(
-            array(
-                'label_username' => __( '', 'pr-login' ),
-                'label_password' => __( '', 'pr-login' ),
-                'label_log_in' => __( 'Login', 'pr-login' ),
-                'redirect' => $attributes['redirect'],
-                'remember'       => false,
-            )
-        );
-    ?>    
-      
-      <div class="ui horizontal divider">Or</div>
-          <div class="field">
-            <?php do_action('facebook_login_button'); ?>
-          </div>
      
+   
+    <div class="ui form">
+         <div class="field">
+            <?php do_action('facebook_login_button'); ?>
+        </div>
+        <div class="ui horizontal divider">Or</div>
         <div class="field">
-            <div class="ui toggle checkbox">
+        <?php
+            wp_login_form(
+                array(
+                    'label_username' => __( '', 'pr-login' ),
+                    'label_password' => __( '', 'pr-login' ),
+                    'label_log_in' => __( 'Login', 'pr-login' ),
+                    'redirect' => $attributes['redirect'],
+                    'remember'       => false,
+                )
+            );
+        ?>    
+        </div>
+        <div class="field">
+            <div class="ui right floated toggle checkbox">
                 <input class="hidden" tabindex="0" name="rememberme" id="rememberme" value="forever" type="checkbox">
                 <label>Remember me <span> &mdash; <a href="<?php echo wp_lostpassword_url(); ?>">Forgot Password?</a></span></label> 
             </div>
-        </div>
-     
-        
-    <!-- wp_lostpassword_url(); -->
-    
+        </div>    
+         
     </div><!-- ui form -->

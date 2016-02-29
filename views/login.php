@@ -1,5 +1,5 @@
 <div class="ui top aligned very relaxed stackable grid container">
-   <div class="eight wide centered column">
+   <div class="six wide centered column">
         <div class="ui segments">
             <div class="ui raised segment">
                 
@@ -30,8 +30,13 @@
                         </div>
                     <?php endif; ?>
 
+
                 <div class="ui form">
                     <h1 class="ui <?php echo wp_is_mobile() ? 'medium' : 'large'; ?> header">Login to pinoyrunners.co</h1>
+                    <div class="left aligned content">
+                        <?php do_action('facebook_login_button'); ?>
+                    </div>
+                    <div class="ui horizontal divider">Or</div>
                     <div class="field">
                     <?php
                         wp_login_form(
@@ -46,12 +51,8 @@
                     ?>    
 
                     </div>
+                    
                     <div class="field">
-                        <?php do_action('facebook_login_button'); ?>
-                    </div>
-
-                    <div class="field">
-
                         <div class="ui toggle checkbox">
                             <input class="hidden" tabindex="0" name="rememberme" id="rememberme" value="forever" type="checkbox">
                             <label>Remember me <span> &middot; <a href="<?php echo wp_lostpassword_url(); ?>">Forgot Password?</a></span></label> 
