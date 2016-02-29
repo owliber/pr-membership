@@ -50,16 +50,16 @@ class PR_Connect {
 		        'order' => 'DESC',
 				'meta_query' => array(
 					'relation' => 'AND',
-					array(
-						'key'     => 'has_profile_background',
-						'value'   => 1,
-						'compare' => '='
-					),
-					array(
-						'key'     => 'is_profile_update',
-						'value'   => 1,
-						'compare' => '='
-					),
+					// array(
+					// 	'key'     => 'has_profile_background',
+					// 	'value'   => 1,
+					// 	'compare' => '='
+					// ),
+					// array(
+					// 	'key'     => 'is_profile_update',
+					// 	'value'   => 1,
+					// 	'compare' => '='
+					// ),
 					array(
 						'key'     => 'is_featured',
 						'value'   =>  1,
@@ -73,19 +73,19 @@ class PR_Connect {
 				'exclude' => array( get_current_user_id() ),
 		        //'orderby' => 'display_name',
 		        //'order' => 'DESC',
-				'meta_query' => array(
-					'relation' => 'AND',
-					array(
-						'key'     => 'has_profile_background',
-						'value'   => 1,
-						'compare' => '='
-					),
-					array(
-						'key'     => 'is_profile_update',
-						'value'   => 1,
-						'compare' => '='
-					),
-				 ),
+				// 'meta_query' => array(
+				// 	'relation' => 'AND',
+				// 	array(
+				// 		'key'     => 'has_profile_background',
+				// 		'value'   => 1,
+				// 		'compare' => '='
+				// 	),
+				// 	array(
+				// 		'key'     => 'is_profile_update',
+				// 		'value'   => 1,
+				// 		'compare' => '='
+				// 	),
+				//  ),
 			);
 
 		endif;
