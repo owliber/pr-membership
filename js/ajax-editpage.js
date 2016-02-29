@@ -52,6 +52,7 @@ jQuery(document).ready(function(e) {
                 var reader = new FileReader();
                 reader.onload = function (e) {
                   $("#profile_image").css("color","green");
+                  $('#preview_image').attr('src', e.target.result);
                   var img = new Image;
                   img.onload = function() {
                     if ( img.width < 1024 ) {
