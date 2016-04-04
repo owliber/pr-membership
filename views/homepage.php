@@ -13,6 +13,17 @@
       <a href="<?php echo home_url( 'home/connections' ); ?>" class="item"> Connections</a>
       <a href="<?php echo home_url( 'home/events-joined' ); ?>" class="item"> Events Joined</a>
     </div>
+    <div class="ui <?php echo wp_is_mobile() ? 'mobile' : ''; ?> ad" data-text="Skyscraper">
+      <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+      <!-- home_left_bottom_ad -->
+      <ins class="adsbygoogle"
+           style="display:inline-block;width:300px;height:600px"
+           data-ad-client="ca-pub-8465880978474028"
+           data-ad-slot="9987776409"></ins>
+      <script>
+      (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+    </div>
   </div><!-- four wide right aligned column -->
 
    <div class="twelve wide column">  
@@ -38,6 +49,9 @@
               isset ( $request->member_id ) ? $user_id = $request->member_id : $user_id = $request->user_id;
       
               $thumb_file = get_user_meta( $user_id, 'pr_member_thumbnail_image', true );
+              if( empty( $thumb_file ))
+                $thumb_file = '/random/thumbnail_placeholder_'.rand(1,9).'.jpg';
+              
               $thumbnail = THUMB_DIR . '/'.$thumb_file;
               $member = get_userdata( $user_id ); 
       ?>
@@ -48,16 +62,17 @@
           <img src="<?php echo $thumbnail; ?>">
         </a>
         <div class="content">
+
           <a class="header" href="<?php echo home_url( 'member/'.$member->user_login ); ?>">
           <?php 
             $first_name = get_user_meta( $user_id, 'first_name', true ); 
             $last_name = get_user_meta( $user_id, 'last_name', true ); 
             $login_name = ucfirst( $member->user_login );
 
-            if ( !empty( $first_name ) || !empty( $last_name ))
-              echo $first_name . ' ' . $last_name;
+            if ( !empty( $first_name ))
+              echo 'Connection from '.$first_name;
             else 
-              echo $login_name;
+              echo 'Connection from '.$login_name;
 
           ?></a>          
 
@@ -67,7 +82,7 @@
                 $year_started_running = get_user_meta( $user_id, 'year_started_running', true );
 
                 if( !empty( $year_started_running ))
-                    $meta = 'Running since ' . $year_started_running;
+                    $meta = 'Runner since ' . $year_started_running;
                 else {
                   if ( !empty( $member->display_name ))
                     $meta = $member->display_name;
@@ -81,7 +96,7 @@
           </div><!-- meta -->
 
           <div class="description">
-            <p><?php echo wp_trim_words(get_user_meta( $user_id, 'description', true ), 40, '...'); ?></p>
+            <p><?php echo wp_trim_words(get_user_meta( $user_id, 'description', true ), 25, '...'); ?></p>
           </div>
 
             <div class="extra">
@@ -96,7 +111,7 @@
                 </button>
                 <button id="btn_ignore" name="ignore_request" class="ui negative red button btn-ignore-<?php echo $user_id; ?>" value="<?php echo $user_id; ?>">
                   Later
-                </button>              
+                </button>
                 <br />
                 <span class="accepted-message-<?php echo $user_id; ?>"></span>
                 <span class="ignored-message-<?php echo $user_id; ?>"></span>               
@@ -151,7 +166,7 @@
                   $year_started_running = get_user_meta( $user_id, 'year_started_running', true );
 
                   if( !empty( $year_started_running ))
-                      $meta = 'Running since ' . $year_started_running;
+                      $meta = 'Runner since ' . $year_started_running;
                   else {
                     if ( !empty( $member->display_name ))
                       $meta = $member->display_name;
@@ -164,7 +179,7 @@
                 ?></span>
             </div><!-- meta -->
               <div class="description">
-                <p><?php echo wp_trim_words(get_user_meta( $user_id, 'description', true ), 40, '...'); ?></p>
+                <p><?php echo wp_trim_words(get_user_meta( $user_id, 'description', true ), 25, '...'); ?></p>
               </div>
               <div class="extra">
                 <button id="btn_group_accept" name="accept_group_request" class="ui positive primary button btn-group-accept-<?php echo $user_id; ?>" value="<?php echo $user_id; ?>">
@@ -224,7 +239,7 @@
                         $content = apply_filters('the_content', $content);
                         $content = str_replace(']]>', ']]>', $content);
                         $content = preg_replace('/^\s+|\n|\r|\s+$/m', '', $content);
-                        $content = wp_trim_words($content, 50, ' ...');
+                        $content = wp_trim_words($content, 20, ' ...');
                         
                         echo $content;
 

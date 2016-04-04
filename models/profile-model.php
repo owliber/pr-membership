@@ -144,6 +144,7 @@ if ( ! class_exists( 'Profile_Model' )) :
 	                	  min(`average_pace`) as best_pace
 	                	FROM wp_activities 
 	                	WHERE status = 'publish' 
+	                	AND average_pace > 0
 	                	AND user_id = '%d'",
 	                array(
 	                	$this->member_id,
@@ -297,7 +298,7 @@ if ( ! class_exists( 'Profile_Model' )) :
 				$this->user_id,
 				$this->member_id,
 				CUR_DATE,
-				1,
+				0,
 				CUR_DATE
 			);
 

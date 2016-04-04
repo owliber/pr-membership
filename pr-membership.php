@@ -40,6 +40,7 @@ require_once( WPPR_PLUGIN_DIR . '/controllers/pr-connections-controller.php' );
 require_once( WPPR_PLUGIN_DIR . '/controllers/pr-events-joined-controller.php' );
 require_once( WPPR_PLUGIN_DIR . '/controllers/pr-activities-controller.php' );
 require_once( WPPR_PLUGIN_DIR . '/controllers/pr-forgot-password-controller.php' );
+require_once( WPPR_PLUGIN_DIR . '/controllers/pr-promo-controller.php' );
 
 if ( ! class_exists( 'PR_Membership' )) :
 
@@ -69,6 +70,7 @@ if ( ! class_exists( 'PR_Membership' )) :
 			new PR_Events_Joined;	
 			new PR_Activities;
 			new PR_ForgotPassword;
+			new PR_Promos;
 	        
 	        // Register admin menu
 	        add_action('admin_menu', array($this, 'register_pr_membership_menu'));
@@ -91,6 +93,7 @@ if ( ! class_exists( 'PR_Membership' )) :
 			
 			echo '<div class="wrap"><div id="icon-tools" class="icon32"></div>';
 				echo '<h2>Settings</h2>';
+				echo 'Server Time: '. date('Y-m-d h:i:s A',strtotime(CUR_DATE + '28800'));
 			echo '</div>';
 
 		}

@@ -202,6 +202,5 @@ jQuery( document ).ready( function() {
 	$('#username').alphanumeric({allow:".-"});
 	$('#user_login').alphanumeric({allow:".-"});
 
-
 } ); // ready()
 

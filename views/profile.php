@@ -17,7 +17,7 @@
           ?>
         <?php if( $this->is_public( 'show_year_started_running' )) : ?>
         <span class="sub header small-caps">
-          <?php  echo 'running since ' . get_user_meta( $this->member_id, 'year_started_running', true ); ?>
+          <?php  echo 'runner since ' . get_user_meta( $this->member_id, 'year_started_running', true ); ?>
         </span>
         <?php endif; ?>
         </h1>

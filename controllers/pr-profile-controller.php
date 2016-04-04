@@ -533,7 +533,7 @@ class PR_Profile {
 
 		$background = '<style type="text/css">
 	        	body { 
-	        		background: url(' . $profile_background . ') no-repeat center top fixed !important;
+	        		background: url(' . $profile_background . ') no-repeat top center fixed !important;
 	        		-webkit-background-size: cover !important;
 	  				-moz-background-size: cover !important;
 	  				-o-background-size: cover !important;
